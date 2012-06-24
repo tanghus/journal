@@ -10,7 +10,7 @@ To install this app you will first have to install the [TAL Page Templates for o
 	 git clone git://github.com/tanghus/journal.git
 	 </pre>
 	
-2. From your browser the ownCloud apps page (`/settings/apps.php`) and enable the Journal app.
+2. From your browser go to the ownCloud apps page (`/settings/apps.php`) and enable the Journal app.
 
 3. After a page refresh you should see the Journal app in the main menu.
 
