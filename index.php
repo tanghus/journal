@@ -19,36 +19,55 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+$errors = array();
+$l = new OC_L10N('journal');
 OCP\User::checkLoggedIn();
-OCP\App::checkAppEnabled('journal');
-OCP\App::checkAppEnabled('contacts');
-OCP\App::checkAppEnabled('tal');
 
-$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
-if( count($calendars) == 0 ) {
-	header('Location: ' . OCP\Util::linkTo('calendar', 'index.php'));
-	exit;
+$required_apps = array(
+    array('id' => 'tal', 'name' => 'TAL Page Templates'),
+    array('id' => 'journal', 'name' => 'Journal'),
+    array('id' => 'contacts', 'name' => 'Contacts'),
+);
+foreach($required_apps as $app) {
+	if(!OCP\App::isEnabled($app['id'])) {
+		$error = (string)$l->t('The %%s app isn\'t enabled! Please enable it here: <strong><a href="%%s?appid=%%s">Enable %%s app</a></strong>');
+		$errors[] = sprintf($error, $app['name'],OCP\Util::linkTo('settings', 'apps'), $app['id'], $app['name']);
+	}
 }
-// Load a specific entry?
-$id = isset( $_GET['id'] ) ? $_GET['id'] : null;
 
-OCP\Util::addScript('3rdparty/timepicker', 'jquery.ui.timepicker');
-OCP\Util::addScript('contacts','jquery.multi-autocomplete');
-OCP\Util::addScript('','oc-vcategories');
-OCP\Util::addScript('journal', 'jquery.rte');
-OCP\Util::addScript('journal', 'jquery.textchange');
-OCP\Util::addScript('journal', 'journal');
-OCP\Util::addscript('tal','modernizr');
-OCP\Util::addStyle('3rdparty/timepicker', 'jquery.ui.timepicker');
-OCP\Util::addStyle('journal', 'rte');
-OCP\Util::addStyle('journal', 'journal');
-OCP\App::setActiveNavigationEntry('journal_index');
+if(count($errors) == 0) {
+	$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
+	if( count($calendars) == 0 ) {
+		header('Location: ' . OCP\Util::linkTo('calendar', 'index.php'));
+		exit;
+	}
+	// Load a specific entry?
+	$id = isset( $_GET['id'] ) ? $_GET['id'] : null;
 
-$categories = OC_Calendar_App::getCategoryOptions();
+	OCP\Util::addScript('3rdparty/timepicker', 'jquery.ui.timepicker');
+	OCP\Util::addScript('contacts','jquery.multi-autocomplete');
+	OCP\Util::addScript('','oc-vcategories');
+	OCP\Util::addScript('journal', 'jquery.rte');
+	OCP\Util::addScript('journal', 'jquery.textchange');
+	OCP\Util::addScript('journal', 'journal');
+	OCP\Util::addscript('tal','modernizr');
+	OCP\Util::addStyle('3rdparty/timepicker', 'jquery.ui.timepicker');
+	OCP\Util::addStyle('journal', 'rte');
+	OCP\Util::addStyle('journal', 'journal');
+	OCP\App::setActiveNavigationEntry('journal_index');
+
+	$categories = OC_Calendar_App::getCategoryOptions();
+}
+
 //$tmpl = new OCP\Template('journal', 'journals', 'user');
-$tmpl = new OC_TALTemplate('journal', 'index', 'user');
-$tmpl->assign('categories', $categories);
-$tmpl->assign('calendars', $calendars);
-$tmpl->assign('id',$id);
+if($errors) {
+	$errors[] = (string)$l->t('Couldn\'t find class "OC_TALTemplate"');
+	$tmpl = new OCP\Template( "journal", "rtfm", "user" );
+	$tmpl->assign('errors',$errors, false);
+} else {
+	$tmpl = new OC_TALTemplate('journal', 'index', 'user');
+	$tmpl->assign('categories', $categories);
+	$tmpl->assign('calendars', $calendars);
+	$tmpl->assign('id',$id);
+}
 $tmpl->printPage();
