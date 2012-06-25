@@ -71,10 +71,12 @@ class OC_Journal_App {
 					$dtstart->setTimezone($tz);
 				}
 				$journal['dtstart'] = $dtstart->format('U');
+				$journal['only_date'] = ($dtprop->getDateType() == Sabre_VObject_Property_DateTime::DATE);
+			} else {
+				OCP\Util::writeLog('journal', 'Could not get DTSTART DateTime for '.$journal['summary'], OCP\Util::ERROR);
 			}
-			if($vjournal->DTSTART->offsetExists('VALUE') && $vjournal->DTSTART->offsetGet('VALUE') == 'DATE') {
-				$journal['only_date'] = true;
-			}
+		} else {
+			OCP\Util::writeLog('journal', 'Could not get DTSTART for '.$journal['summary'], OCP\Util::ERROR);
 		}
 		return $journal;
 	}
@@ -112,9 +114,9 @@ class OC_Journal_App {
 	 */	 
 	public static function createVCalendar()	{
 		$vcalendar = new OC_VObject('VCALENDAR');
-		$appinfo = OCP\App::getAppInfo('calendar');
-		$appversion = OCP\App::getAppVersion('calendar');
-		$prodid = '-//ownCloud//NONSGML '.$appinfo['name'].' - Journal '.$appversion.'//EN';
+		$appinfo = OCP\App::getAppInfo('journal');
+		$appversion = OCP\App::getAppVersion('journal');
+		$prodid = '-//ownCloud//NONSGML '.$appinfo['name'].' '.$appversion.'//EN';
 		$vcalendar->add('PRODID', $prodid);
 		$vcalendar->add('VERSION', '2.0');
 
