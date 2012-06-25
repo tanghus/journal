@@ -68,10 +68,10 @@
 				<input class="property propertycontainer" id="organizer" name="value" type="text" size="16" placeholder="Who has written this" value="" data-type="ORGANIZER" disabled="true" i18n:attributes="placeholder" />
 			</dd>
 			<dt id="categories_label"><label for="categories" i18n:translate="">Categories</label></dt>
-			<dd id="categories_value">
-				<input class="property propertycontainer" name="value" type="text" size="16" placeholder="Separate with commas" value="" data-type="CATEGORIES" disabled="true" i18n:attributes="placeholder" />
+			<dd class="propertycontainer" id="categories_value" data-type="CATEGORIES">
+				<input class="property" id="categories" name="value" type="text" size="16" placeholder="Separate with commas" value="" disabled="true" i18n:attributes="placeholder" />
 				<a role="button" class="tip action" id="editcategories" title="Edit groups" i18n:attributes="title">
-					<img class="svg action" tal:attributes="src image:string:core/actions/edit.svg" />
+					<img class="svg action" tal:attributes="src image:string:core/actions/rename.svg" />
 				</a>
 			</dd>
 			<dt>
