@@ -1,0 +1,17 @@
+ 
+- Select default calendar.
+
+- Fix categories.
+
+- Check that missing properties are created in saveproperty.php
+
+- Hide empty elements?
+
+- Check if entered text in one mode gets transfered when changing modes.
+
+- Make edit area fit size and scrollable.
+
+- Create fallback template for when ppl try to install without TAL being installed first.
+
+- Test, test, test in other browser as well.
+
