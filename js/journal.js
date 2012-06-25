@@ -21,7 +21,18 @@ OC.Journal = {
 		// Fetch journal entries. If it's a direct link 'id' will be loaded.
 		OC.Journal.Journals.update(id);
 	},
-	categoriesChanged:function() {
+	categoriesChanged:function(newcategories) { // Categories added/deleted.
+		categories = $.map(newcategories, function(v) {return v;});
+		$('#categories').multiple_autocomplete('option', 'source', categories);
+		var categorylist = $('#categories_value').find('input');
+		$.getJSON(OC.filePath('journal', 'ajax', 'categories/categoriesfor.php'),{'id':Contacts.UI.Card.id},function(jsondata){
+			if(jsondata.status == 'success'){
+				$('#categories_value').data('checksum', jsondata.data.checksum);
+				categorylist.val(jsondata.data.value);
+			} else {
+				OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
+			}
+		});
 	},
 	propertyContainerFor:function(obj) {
 		if($(obj).hasClass('propertycontainer')) {
@@ -51,14 +62,14 @@ OC.Journal = {
 			}
 			$('#togglemode').show();
 			$('#summary').addClass('editable');
-			$('.property').each(function () {
+			$('.property,#also_time').each(function () {
 				$(this).attr('disabled', false);
 			});
 		} else {
 			$('#description').rte('setEnabled', false);
 			$('#editortoolbar .richtext, #togglemode').hide();
 			$('#summary').removeClass('editable');
-			$('.property').each(function () {
+			$('.property,#also_time').each(function () {
 				$(this).attr('disabled', true);
 			});
 		}
@@ -119,6 +130,8 @@ OC.Journal = {
 			(format=='html'&&$('#editable').get(0).checked?$('#editortoolbar li.richtext').show():$('#editortoolbar li.richtext').hide());
 			$('#location').val(data.location);
 			$('#categories').val(data.categories.join(','));
+			$('#categories').multiple_autocomplete('option', 'source', categories);
+			console.log('Trying to parse: '+data.dtstart);
 			var date = new Date(parseInt(data.dtstart)*1000);
 			//$('#dtstartdate').val(date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()); //
 			$('#dtstartdate').datepicker('setDate', date);
@@ -249,10 +262,12 @@ OC.Journal = {
 				return (parseInt(b.dtstart) < parseInt(a.dtstart)?-1:1);
 			}
 			compareSummaryAsc = function(a, b){
-				return (a.summary.toLowerCase() < b.summary.toLowerCase()?-1:1);
+				return b.summary.toLowerCase().localeCompare(a.summary.toLowerCase());
+				//return (a.summary.toLowerCase() < b.summary.toLowerCase()?-1:1);
 			}
 			compareSummaryDesc = function(a, b){
-				return (b.summary.toLowerCase() < a.summary.toLowerCase()?-1:1);
+				return a.summary.toLowerCase().localeCompare(b.summary.toLowerCase());
+				//return (b.summary.toLowerCase() < a.summary.toLowerCase()?-1:1);
 			}
 			var func;
 			switch(method) {
@@ -333,7 +348,8 @@ $(document).ready(function(){
 	OCCategories.app = 'calendar';
 
 	// Initialize controls.
-	$('#categories').multiple_autocomplete('option', 'source', categories);
+	$('#categories').multiple_autocomplete({source: categories});
+	//$('#categories').multiple_autocomplete('option', 'source', categories);
 	$('#dtstartdate').datepicker({dateFormat: 'dd-mm-yy'});
 	$('#dtstarttime').timepicker({timeFormat: 'hh:mm', showPeriodLabels:false});
 	$('#description').rte({classes: ['property','content']});
@@ -345,7 +361,7 @@ $(document).ready(function(){
 	// it on blur and removes the binding again afterwards.
 	$('#showlink').on('click', function(event){
 		console.log('showlink');
-		$(this).next().toggle('slow').val(totalurl+'&id='+OC.Journal.Entry.id).focus().
+		$('#link').toggle('slow').val(totalurl+'&id='+OC.Journal.Entry.id).focus().
 			on('blur',function(event) {$(this).hide()}).off('blur', $(this));
 		return false;
 	});
@@ -359,7 +375,7 @@ $(document).ready(function(){
 	});
 
 	$('#metadata').on('change', '#also_time', function(event){
-		$('#dtstarttime').toggle();
+		$('#dtstarttime').toggle().trigger('change');
 	});
 	
 	$('#metadata').on('click', '#export', function(event){
@@ -398,7 +414,7 @@ $(document).ready(function(){
 		OC.Journal.Entry.loadEntry(id, item.data('entry'));
 		return false;
 	});
-	// Edit command.
+	// Editor command.
 	$('.rte-toolbar button').on('click', function(event){
 		console.log('cmd: ' + $(this).data('cmd'));
 		$('#description').rte('formatText', $(this).data('cmd'));

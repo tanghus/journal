@@ -83,6 +83,7 @@ $.widget( 'ui.rte', {
 		}
 	},
 	insertAtCaret: function(myValue){
+		// Found this at stackoverflow
 		return this.mirror.each(function(i) {
 			if (document.selection) {
 				//For browsers like Internet Explorer
@@ -108,6 +109,7 @@ $.widget( 'ui.rte', {
 		})
 	},
 	formatText: function(command, option) {
+		self = this;
 		switch(command) {
 			case 'ulist':
 				command = 'insertUnorderedList';
@@ -121,6 +123,7 @@ $.widget( 'ui.rte', {
 		try{
 			document.execCommand(command, false, option);
 			self.dirty = true; // FIXME: This doesn't work because blur is triggered before dirty is set.
+			self.mirror.trigger('blur'); // Dirty hack to trigger save. Hmm, if it only worked...
 		}catch(e){
 			console.log('Error: ' + e)
 		}
@@ -174,6 +177,7 @@ $.widget( 'ui.rte', {
 					case 'text':
 						this.mirror.hide();
 						this.element.show();
+						this.element.trigger('resize');
 						break;
 					default:
 						throw { name: 'UnknownMode', message: 'Invalid mode: ' + value }
