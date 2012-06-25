@@ -41,6 +41,7 @@ OC.Journal = {
 		return $(obj).parents('.propertycontainer').first();
 	},
 	required:function(event){ // eventhandler for required elements
+			// FIXME: This doesn't seem to work.
 			console.log('blur on required');
 			var obj = $(event.target);
 			$(obj).addClass('required');
@@ -83,8 +84,7 @@ OC.Journal = {
 		id:'',
 		data:undefined,
 		add:function() {
-			// TODO: wrap a DIV around the summary field with a suggestion(?) to fill out this field first.
-			// FIXME: After having unloaded data it wont load anything but summary from another entrye.
+			// TODO: wrap a DIV around the summary field with a suggestion(?) to fill out this field first. See OC.Journal.required
 			// Remember to reenable all controls.
 			$('#leftcontent lidata-id="'+this.id+'"').removeClass('active');
 			this.id = 'new';
@@ -255,6 +255,7 @@ OC.Journal = {
 			}
 			// Thanks to http://www.java2s.com/Tutorial/JavaScript/0220__Array/Usinganalphabeticalsortmethodonstrings.html
 			// and http://stackoverflow.com/questions/4258974/sort-list-based-on-data-attribute-using-jquery-metadata-plugin#4259074
+			// and http://stackoverflow.com/questions/8882418/jquery-sorting-lib-that-supports-multilanguage-sorting
 			compareDateTimeAsc = function(a, b){
 				return (parseInt(a.dtstart) > parseInt(b.dtstart)?-1:1);
 			}
@@ -263,11 +264,9 @@ OC.Journal = {
 			}
 			compareSummaryAsc = function(a, b){
 				return b.summary.toLowerCase().localeCompare(a.summary.toLowerCase());
-				//return (a.summary.toLowerCase() < b.summary.toLowerCase()?-1:1);
 			}
 			compareSummaryDesc = function(a, b){
 				return a.summary.toLowerCase().localeCompare(b.summary.toLowerCase());
-				//return (b.summary.toLowerCase() < a.summary.toLowerCase()?-1:1);
 			}
 			var func;
 			switch(method) {

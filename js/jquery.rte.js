@@ -86,6 +86,7 @@ $.widget( 'ui.rte', {
 		// Found this at stackoverflow
 		return this.mirror.each(function(i) {
 			if (document.selection) {
+				console.log('IE');
 				//For browsers like Internet Explorer
 				this.focus();
 				sel = document.selection.createRange();
@@ -93,6 +94,7 @@ $.widget( 'ui.rte', {
 				this.focus();
 			}
 			else if (this.selectionStart || this.selectionStart == '0') {
+				console.log('FF');
 				//For browsers like Firefox and Webkit based
 				var startPos = this.selectionStart;
 				var endPos = this.selectionEnd;
@@ -103,13 +105,31 @@ $.widget( 'ui.rte', {
 				this.selectionEnd = startPos + myValue.length;
 				this.scrollTop = scrollTop;
 			} else {
+				console.log('Smth.');
 				this.value += myValue;
 				this.focus();
 			}
 		})
 	},
+	showSelection: function() {
+		var textComponent = this.mirror.get(0); //document.getElementById('Editor');
+		var selectedText;
+		// IE version
+		if (document.selection != undefined) {
+			textComponent.focus();
+			var sel = document.selection.createRange();
+			selectedText = sel.text;
+		}
+		// Mozilla version
+		else if (textComponent.selectionStart != undefined) {
+			var startPos = textComponent.selectionStart;
+			var endPos = textComponent.selectionEnd;
+			selectedText = textComponent.value.substring(startPos, endPos)
+		}
+		alert("You selected: " + selectedText);
+	},
 	formatText: function(command, option) {
-		self = this;
+		self = this, useDialog = false;
 		switch(command) {
 			case 'ulist':
 				command = 'insertUnorderedList';
@@ -117,11 +137,15 @@ $.widget( 'ui.rte', {
 			case 'olist':
 				command = 'insertOrderedList';
 				break;
+			case 'createlink':
+				self.showSelection();
+				option=prompt('Write the URL here')
+				useDialog = true;
 			default:
 				break;
 		}
 		try{
-			document.execCommand(command, false, option);
+			document.execCommand(command, useDialog, option);
 			self.dirty = true; // FIXME: This doesn't work because blur is triggered before dirty is set.
 			self.mirror.trigger('blur'); // Dirty hack to trigger save. Hmm, if it only worked...
 		}catch(e){

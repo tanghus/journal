@@ -45,6 +45,11 @@
 						<img tal:attributes="src image:string:journal/list.svg" />
 					</button>
 				</li>
+				<li class="richtext">
+					<button class="tip" data-cmd="createlink" title="Link (URL)" i18n:attributes="title">
+						<img tal:attributes="src image:string:core/actions/public.svg" />
+					</button>
+				</li>
 				<li><a id="togglemode" class="hidden" i18n:translate="">Switch edit mode</a></li>
 			</ul>
 			<div class="propertycontainer" data-type="DESCRIPTION"><textarea class="property content" id="description" name="value"></textarea></div>
