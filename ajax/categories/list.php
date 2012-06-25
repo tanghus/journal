@@ -8,9 +8,9 @@
 
  
 OCP\JSON::checkLoggedIn();
-OCP\JSON::checkAppEnabled('contacts');
+OCP\JSON::checkAppEnabled('journal');
 
-$categories = OC_Contacts_App::getCategories();
+$categories = OC_Journal_App::getCategories();
 
 OCP\JSON::success(array('data' => array('categories'=>$categories)));
 
