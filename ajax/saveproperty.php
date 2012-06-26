@@ -40,7 +40,7 @@ if($id == 'new') {
 }
 error_log('saveproperty: '.$property.': '.print_r($value, true));
 $vjournal = $vcalendar->VJOURNAL;
-switch($property) { // TODO: Add properties if they don't exist.
+switch($property) {
 	case 'DESCRIPTION':
 		$hasgenericformat = false;
 		$haskdeformat = false;
@@ -121,7 +121,10 @@ $vjournal->setDateTime('DTSTAMP', 'now', Sabre_VObject_Property_DateTime::UTC);
 if($id == 'new') {
 	// TODO: Have a calendar ID parameter in request.
 	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+	// Check that the calendar exists and that it's ours.
+	$cid = OC_Calendar_App::getCalendar($cid, true);
 	if(!$cid) {
+		OCP\Util::writeLog('journal', 'The default calendar '.$cid.' is either not owned by '.OCP\User::getUser().' or doesn\'t exist.', OCP\Util::WARN);
 		$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
 		$first_calendar = reset($calendars);
 		$cid = $first_calendar['id'];
