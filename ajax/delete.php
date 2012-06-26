@@ -1,9 +1,7 @@
 <?php
 /**
- * ownCloud - Addressbook
+ * ownCloud - Journal
  *
- * @author Jakob Sack
- * @copyright 2011 Jakob Sack mail@jakobsack.de
  * @copyright 2012 Thomas Tanghus <thomas@tanghus.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -26,7 +24,7 @@ OCP\JSON::checkAppEnabled('journal');
 OCP\JSON::callCheck();
 
 $id = isset($_POST['id'])?$_POST['id']:null;
-if(!$id) {
+if(is_null($id)) {
 	OCP\JSON::error(array('data'=>array('message' => OC_Journal_App::$l10n->t('ID is not set!'))));
 	exit;
 }
