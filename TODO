@@ -1,9 +1,5 @@
  
-- Select default calendar.
-
 - Fix categories.
-
-- Check that missing properties are created in saveproperty.php
 
 - Hide empty elements?
 
@@ -11,7 +7,7 @@
 
 - Make edit area fit size and scrollable.
 
-- Create fallback template for when ppl try to install without TAL being installed first.
+- Add an "only read from this calendar" checkbox.
 
 - Test, test, test in other browser as well.
 
