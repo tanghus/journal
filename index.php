@@ -38,8 +38,8 @@ foreach($required_apps as $app) {
 if(count($errors) == 0) {
 	$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
 	if( count($calendars) == 0 ) {
-		header('Location: ' . OCP\Util::linkTo('calendar', 'index.php'));
-		exit;
+		$error = (string)$l->t('You have no calendars. Please add one at the <strong><a href="%%s">Calendar app</a></strong>');
+		$errors[] = sprintf($error, OCP\Util::linkTo('calendar', 'index.php'));
 	}
 	// Load a specific entry?
 	$id = isset( $_GET['id'] ) ? $_GET['id'] : null;
@@ -61,7 +61,6 @@ if(count($errors) == 0) {
 
 //$tmpl = new OCP\Template('journal', 'journals', 'user');
 if($errors) {
-	$errors[] = (string)$l->t('Couldn\'t find class "OC_TALTemplate"');
 	$tmpl = new OCP\Template( "journal", "rtfm", "user" );
 	$tmpl->assign('errors',$errors, false);
 } else {
