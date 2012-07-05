@@ -24,7 +24,7 @@
  */
 class OC_Journal_Hooks {
 	/**
-	 * Hook to convert a completed Task (VTODO) to a journal entry and add it to the calendar.
+	 * @brief Hook to convert a completed Task (VTODO) to a journal entry and add it to the calendar.
 	 * @param $vtodo An OC_VObject of type VTODO.
 	 */
 	public static function taskToJournalEntry($vtodo) {
@@ -48,6 +48,17 @@ class OC_Journal_Hooks {
 			$id = OC_Calendar_Object::add($cid, $vcalendar->serialize());
 		} catch (Exception $e) {
 			OCP\Util::writeLog('journal', 'Error adding completed Task to calendar: "'.$cid.'" '. $e->getMessage(), OCP\Util::ERROR);
+		}
+	}
+	
+	/**
+	 * @brief Get notifications on deleted calendars. If it matched out default calendar the property is cleared.
+	 * @param $aid Integer calendar ID.
+	 */
+	public static function calendarDeleted($aid) {
+		$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+		if($aid == $cid) {
+			OC_Preferences::deleteKey(OCP\User::getUser(), 'journal', 'default_calendar');
 		}
 	}
 }
