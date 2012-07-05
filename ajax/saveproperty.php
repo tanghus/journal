@@ -6,6 +6,8 @@
  * See the COPYING-README file.
  */
 
+require_once(__DIR__.'/util.php');
+
 $htmlwrap = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"><html><head></head><body>%s</body></html>';
 $divwrap = '<div>%s</div>';
 OCP\JSON::checkLoggedIn();
@@ -29,16 +31,17 @@ if(is_null($value)) {
 }
 
 foreach($_POST as $key => $val) {
-    error_log($key.': '.print_r($val, true));
+    debug($key.': '.print_r($val, true));
 }
 
 $parameters = isset($_POST['parameters'])? $_POST['parameters']:null;
 if($id == 'new') {
+	debug('Creating new entry.');
 	$vcalendar = OC_Journal_App::createVCalendar();
 } else {
-	$vcalendar = OC_Calendar_App::getVCalendar( $id );
+	$vcalendar = OC_Calendar_App::getVCalendar($id);
 }
-error_log('saveproperty: '.$property.': '.print_r($value, true));
+debug('saveproperty: '.$property.': '.print_r($value, true));
 $vjournal = $vcalendar->VJOURNAL;
 switch($property) {
 	case 'DESCRIPTION':
@@ -103,6 +106,7 @@ switch($property) {
 	case 'CATEGORIES':
 		$vobject = $vjournal->getVObject();
 		if(isset($vobject[$property])) {
+			debug('Adding property: '.$property.': '.$value);
 			$vobject[$property]['value'] = $value;
 		} else {
 			$vjournal->setString($property, $value);
@@ -122,14 +126,14 @@ if($id == 'new') {
 	// TODO: Have a calendar ID parameter in request.
 	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
 	// Check that the calendar exists and that it's ours.
-	$cid = OC_Calendar_App::getCalendar($cid, true);
-	if(!$cid) {
+	if(OC_Calendar_App::getCalendar($cid, true) == false) {
 		OCP\Util::writeLog('journal', 'The default calendar '.$cid.' is either not owned by '.OCP\User::getUser().' or doesn\'t exist.', OCP\Util::WARN);
 		$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
-		$first_calendar = reset($calendars);
+		$first_calendar = $calendars[0];
 		$cid = $first_calendar['id'];
 	}
 	$id = OC_Calendar_Object::add($cid, $vcalendar->serialize());
+	debug('Added '.$id.' to '.$cid);
 } else {
 	OC_Calendar_Object::edit($id, $vcalendar->serialize());
 }

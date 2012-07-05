@@ -9,6 +9,7 @@
  
 OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('contacts');
+OCP\JSON::checkAppEnabled('journal');
 OCP\JSON::callCheck();
 
 foreach ($_POST as $key=>$element) {

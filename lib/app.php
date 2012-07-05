@@ -32,9 +32,9 @@ class OC_Journal_App {
 	 */
 	protected static $categories = null;
 	
-	public static function arrayForJSON($id, $vjournal, $user_timezone) {
+	public static function arrayForJSON($id, $calendarid, $vjournal, $user_timezone) {
 		// Possible properties: URL
-		$journal = array( 'id' => $id );
+		$journal = array( 'id' => $id, 'calendarid' => $calendarid );
 		$journal['summary'] = $vjournal->getAsString('SUMMARY');
 		$format = 'text';
 		if($vjournal->DESCRIPTION) {
@@ -46,28 +46,25 @@ class OC_Journal_App {
 			}
 			$desc = $vjournal->getAsString('DESCRIPTION');
 			$journal['description'] = array(
-											'value' => ($format=='html'?$body = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", $desc):$desc),
-											'format' => $format,
-											'parameters' => self::parametersForProperty($vjournal->DESCRIPTION)
-											);
+									'value' => ($format=='html'?$body = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", $desc):$desc),
+									'format' => $format,
+									'parameters' => self::parametersForProperty($vjournal->DESCRIPTION)
+									);
 		} else {
 			$journal['description'] = array('value' => '', 'format' => 'text');
 		}
 		$journal['organizer'] = array(
-										'value' => $vjournal->getAsString('ORGANIZER'),
-										'parameters' => self::parametersForProperty($vjournal->ORGANIZER)
-										);
+									'value' => $vjournal->getAsString('ORGANIZER'),
+									'parameters' => self::parametersForProperty($vjournal->ORGANIZER)
+									);
 		$journal['categories'] = $vjournal->getAsArray('CATEGORIES');
 		//error_log('DTSTART: '.print_r($vjournal->DTSTART, true));
 		$dtprop = $vjournal->DTSTART;
 		if($dtprop) {
 			$dtstart = $vjournal->DTSTART->getDateTime();
 			if($dtstart) {
-				//if(!)
 				$tz = new DateTimeZone($user_timezone);
 				if($tz->getName() != $dtstart->getTimezone()->getName() && !$vjournal->DTSTART->offsetExists('TZID')) {
-					//error_log($tz->getName().' != '.$dtstart->getTimezone()->getName());
-					//error_log('TZ offset: '.$tz->getOffset(new DateTime("now"))/60);
 					$dtstart->setTimezone($tz);
 				}
 				$journal['dtstart'] = $dtstart->format('U');
@@ -96,18 +93,6 @@ class OC_Journal_App {
 		return $temp;
 	}
 
-	/*
-	 * @brief returns the vcategories object of the user
-	 * @return (object) $vcategories
-	 */
-	protected static function getVCategories() {
-		if (is_null(self::$categories)) {
-			self::$categories = new OC_VCategories('calendar');
-		}
-		return self::$categories;
-	}
-	
-	
 	/**
 	 * Create a stub for a new journal entry.
 	 * @return OC_VObject The newly created stub.
@@ -126,10 +111,79 @@ class OC_Journal_App {
 		$vjournal->setUID();
 		$email = OCP\Config::getUserValue(OCP\User::getUser(), 'settings', 'email', '');
 		if($email) {
-			$vjournal->setString('ORGANIZER', 'mailto:'.$email);
+			$vjournal->setString('ORGANIZER', 'MAILTO:'.$email);
 		}
 		$vcalendar->add($vjournal);
 		return $vcalendar;
 	}
 
+	/**
+	 * @brief returns the vcategories object of the user
+	 * @return (object) $vcategories
+	 */
+	protected static function getVCategories() {
+		if (is_null(self::$categories)) {
+			self::$categories = new OC_VCategories('journal', null, OC_Calendar_App::getDefaultCategories());
+		}
+		return self::$categories;
+	}
+	
+	/**
+	 * @brief returns the categories for the user
+	 * @return (Array) $categories
+	 */
+	public static function getCategories() {
+		$categories = self::getVCategories()->categories();
+		if(count($categories) == 0) {
+			self::scanCategories();
+			$categories = self::$categories->categories();
+		}
+		return ($categories ? $categories : self::getDefaultCategories());
+	}
+
+	/**
+	 * scan journals for categories.
+	 * @param $vjournals VJOURNALs to scan. null to check all journals for the current user.
+	 */
+	public static function scanCategories($vjournals = null) {
+		if (is_null($vjournals)) {
+			$calendars = array();
+			$singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
+			if($singlecalendar) {
+				$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+				$calendar = OC_Calendar_App::getCalendar($cid, true);
+				if(!$calendar) {
+					OCP\Util::writeLog('journal', 'The default calendar '.$cid.' is either not owned by '.OCP\User::getUser().' or doesn\'t exist.', OCP\Util::WARN);
+					OCP\JSON::error(array('data' => array('message' => (string)OC_Journal_App::$l10->t('Couldn\'t access calendar with ID: '.$cid))));
+					exit;
+				}
+				$calendars[] = $calendar;
+			} else {
+				$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
+			}
+			if(count($calendars) > 0) {
+				$calids = array();
+				foreach($calendars as $calendar) {
+					$calids[] = $calendar['id'];
+				}
+				$vjournals = OC_Journal_VJournal::all($calids);
+			}
+		}
+		if(is_array($vjournals) && count($vjournals) > 0) {
+			$cards = array();
+			foreach($vjournals as $vjournal) {
+				$journals[] = $vjournal['calendardata'];
+			}
+
+			self::$categories->rescan($journals);
+		}
+	}
+
+	/**
+	 * check VJOURNAL for new categories.
+	 * @see OC_VCategories::loadFromVObject
+	 */
+	public static function loadCategoriesFromVJournal(OC_VObject $journal) {
+		self::getVCategories()->loadFromVObject($journal, true);
+	}
 }

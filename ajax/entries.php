@@ -10,12 +10,25 @@
 OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('journal');
 
-$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
+$calendars = array();
+$singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
+if($singlecalendar) {
+	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+	$calendar = OC_Calendar_App::getCalendar($cid, true);
+	if(!$calendar) {
+		OCP\Util::writeLog('journal', 'The default calendar '.$cid.' is either not owned by '.OCP\User::getUser().' or doesn\'t exist.', OCP\Util::WARN);
+		OCP\JSON::error(array('data' => array('message' => (string)OC_Journal_App::$l10->t('Couldn\'t access calendar with ID: '.$cid))));
+		exit;
+	}
+	$calendars[] = $calendar;
+} else {
+	$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
+}
 $user_timezone = OCP\Config::getUserValue(OCP\User::getUser(), 'calendar', 'timezone', date_default_timezone_get());
 session_write_close();
 $journals = array();
 foreach( $calendars as $calendar ){
-	$calendar_journals = OC_Calendar_Object::all($calendar['id']);
+	$calendar_journals = OC_Journal_VJournal::all($calendar['id']);
 	foreach( $calendar_journals as $journal ) {
 		if($journal['objecttype']!='VJOURNAL') {
 			continue;
@@ -26,7 +39,7 @@ foreach( $calendars as $calendar ){
 		$object = OC_VObject::parse($journal['calendardata']);
 		$vjournalobj = $object->VJOURNAL;
 		try {
-			$journals[] = OC_Journal_App::arrayForJSON($journal['id'], $vjournalobj, $user_timezone);
+			$journals[] = OC_Journal_App::arrayForJSON($journal['id'], $journal['calendarid'], $vjournalobj, $user_timezone);
 		} catch(Exception $e) {
 			OCP\Util::writeLog('journal', 'ajax/getentries.php. id: '.$journal['id'].' '.$e->getMessage(), OCP\Util::ERROR);
 		}
