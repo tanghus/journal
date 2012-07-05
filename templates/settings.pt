@@ -5,11 +5,14 @@
 			<dt i18n:translate="">Select default calendar<br />for storing journals</dt>
 			<dd>
 				<select id="journal_calendar" style="float:left;">
+					<option disabled="disabled" value="" tal:attributes="selected not:cid|nothing" i18n:translate="">Select...</option>
 					<tal:block repeat="calendar calendars">
 					<option tal:define="id calendar/id" tal:attributes="value id; selected php:(cid == id ? 'selected' : null )" tal:content="calendar/displayname"></option>
 					</tal:block>
 				</select>
-			</dd><span id="journal_status"></span>
+				<input type="checkbox" id="journal_single_calendar" name="journal_single_calendar" style="float:left;" tal:attributes="checked single_calendar|nothing" />
+				<label for="single_calendar" style="float:left;" i18n:translate="">Only read from this calendar.</label>
+			</dd><span id="journal_status" style="float:left;"></span>
 		</dl>
 	</fieldset>
 </form>

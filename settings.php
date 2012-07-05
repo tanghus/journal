@@ -34,9 +34,11 @@ if(count($errors) > 0) {
 	$tmpl->assign('errors',$errors, false);
 } else {
 	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+	$single_calendar = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
 	OCP\Util::addScript('journal', 'settings');
 	$tmpl = new OC_TALTemplate('journal', 'settings', 'user');
 	$tmpl->assign('calendars', $calendars);
+		$tmpl->assign('single_calendar', $single_calendar);
 		$tmpl->assign('cid', $cid);
 }
 
