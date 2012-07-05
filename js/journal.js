@@ -24,15 +24,6 @@ OC.Journal = {
 	categoriesChanged:function(newcategories) { // Categories added/deleted.
 		categories = $.map(newcategories, function(v) {return v;});
 		$('#categories').multiple_autocomplete('option', 'source', categories);
-		var categorylist = $('#categories_value').find('input');
-		$.getJSON(OC.filePath('journal', 'ajax', 'categories/categoriesfor.php'),{'id':Contacts.UI.Card.id},function(jsondata){
-			if(jsondata.status == 'success'){
-				$('#categories_value').data('checksum', jsondata.data.checksum);
-				categorylist.val(jsondata.data.value);
-			} else {
-				OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
-			}
-		});
 	},
 	propertyContainerFor:function(obj) {
 		if($(obj).hasClass('propertycontainer')) {
@@ -54,7 +45,7 @@ OC.Journal = {
 			}
 	},
 	setEnabled:function(state) {
-		if(state == undefined) { state = true; }
+		if(typeof state == 'undefined') { state = true; }
 		console.log('OC.Journal.setEnabled: ' + state);
 		if(state) {
 			$('#description').rte('setEnabled', true);
@@ -63,15 +54,15 @@ OC.Journal = {
 			}
 			$('#togglemode').show();
 			$('#summary').addClass('editable');
-			$('.property,#also_time').each(function () {
-				$(this).attr('disabled', false);
+			$('.property,#also_time,#calendar').each(function () {
+				$(this).prop('disabled', false);
 			});
 		} else {
 			$('#description').rte('setEnabled', false);
 			$('#editortoolbar .richtext, #togglemode').hide();
 			$('#summary').removeClass('editable');
-			$('.property,#also_time').each(function () {
-				$(this).attr('disabled', true);
+			$('.property,#also_time,#calendar').each(function () {
+				$(this).prop('disabled', true);
 			});
 		}
 	},
@@ -120,6 +111,7 @@ OC.Journal = {
 			this.data = data;
 			$('#entry').data('id', id);
 			console.log('summary: ' + data.summary.unEscape());
+			$('#calendar').val(data.calendarid);
 			$('#summary').val(data.summary.unEscape());
 			$('#organizer').val(data.organizer.value.split(':')[1]);
 			var format = data.description.format;
@@ -204,10 +196,23 @@ OC.Journal = {
 					$('#leftcontent').append(item);
 					OC.Journal.Journals.doSort();
 					OC.Journal.Journals.scrollTo(self.id);
-					// add error checking
 					console.log('successful save');
+				} else if(jsondata.status == 'error') {
+					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
 				} else {
-					OC.dialogs.alert(jsondata.data.message.text, t('contacts', 'Error'));
+					console.log('saveproperty: Unknown return value');
+				}
+			});
+		},
+		moveToCalendar:function(calendarid) {
+			self = this;
+			$.post(OC.filePath('journal', 'ajax', 'movetocalendar.php'), {'id':this.id, 'calendarid':calendarid}, function(jsondata) {
+				if(jsondata.status == 'success') {
+					console.log('successful move');
+				} else if(jsondata.status == 'error') {
+					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
+				} else {
+					console.log('saveproperty: Unknown return value');
 				}
 			});
 		},
@@ -260,7 +265,7 @@ OC.Journal = {
 				return (parseInt(a.dtstart) > parseInt(b.dtstart)?-1:1);
 			}
 			compareDateTimeDesc = function(a, b){
-				return (parseInt(b.dtstart) < parseInt(a.dtstart)?-1:1);
+				return (parseInt(b.dtstart) > parseInt(a.dtstart)?-1:1);
 			}
 			compareSummaryAsc = function(a, b){
 				return b.summary.toLowerCase().localeCompare(a.summary.toLowerCase());
@@ -344,7 +349,7 @@ OC.Journal = {
 
 $(document).ready(function(){
 	OCCategories.changed = OC.Journal.categoriesChanged;
-	OCCategories.app = 'calendar';
+	OCCategories.app = 'journal';
 
 	// Initialize controls.
 	$('#categories').multiple_autocomplete({source: categories});
@@ -373,6 +378,10 @@ $(document).ready(function(){
 		OC.Journal.Entry.add();
 	});
 
+	$('#metadata').on('change', '#calendar', function(event){
+		OC.Journal.Entry.moveToCalendar($(event.target).val());
+	});
+	
 	$('#metadata').on('change', '#also_time', function(event){
 		$('#dtstarttime').toggle().trigger('change');
 	});

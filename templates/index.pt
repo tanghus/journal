@@ -68,6 +68,12 @@
 				</a>
 				<input class="hidden" id="link" type="text" />
 			</div>
+			<dt><label for="calendar" i18n:translate="">Calendar</label></dt>
+			<dd>
+				<select id="calendar" name="calendar">
+					<option tal:repeat="calendar calendars" tal:content="calendar/displayname" tal:attributes="value calendar/id"></option>
+				</select>
+			</dd>
 			<dt><label for="organizer" i18n:translate="">Author</label></dt>
 			<dd>
 				<input class="property propertycontainer" id="organizer" name="value" type="text" size="16" placeholder="Who has written this" value="" data-type="ORGANIZER" disabled="true" i18n:attributes="placeholder" />
