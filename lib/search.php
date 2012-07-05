@@ -16,11 +16,8 @@ class OC_Search_Provider_Journal extends OC_Search_Provider {
 		$user_timezone = OCP\Config::getUserValue(OCP\USER::getUser(), 'calendar', 'timezone', date_default_timezone_get());
 		$l = new OC_l10n('journal');
 		foreach($calendars as $calendar) {
-			$objects = OC_Calendar_Object::all($calendar['id']);
+			$objects = OC_Journal_VJournal::all($calendar['id']);
 			foreach($objects as $object) {
-				if($object['objecttype']!='VJOURNAL') {
-					continue;
-				}
 				if(substr_count(strtolower($object['summary']), strtolower($query)) > 0) {
 					$calendardata = OC_VObject::parse($object['calendardata']);
 					$vjournal = $calendardata->VJOURNAL;

@@ -30,9 +30,6 @@ $journals = array();
 foreach( $calendars as $calendar ){
 	$calendar_journals = OC_Journal_VJournal::all($calendar['id']);
 	foreach( $calendar_journals as $journal ) {
-		if($journal['objecttype']!='VJOURNAL') {
-			continue;
-		}
 		if(is_null($journal['summary'])) {
 			continue;
 		}
