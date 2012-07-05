@@ -32,7 +32,8 @@ class OC_Journal_Hooks {
 		
 		OCP\Util::writeLog('journal', 'Completed task: '.$vtodo->getAsString('SUMMARY'), OCP\Util::DEBUG);
 		$vcalendar = OC_Journal_App::createVCalendar();
-		$vjournal = $vcalendar->VJOURNAL;
+		$vjournal = OC_Journal_App::createVJournal();
+		$vcalendar->add($vjournal);
 		$vjournal->setDateTime('DTSTART',$vtodo->COMPLETED->getDateTime());
 		$vjournal->SUMMARY = $vtodo->SUMMARY;
 		$vjournal->setString('SUMMARY', OC_Journal_App::$l10n->t('Completed task: ').$vjournal->getAsString('SUMMARY'));

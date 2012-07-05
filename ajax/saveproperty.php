@@ -38,11 +38,13 @@ $parameters = isset($_POST['parameters'])? $_POST['parameters']:null;
 if($id == 'new') {
 	debug('Creating new entry.');
 	$vcalendar = OC_Journal_App::createVCalendar();
+	$vjournal = OC_Journal_App::createVJournal();
+	$vcalendar->add($vjournal);
 } else {
 	$vcalendar = OC_Calendar_App::getVCalendar($id);
+	$vjournal = $vcalendar->VJOURNAL;
 }
 debug('saveproperty: '.$property.': '.print_r($value, true));
-$vjournal = $vcalendar->VJOURNAL;
 switch($property) {
 	case 'DESCRIPTION':
 		$hasgenericformat = false;

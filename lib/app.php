@@ -94,7 +94,7 @@ class OC_Journal_App {
 	}
 
 	/**
-	 * Create a stub for a new journal entry.
+	 * Create a stub for a calendar.
 	 * @return OC_VObject The newly created stub.
 	 */	 
 	public static function createVCalendar()	{
@@ -105,6 +105,14 @@ class OC_Journal_App {
 		$vcalendar->add('PRODID', $prodid);
 		$vcalendar->add('VERSION', '2.0');
 
+		return $vcalendar;
+	}
+
+	/**
+	 * Create a stub for a new journal entry.
+	 * @return OC_VObject The newly created stub.
+	 */	 
+	public static function createVJournal()	{
 		$vjournal = new OC_VObject('VJOURNAL');
 		$vjournal->setDateTime('DTSTART', 'now', Sabre_VObject_Property_DateTime::LOCALTZ);
 		$vjournal->setDateTime('CREATED', 'now', Sabre_VObject_Property_DateTime::UTC);
@@ -113,8 +121,7 @@ class OC_Journal_App {
 		if($email) {
 			$vjournal->setString('ORGANIZER', 'MAILTO:'.$email);
 		}
-		$vcalendar->add($vjournal);
-		return $vcalendar;
+		return $vjournal;
 	}
 
 	/**
