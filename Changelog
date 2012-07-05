@@ -1,5 +1,8 @@
 # Changelog
 
 ### 0.1
-
-- First release.
+- Loading and saving of journal entries.
+- Basic rich/plain text editing.
+- Completed Tasks gets saved as Journal entries.
+- Sort entries by date/time ascending/descending or summary ascending/descending.
+- Move to other calendar.

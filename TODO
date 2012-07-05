@@ -5,9 +5,8 @@
 
 - Check if entered text in one mode gets transfered when changing modes.
 
-- Make edit area fit size and scrollable.
+- Show explanation page on missing calendar.
 
-- Add an "only read from this calendar" checkbox.
+- Export whole journal.
 
 - Test, test, test in other browser as well.
-
