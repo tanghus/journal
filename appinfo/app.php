@@ -2,10 +2,12 @@
 $l=new OC_L10N('journal');
 OC::$CLASSPATH['OC_Calendar_Calendar'] = 'calendar/lib/calendar.php';
 OC::$CLASSPATH['OC_Journal_App'] = 'journal/lib/app.php';
+OC::$CLASSPATH['OC_Journal_VJournal'] = 'journal/lib/vjournal.php';
 OC::$CLASSPATH['OC_Search_Provider_Journal'] = 'journal/lib/search.php';
 OC::$CLASSPATH['OC_Journal_Hooks'] = 'journal/lib/hooks.php';
 
 OCP\Util::connectHook('OC_Task', 'taskCompleted', 'OC_Journal_Hooks', 'taskToJournalEntry');
+OCP\Util::connectHook('OC_Calendar', 'deleteCalendar', 'OC_Journal_Hooks', 'calendarDeleted');
 
 OCP\App::addNavigationEntry( array(
   'id' => 'journal_index',
