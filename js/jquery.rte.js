@@ -12,32 +12,45 @@ $.widget( 'ui.rte', {
 	_create: function() {
 		console.log('_create');
 		var self = this,
+			o = self.options,
 			dirty = false,
 			textarea = this.element; //.hide(),
 			pos = textarea.position();
 			//this.element.text = this.text;
-		this.mirror = $('<div class="rte-content" contenteditable="true" style="top:'+pos.top+';left:'+pos.left+';" ></div>').insertAfter(textarea).show();
+		this.mirror = $('<div class="rte-content" contenteditable="true"></div>').css({
+				top:pos.top,
+				left: pos.left,
+			}).insertAfter(textarea).show();
 		textarea.hide();
 		this.formatText('styleWithCSS', true);
 		this.validtags = ['A','P','STRONG', 'B', 'I',  'SPAN', 'DIV', 'OL', 'UL', 'LI', 'DL', 'DT', 'DD'];
 		this.enabled = true;
 		
-		/*$(window).resize(function() {
-			console.log('resize: ');
+		/*$(window).resize(function(){  
+			textarea.css({  
+				width: textarea.width(),
+				height: textarea.height(),
+				top: textarea.offset().top,  
+				left: textarea.offset().left  
+			});  
 		});*/
-
-		this.mirror.keydown(function(event){
+		this.mirror.on('keydown', function(event){
 			if(event.which == 13) {
 				self.insertAtCaret('<br />');
 			}
 		});
-		this.mirror.keyup(function() {
-			console.log('keyup, set dirty.');
+		this.mirror.on('keyup', function() {
+			//console.log('keyup, set dirty.');
 			self.dirty = true;
 		});
-		this.mirror.blur(function() {
-			console.log('blur: ');
+		this.mirror.on('paste', function() {
+			console.log('paste, set dirty.');
+			self.dirty = true;
+		});
+		this.mirror.on('blur', function() {
 			if(self.dirty) {
+				console.log('div blur');
+				self.element.val(self.mirror.html().replace(/<br *>/g,"\n").stripTags());
 				self.mirror.trigger('change');
 				self.dirty = false;
 			}
@@ -232,6 +245,7 @@ $.widget( 'ui.rte', {
 	destroy: function() {
 		this.mirror.remove();
 		this.element.show();
+		$(window).unbind('resize');
 		// In jQuery UI 1.8, you must invoke the destroy method from the base widget
 		$.Widget.prototype.destroy.call( this );
 		// In jQuery UI 1.9 and above, you would define _destroy instead of destroy and not call the base method
