@@ -23,5 +23,24 @@
 /**
  * This class manages our journals
  */
-class OC_Task_VJournal extends OC_Calendar_Object{
+class OC_Journal_VJournal extends OC_Calendar_Object{
+	/**
+	 * @brief Returns all VJOURNAL objects from a calendar
+	 * @param integer $id
+	 * @return array
+	 *
+	 * The objects are associative arrays. You'll find the original vObject in
+	 * ['calendardata']
+	 */
+	public static function all($id){
+		$stmt = OCP\DB::prepare( 'SELECT * FROM *PREFIX*calendar_objects WHERE calendarid = ? AND objecttype = "VJOURNAL"' );
+		$result = $stmt->execute(array($id));
+
+		$calendarobjects = array();
+		while( $row = $result->fetchRow()){
+			$calendarobjects[] = $row;
+		}
+
+		return $calendarobjects;
+	}
 }
