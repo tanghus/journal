@@ -43,4 +43,27 @@ class OC_Journal_VJournal extends OC_Calendar_Object{
 
 		return $calendarobjects;
 	}
+
+	/**
+	 * @brief Mass updates an array of entries
+	 * @param array $objects  An array of [id, calendardata].
+	 */
+	public static function updateDataByID($objects){
+		$stmt = OCP\DB::prepare( 'UPDATE *PREFIX*calendar_objects SET calendardata = ?, lastmodified = ? WHERE id = ?' );
+		foreach($objects as $object) {
+			$vjournal = OC_VObject::parse($object[1]);
+			if(!is_null($vjournal)){
+				$vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre_VObject_Property_DateTime::UTC);
+				$data = $vjournal->serialize();
+				try {
+					$result = $stmt->execute(array($data,time(),$object[0]));
+					OCP\Util::writeLog('journal',__CLASS__.'::'.__METHOD__.', id: '.$object[0].': '.$object[1],OCP\Util::DEBUG);
+				} catch(Exception $e) {
+					OCP\Util::writeLog('journal',__CLASS__.'::'.__METHOD__.', exception: '.$e->getMessage(),OCP\Util::ERROR);
+					OCP\Util::writeLog('journal',__CLASS__.'::'.__METHOD__.', id: '.$object[0],OCP\Util::DEBUG);
+				}
+			}
+		}
+	}
+
 }

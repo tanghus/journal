@@ -97,7 +97,8 @@ class OC_Journal_App {
 	 * Create a stub for a calendar.
 	 * @return OC_VObject The newly created stub.
 	 */	 
-	public static function createVCalendar()	{
+	public static function createVCalendar() {
+		// TODO: Add TIMEZONE object.
 		$vcalendar = new OC_VObject('VCALENDAR');
 		$appinfo = OCP\App::getAppInfo('journal');
 		$appversion = OCP\App::getAppVersion('journal');
@@ -112,7 +113,7 @@ class OC_Journal_App {
 	 * Create a stub for a new journal entry.
 	 * @return OC_VObject The newly created stub.
 	 */	 
-	public static function createVJournal()	{
+	public static function createVJournal() {
 		$vjournal = new OC_VObject('VJOURNAL');
 		$vjournal->setDateTime('DTSTART', 'now', Sabre_VObject_Property_DateTime::LOCALTZ);
 		$vjournal->setDateTime('CREATED', 'now', Sabre_VObject_Property_DateTime::UTC);
@@ -135,6 +136,15 @@ class OC_Journal_App {
 		return self::$categories;
 	}
 	
+	/**
+	 * @brief returns the categories of the vcategories object
+	 * @return (array) $categories
+	 */
+	public static function getCategoryOptions(){
+		$categories = self::getVCategories()->categories();
+		return $categories;
+	}
+
 	/**
 	 * @brief returns the categories for the user
 	 * @return (Array) $categories

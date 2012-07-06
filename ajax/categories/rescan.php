@@ -11,7 +11,7 @@ OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('calendar');
 OCP\JSON::checkAppEnabled('journal');
 
-OC_Journal_App::scanCategories($events);
-$categories = OC_Calendar_App::getCategoryOptions();
+OC_Journal_App::scanCategories();
+$categories = OC_Journal_App::getCategoryOptions();
 
 OCP\JSON::success(array('data' => array('categories'=>$categories)));
