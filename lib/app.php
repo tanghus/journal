@@ -131,7 +131,7 @@ class OC_Journal_App {
 	 */
 	protected static function getVCategories() {
 		if (is_null(self::$categories)) {
-			self::$categories = new OC_VCategories('journal', null, OC_Calendar_App::getDefaultCategories());
+			self::$categories = new OC_VCategories('journal', null, OC_Contacts_App::getDefaultCategories());
 		}
 		return self::$categories;
 	}
@@ -155,15 +155,17 @@ class OC_Journal_App {
 			self::scanCategories();
 			$categories = self::$categories->categories();
 		}
-		return ($categories ? $categories : self::getDefaultCategories());
+		return ($categories ? $categories : OC_Contacts_App::getDefaultCategories());
 	}
 
 	/**
 	 * scan journals for categories.
-	 * @param $vjournals VJOURNALs to scan. null to check all journals for the current user.
+	 * @param $vevents VJOURNALs to scan. null to check all journals for the current user.
+	 * @returns bool
 	 */
-	public static function scanCategories($vjournals = null) {
-		if (is_null($vjournals)) {
+	public static function scanCategories($vevents = null) {
+		if (is_null($vevents)) {
+			$vevents = array();
 			$calendars = array();
 			$singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
 			if($singlecalendar) {
@@ -171,36 +173,26 @@ class OC_Journal_App {
 				$calendar = OC_Calendar_App::getCalendar($cid, true);
 				if(!$calendar) {
 					OCP\Util::writeLog('journal', 'The default calendar '.$cid.' is either not owned by '.OCP\User::getUser().' or doesn\'t exist.', OCP\Util::WARN);
-					OCP\JSON::error(array('data' => array('message' => (string)OC_Journal_App::$l10->t('Couldn\'t access calendar with ID: '.$cid))));
-					exit;
+					return false;
 				}
 				$calendars[] = $calendar;
 			} else {
 				$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
 			}
+			OCP\Util::writeLog('journal', __CLASS__.'::'.__METHOD__.', calendars: '.count($calendars), OCP\Util::DEBUG);
 			if(count($calendars) > 0) {
-				$calids = array();
 				foreach($calendars as $calendar) {
-					$calids[] = $calendar['id'];
+					foreach(OC_Journal_VJournal::all($calendar['id']) as $vevent) {
+						$vobject = OC_VObject::parse($vevent['calendardata']);
+						try {
+							self::getVCategories()->loadFromVObject($vobject->VJOURNAL, true);
+						} catch(Exception $e) {
+							OCP\Util::writeLog('journal',__CLASS__.'::'.__METHOD__.', exception: '.$e->getMessage(),OCP\Util::ERROR);
+						}
+					}
 				}
-				$vjournals = OC_Journal_VJournal::all($calids);
 			}
 		}
-		if(is_array($vjournals) && count($vjournals) > 0) {
-			$cards = array();
-			foreach($vjournals as $vjournal) {
-				$journals[] = $vjournal['calendardata'];
-			}
-
-			self::$categories->rescan($journals);
-		}
-	}
-
-	/**
-	 * check VJOURNAL for new categories.
-	 * @see OC_VCategories::loadFromVObject
-	 */
-	public static function loadCategoriesFromVJournal(OC_VObject $journal) {
-		self::getVCategories()->loadFromVObject($journal, true);
+		return true;
 	}
 }

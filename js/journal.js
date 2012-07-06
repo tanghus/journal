@@ -16,14 +16,23 @@ String.prototype.zeroPad = function(digits) {
 }
 
 OC.Journal = {
+	categories:undefined,
 	init:function() {
+		self = this;
 		this.setEnabled(false);
 		// Fetch journal entries. If it's a direct link 'id' will be loaded.
 		OC.Journal.Journals.update(id);
+			$.getJSON(OC.filePath('journal', 'ajax', 'categories/list.php'), function(jsondata) {
+				if(jsondata.status == 'success') {
+					OC.Journal.categories = jsondata.data.categories;
+				} else {
+					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
+				}
+			});
 	},
 	categoriesChanged:function(newcategories) { // Categories added/deleted.
-		categories = $.map(newcategories, function(v) {return v;});
-		$('#categories').multiple_autocomplete('option', 'source', categories);
+		this.categories = $.map(newcategories, function(v) {return v;});
+		$('#categories').multiple_autocomplete('option', 'source', this.categories);
 	},
 	propertyContainerFor:function(obj) {
 		if($(obj).hasClass('propertycontainer')) {
@@ -122,7 +131,7 @@ OC.Journal = {
 			(format=='html'&&$('#editable').get(0).checked?$('#editortoolbar li.richtext').show():$('#editortoolbar li.richtext').hide());
 			$('#location').val(data.location);
 			$('#categories').val(data.categories.join(','));
-			$('#categories').multiple_autocomplete('option', 'source', categories);
+			$('#categories').multiple_autocomplete('option', 'source', OC.Journal.categories);
 			console.log('Trying to parse: '+data.dtstart);
 			var date = new Date(parseInt(data.dtstart)*1000);
 			//$('#dtstartdate').val(date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()); //
@@ -317,7 +326,7 @@ OC.Journal = {
 						entries.append(OC.Journal.Entry.createEntry(entry));
 					});
 					$('#leftcontent').removeClass('loading');
-					self.doSort('dtasc');
+					OC.Journal.Journals.doSort('dtasc');
 					console.log('Count: ' + $('#leftcontent li').length);
 					if($('#leftcontent li').length > 0 ){
 						var firstitem;
@@ -328,7 +337,7 @@ OC.Journal = {
 							id = firstitem.data('entry').id;
 						}
 						firstitem.addClass('active');
-						self.scrollTo(id);
+						OC.Journal.Journals.scrollTo(id);
 						OC.Journal.Entry.loadEntry(firstitem.data('id'), firstitem.data('entry'));
 					}
 				} else {
@@ -352,7 +361,7 @@ $(document).ready(function(){
 	OCCategories.app = 'journal';
 
 	// Initialize controls.
-	$('#categories').multiple_autocomplete({source: categories});
+	$('#categories').multiple_autocomplete({source: OC.Journal.categories});
 	//$('#categories').multiple_autocomplete('option', 'source', categories);
 	$('#dtstartdate').datepicker({dateFormat: 'dd-mm-yy'});
 	$('#dtstarttime').timepicker({timeFormat: 'hh:mm', showPeriodLabels:false});
@@ -391,6 +400,7 @@ $(document).ready(function(){
 	});
 
 	$('#metadata').on('click', '#editcategories', function(event){
+		$(this).tipsy('hide');
 		OCCategories.edit();
 	});
 

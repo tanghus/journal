@@ -12,19 +12,13 @@ OCP\JSON::checkAppEnabled('contacts');
 OCP\JSON::checkAppEnabled('journal');
 OCP\JSON::callCheck();
 
-foreach ($_POST as $key=>$element) {
-	debug('_POST: '.$key.'=>'.print_r($element, true));
-}
-
-require_once('../util.php');
+require_once(__DIR__.'/../util.php');
 
 $categories = isset($_POST['categories'])?$_POST['categories']:null;
 
 if(is_null($categories)) {
-	bailOut(OC_Contacts_App::$l10n->t('No categories selected for deletion.'));
+	bailOut(OC_Journal_App::$l10n->t('No categories selected for deletion.'));
 }
-
-debug(print_r($categories, true));
 
 $calendars = array();
 $singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
@@ -42,27 +36,29 @@ if($singlecalendar) {
 }
 
 if(count($calendars) == 0) {
-	bailOut(OC_Contacts_App::$l10n->t('No calendars found.'));
+	bailOut(OC_Journal_App::$l10n->t('No calendars found.'));
 }
-$journals = array();
+$events = array();
 foreach($calendars as $calendar) {
-	$journals = array_merge($journals, OC_Journal_VJournal::all($calendar['id']));
-} 
-$contacts = OC_Journal_VJournal::all($addressbookids);
-if(count($contacts) == 0) {
-	bailOut(OC_Contacts_App::$l10n->t('No contacts found.'));
+	$events = array_merge($events, OC_Journal_VJournal::all($calendar['id']));
+}
+
+if(count($events) == 0) {
+	bailOut(OC_Journal_App::$l10n->t('No events found.'));
 }
 
 $vjournals = array();
-foreach($journals as $journal) {
-	$vjournals[] = array($journal['id'], $journal['calendardata']);
+foreach($events as $event) {
+	try {
+		$vobject = OC_VObject::parse($event['calendardata']);
+		$vjournals[] = array($event['id'], $vobject->VJOURNAL->serialize());
+	} catch(Exception $e) {
+	    debug($e->getMessage());
+	}
 } 
-
-debug('Before delete: '.print_r($categories, true));
 
 $catman = new OC_VCategories('journal');
 $catman->delete($categories, $vjournals);
-debug('After delete: '.print_r($catman->categories(), true));
 OC_Journal_VJournal::updateDataByID($vjournals);
 OCP\JSON::success(array('data' => array('categories'=>$catman->categories())));
 
