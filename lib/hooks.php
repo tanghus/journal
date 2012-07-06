@@ -36,6 +36,7 @@ class OC_Journal_Hooks {
 		$vcalendar->add($vjournal);
 		$vjournal->setDateTime('DTSTART',$vtodo->COMPLETED->getDateTime());
 		$vjournal->SUMMARY = $vtodo->SUMMARY;
+		$vjournal->addProperty('RELATED-TO', $vtodo->uid);
 		$vjournal->setString('SUMMARY', OC_Journal_App::$l10n->t('Completed task: ').$vjournal->getAsString('SUMMARY'));
 		$vjournal->DESCRIPTION = $vtodo->DESCRIPTION;
 
