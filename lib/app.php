@@ -37,7 +37,8 @@ class OC_Journal_App {
 		$journal = array( 'id' => $id, 'calendarid' => $calendarid );
 		$journal['summary'] = $vjournal->getAsString('SUMMARY');
 		$format = 'text';
-		if($vjournal->DESCRIPTION) {
+
+		if(isset($vjournal->DESCRIPTION)) {
 			foreach($vjournal->DESCRIPTION->parameters as $parameter){
 				if(stripos($parameter->name, 'FORMAT') !== false && stripos($parameter->value, 'HTML') !== false){
 					$format = 'html'; // an educated guess ;-)
@@ -53,14 +54,17 @@ class OC_Journal_App {
 		} else {
 			$journal['description'] = array('value' => '', 'format' => 'text');
 		}
-		$journal['organizer'] = array(
+
+		if(isset($vjournal->ORGANIZER)) {
+			$journal['organizer'] = array(
 									'value' => $vjournal->getAsString('ORGANIZER'),
 									'parameters' => self::parametersForProperty($vjournal->ORGANIZER)
 									);
+		} else {
+			$journal['organizer'] = array('value' => '', 'parameters' => array());
+		}
 		$journal['categories'] = $vjournal->getAsArray('CATEGORIES');
-		//error_log('DTSTART: '.print_r($vjournal->DTSTART, true));
-		$dtprop = $vjournal->DTSTART;
-		if($dtprop) {
+		if(isset($vjournal->DTSTART)) {
 			$dtstart = $vjournal->DTSTART->getDateTime();
 			if($dtstart) {
 				$tz = new DateTimeZone($user_timezone);
@@ -68,7 +72,7 @@ class OC_Journal_App {
 					$dtstart->setTimezone($tz);
 				}
 				$journal['dtstart'] = $dtstart->format('U');
-				$journal['only_date'] = ($dtprop->getDateType() == Sabre_VObject_Property_DateTime::DATE);
+				$journal['only_date'] = ($vjournal->DTSTART->getDateType() == Sabre_VObject_Property_DateTime::DATE);
 			} else {
 				OCP\Util::writeLog('journal', 'Could not get DTSTART DateTime for '.$journal['summary'], OCP\Util::ERROR);
 			}
