@@ -1,6 +1,5 @@
+ownCloud Journal TODO
  
-- Fix categories.
-
 - Hide empty elements?
 
 - Check if entered text in one mode gets transfered when changing modes.
@@ -8,5 +7,9 @@
 - Show explanation page on missing calendar.
 
 - Export whole journal.
+
+- Add settings dialog.
+
+- Show/hide metadata.
 
 - Test, test, test in other browser as well.
