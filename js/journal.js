@@ -337,6 +337,9 @@ OC.Journal = {
 							firstitem = $('#leftcontent li[data-id="'+id+'"]');
 						} else {
 							firstitem = $('#leftcontent li').first();
+							if(firstitem.length == 0) {
+								return;
+							}
 							id = firstitem.data('entry').id;
 						}
 						firstitem.addClass('active');
@@ -425,6 +428,9 @@ $(document).ready(function(){
 	$(document).on('click', '#leftcontent', function(event){
 		var $tgt = $(event.target);
 		var item = $tgt.is('li')?$($tgt):($tgt).parents('li').first();
+		if(item.length == 0) {
+			return true;
+		}
 		var id = item.data('id');
 		item.addClass('active');
 		var oldid = $('#entry').data('id');
