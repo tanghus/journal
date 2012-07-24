@@ -140,5 +140,5 @@ if($id == 'new') {
 	OC_Calendar_Object::edit($id, $vcalendar->serialize());
 }
 $user_timezone = OCP\Config::getUserValue(OCP\User::getUser(), 'calendar', 'timezone', date_default_timezone_get());
-$journal_info = OC_Journal_App::arrayForJSON($id, $vjournal, $user_timezone);
+$journal_info = OC_Journal_App::arrayForJSON($id, $cid, $vjournal, $user_timezone);
 OCP\JSON::success(array('data' => $journal_info));
