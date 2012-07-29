@@ -106,6 +106,7 @@ OC.Journal = {
 			$('#description').rte('setEnabled', false);
 			$('#editortoolbar li.richtext').hide();
 			$('#editable').attr('checked', true);
+			$('#actions').hide();
 			OC.Journal.setEnabled(true);
 		},
 		createEntry:function(data) {
@@ -114,6 +115,7 @@ OC.Journal = {
 			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'&id='+data.id+'">'+data.summary.unEscape()+'</a><br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
+			$('#actions').show();
 			//$(document).off('change', '.property');
 			console.log('loadEntry: ' + id + ': ' + data.summary);
 			this.id = id;

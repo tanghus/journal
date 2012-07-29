@@ -57,15 +57,17 @@
 		<dl id="metadata">
 			<div>
 				<input type="checkbox" id="editable" /><label class="tip" for="editable" title="Set this journal entry in edit mode" i18n:attributes="title" i18n:translate="">Edit</label>
-				<a class="tip" id="export" title="Export as iCal file" i18n:attributes="title">
-					<img class="svg action" tal:attributes="src image:string:core/actions/download.svg" />
-				</a>
-				<a class="tip" id="showlink" title="Direct link to this journal entry" i18n:attributes="title">
-					<img class="svg action" tal:attributes="src image:string:core/actions/public.svg" />
-				</a>
-				<a class="tip" id="delete" title="Delete this journal entry" i18n:attributes="title">
-					<img class="svg action" tal:attributes="src image:string:core/actions/delete.svg" />
-				</a>
+				<span id="actions">
+					<a class="tip" id="export" title="Export as iCal file" i18n:attributes="title">
+						<img class="svg action" tal:attributes="src image:string:core/actions/download.svg" />
+					</a>
+					<a class="tip" id="showlink" title="Direct link to this journal entry" i18n:attributes="title">
+						<img class="svg action" tal:attributes="src image:string:core/actions/public.svg" />
+					</a>
+					<a class="tip" id="delete" title="Delete this journal entry" i18n:attributes="title">
+						<img class="svg action" tal:attributes="src image:string:core/actions/delete.svg" />
+					</a>
+				</span>
 				<input class="hidden" id="link" type="text" />
 			</div>
 			<dt><label for="calendar" i18n:translate="">Calendar</label></dt>
