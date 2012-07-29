@@ -15,6 +15,7 @@ OCP\JSON::checkAppEnabled('journal');
 OCP\JSON::callCheck();
 
 $id = isset($_POST['id'])?$_POST['id']:null;
+$cid = isset($_POST['cid'])?$_POST['cid']:null;
 $property = isset($_POST['type'])?$_POST['type']:null;
 $value = isset($_POST['value'])?$_POST['value']:null;
 if(is_null($id)) {
@@ -124,7 +125,7 @@ switch($property) {
 $vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre_VObject_Property_DateTime::UTC);
 $vjournal->setDateTime('DTSTAMP', 'now', Sabre_VObject_Property_DateTime::UTC);
 
-if($id == 'new') {
+if($id == 'new' && is_null($cid)) {
 	// TODO: Have a calendar ID parameter in request.
 	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
 	// Check that the calendar exists and that it's ours.

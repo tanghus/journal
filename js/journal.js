@@ -117,6 +117,7 @@ OC.Journal = {
 			//$(document).off('change', '.property');
 			console.log('loadEntry: ' + id + ': ' + data.summary);
 			this.id = id;
+			this.cid = data.calendarid;
 			this.data = data;
 			$('#entry').data('id', id);
 			console.log('summary: ' + data.summary.unEscape());
@@ -150,13 +151,14 @@ OC.Journal = {
 			console.log('dtstart: '+date);
 		},
 		saveproperty:function(obj) {
-			if(!this.id) { // we are adding an entry and want a response back from the server.
+			if(!this.id || this.id == 'new') { // we are adding an entry and want a response back from the server.
 				this.id = 'new';
+				this.cid = $('#calendar').val();
 				console.log('OC.Journal.Entry.saveproperty: We need to add a new one.');
 				//return;
 			}
 			var container = OC.Journal.propertyContainerFor(obj);
-			var params = {'id':this.id};
+			var params = {'id':this.id, cid:this.cid};
 			params['type'] = container.data('type');
 			params['parameters'] = {};
 			switch(params['type']) {
