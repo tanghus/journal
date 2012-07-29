@@ -5,6 +5,7 @@
 </head>
 <body>
 <div id="content" metal:fill-slot="content" i18n:domain="journal">
+	<div id='notification'></div>
 	<form onsubmit="return false;">
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">

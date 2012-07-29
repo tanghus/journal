@@ -30,6 +30,43 @@ OC.Journal = {
 			}
 		});
 	},
+	/**
+	 * Arguments:
+	 * message: The text message to show. The only mandatory parameter.
+	 * timeout: The timeout in seconds before the notification disappears. Default 10.
+	 * timeouthandler: A function to run on timeout.
+	 * clickhandler: A function to run on click. If a timeouthandler is given it will be cancelled.
+	 * data: An object that will be passed as argument to the timeouthandler and clickhandler functions.
+	 */
+	notify:function(params) {
+		self = this;
+		if(!self.notifier) {
+			self.notifier = $('#notification');
+		}
+		self.notifier.text(params.message);
+		self.notifier.fadeIn();
+		self.notifier.on('click', function() { $(this).fadeOut();});
+		var timer = setTimeout(function() {
+			self.notifier.fadeOut();
+			if(params.timeouthandler && $.isFunction(params.timeouthandler)) {
+				params.timeouthandler(self.notifier.data(dataid));
+				self.notifier.off('click');
+				self.notifier.removeData(dataid);
+			}
+		}, params.timeout && $.isNumeric(params.timeout) ? parseInt(params.timeout)*1000 : 10000);
+		var dataid = timer.toString();
+		if(params.data) {
+			self.notifier.data(dataid, params.data);
+		}
+		if(params.clickhandler && $.isFunction(params.clickhandler)) {
+			self.notifier.on('click', function() {
+				clearTimeout(timer);
+				self.notifier.off('click');
+				params.clickhandler(self.notifier.data(dataid));
+				self.notifier.removeData(dataid);
+			});
+		}
+	},
 	categoriesChanged:function(newcategories) { // Categories added/deleted.
 		this.categories = $.map(newcategories, function(v) {return v;});
 		$('#categories').multiple_autocomplete('option', 'source', this.categories);
@@ -415,6 +452,7 @@ $(document).ready(function(){
 	});
 
 	$('#metadata').on('click', '#delete', function(event){
+		console.log('delete clicked');
 		OC.Journal.Entry.doDelete();
 	});
 
