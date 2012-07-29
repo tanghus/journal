@@ -22,13 +22,13 @@ OC.Journal = {
 		this.setEnabled(false);
 		// Fetch journal entries. If it's a direct link 'id' will be loaded.
 		OC.Journal.Journals.update(id);
-			$.getJSON(OC.filePath('journal', 'ajax', 'categories/list.php'), function(jsondata) {
-				if(jsondata.status == 'success') {
-					OC.Journal.categories = jsondata.data.categories;
-				} else {
-					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
-				}
-			});
+		$.getJSON(OC.filePath('journal', 'ajax', 'categories/list.php'), function(jsondata) {
+			if(jsondata.status == 'success') {
+				OC.Journal.categories = jsondata.data.categories;
+			} else {
+				OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
+			}
+		});
 	},
 	categoriesChanged:function(newcategories) { // Categories added/deleted.
 		this.categories = $.map(newcategories, function(v) {return v;});
@@ -306,7 +306,7 @@ OC.Journal = {
 
 			var arr = []
 			// loop through each list item and get the metadata
-			$('#leftcontent li').each(function () {  
+			$('#leftcontent li').each(function () {
 				var meta = $(this).data('entry');
 				meta.elem = $(this);
 				arr.push(meta);
@@ -373,9 +373,9 @@ $(document).ready(function(){
 	$('#dtstarttime').timepicker({timeFormat: 'hh:mm', showPeriodLabels:false});
 	$('#description').rte({classes: ['property','content']});
 	$('.tip').tipsy();
-	
+
 	OC.Journal.init();
-	
+
 	// Show the input with a direcy link the journal entry, binds an event to close
 	// it on blur and removes the binding again afterwards.
 	$('#showlink').on('click', function(event){
@@ -396,11 +396,11 @@ $(document).ready(function(){
 	$('#metadata').on('change', '#calendar', function(event){
 		OC.Journal.Entry.moveToCalendar($(event.target).val());
 	});
-	
+
 	$('#metadata').on('change', '#also_time', function(event){
 		$('#dtstarttime').toggle().trigger('change');
 	});
-	
+
 	$('#metadata').on('click', '#export', function(event){
 		OC.Journal.Entry.doExport();
 	});
@@ -456,5 +456,5 @@ $(document).ready(function(){
 	$('#editable').on('change', function(event){
 		OC.Journal.setEnabled($(this).get(0).checked);
 	});
-	
+
 });
