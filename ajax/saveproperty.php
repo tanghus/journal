@@ -98,7 +98,7 @@ switch($property) {
 			if ($date_only) {
 				$type = Sabre_VObject_Property_DateTime::DATE;
 			}
-			$vjournal->setDateTime('DTSTART', $value, $type);
+			$vjournal->setDateTime('DTSTART', $dtstart, $type);
 		} catch (Exception $e) {
 			OCP\JSON::error(array('data'=>array('message'=>OC_Journal_App::$l10n->t('Invalid date/time: '.$e->getMessage()))));
 			exit();
