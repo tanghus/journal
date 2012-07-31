@@ -144,7 +144,8 @@ OC.Journal = {
 			$('#editortoolbar li.richtext').hide();
 			$('#editable').attr('checked', true);
 			$('#actions').hide();
-			OC.Journal.setEnabled(true);
+			OC.Journal.setEnabled(false);
+			$('#summary').addClass('editable').prop('disabled', false);
 		},
 		createEntry:function(data) {
 			var date = new Date(parseInt(data.dtstart)*1000);
@@ -242,6 +243,7 @@ OC.Journal = {
 				if(jsondata.status == 'success') {
 					if(self.id == 'new') {
 						self.loadEntry(jsondata.data.id, jsondata.data);
+						OC.Journal.setEnabled(true);
 					} else {
 						$('#leftcontent li[data-id="'+self.id+'"]').remove();
 					}
