@@ -226,9 +226,9 @@ OC.Journal = {
 					params['parameters']['FORMAT'] = format.toUpperCase();
 					break;
 				case 'DTSTART':
-					var date = $('#dtstartdate').val();
-					var time = $('#dtstarttime').val();
-					var datetime = new Date(parseInt(date.substring(6, 10)), parseInt(date.substring(3, 5)), parseInt(date.substring(0, 2)) , parseInt(time.substring(0, 2)), parseInt(time.substring(3, 5)), 0, 0);
+					var date = $('#dtstartdate').val() || $.datepicker.formatDate('dd-mm-yy', new Date());
+					var time = $('#dtstarttime').val() || '00:00';
+					var datetime = new Date(parseInt(date.substring(6, 10), 10), parseInt(date.substring(3, 5), 10)-1, parseInt(date.substring(0, 2), 10) , parseInt(time.substring(0, 2), 10), parseInt(time.substring(3, 5), 10), 0, 0);
 					params['value'] = datetime.getTime()/1000;
 					break;
 				default:
