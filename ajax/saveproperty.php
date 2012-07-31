@@ -125,8 +125,7 @@ switch($property) {
 $vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre_VObject_Property_DateTime::UTC);
 $vjournal->setDateTime('DTSTAMP', 'now', Sabre_VObject_Property_DateTime::UTC);
 
-if($id == 'new' && is_null($cid)) {
-	// TODO: Have a calendar ID parameter in request.
+if(is_null($cid)) {
 	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
 	// Check that the calendar exists and that it's ours.
 	if(OC_Calendar_App::getCalendar($cid, true) == false) {
@@ -135,6 +134,9 @@ if($id == 'new' && is_null($cid)) {
 		$first_calendar = $calendars[0];
 		$cid = $first_calendar['id'];
 	}
+}
+
+if($id == 'new') {
 	$id = OC_Calendar_Object::add($cid, $vcalendar->serialize());
 	debug('Added '.$id.' to '.$cid);
 } else {
