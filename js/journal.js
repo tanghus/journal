@@ -269,7 +269,7 @@ OC.Journal = {
 			});
 		},
 		doExport:function() {
-			document.location.href = OC.linkTo('calendar', 'export.php') + '?eventid=' + this.id;
+			document.location.href = OC.linkTo('journal', 'export.php') + '?id=' + this.id;
 		},
 		doDelete:function() {
 			// TODO: Do something when there are no more entries.
