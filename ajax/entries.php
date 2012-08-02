@@ -43,4 +43,4 @@ foreach( $calendars as $calendar ){
 	}
 }
 
-OCP\JSON::success(array('data' => array('entries' => $journals)));
+OCP\JSON::success(array('data' => array('entries' => $journals, 'singlecalendar' => (int)$singlecalendar, 'cid' => $singlecalendar ? $cid : null)));

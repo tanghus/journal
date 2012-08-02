@@ -1,18 +1,17 @@
-<form id="journal">
+<form id="journal-settings" class="settings">
 	<fieldset class="personalblock">
-		<legend i18n:translate="">Journal</legend>
 		<dl>
 			<dt i18n:translate="">Select default calendar<br />for storing journals</dt>
 			<dd>
-				<select id="journal_calendar" style="float:left;">
+				<select id="journal_calendar" class="float">
 					<option disabled="disabled" value="" tal:attributes="selected not:cid|nothing" i18n:translate="">Select...</option>
 					<tal:block repeat="calendar calendars">
 					<option tal:define="id calendar/id" tal:attributes="value id; selected php:(cid == id ? 'selected' : null )" tal:content="calendar/displayname"></option>
 					</tal:block>
-				</select>
-				<input type="checkbox" id="journal_single_calendar" name="journal_single_calendar" style="float:left;" tal:attributes="checked single_calendar|nothing" />
-				<label for="single_calendar" style="float:left;" i18n:translate="">Only read from this calendar.</label>
-			</dd><span id="journal_status" style="float:left;"></span>
+				</select><br />
+				<input type="checkbox" id="journal_single_calendar" class="float" name="journal_single_calendar" style="float:left;" tal:attributes="checked single_calendar|nothing" />
+				<label for="journal_single_calendar" class="float" i18n:translate="">Only read from this calendar.</label>
+			</dd><span id="settings_status" class="float"></span>
 		</dl>
 	</fieldset>
 </form>

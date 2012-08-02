@@ -100,14 +100,17 @@ OC.Journal = {
 			}
 			$('#togglemode').show();
 			$('#summary').addClass('editable');
-			$('.property,#also_time,#calendar').each(function () {
+			$('.property,#also_time').each(function () {
 				$(this).prop('disabled', false);
 			});
+			if(!OC.Journal.singlecalendar) {
+				$('#calendar').prop('disabled', false);
+			}
 		} else {
 			$('#description').rte('setEnabled', false);
 			$('#editortoolbar .richtext, #togglemode').hide();
 			$('#summary').removeClass('editable');
-			$('.property,#also_time,#calendar').each(function () {
+			$('.property,#also_time').each(function () {
 				$(this).prop('disabled', true);
 			});
 		}
@@ -364,6 +367,10 @@ OC.Journal = {
 			$('#leftcontent').addClass('loading');
 			$.getJSON(OC.filePath('journal', 'ajax', 'entries.php'), function(jsondata) {
 				if(jsondata.status == 'success') {
+					OC.Journal.singlecalendar = Boolean(jsondata.data.singlecalendar);
+					if(OC.Journal.singlecalendar) {
+						$('#calendar').val(jsondata.data.cid).prop('disabled', true);
+					}
 					var entries = $('#leftcontent').empty();
 					$(jsondata.data.entries).each(function(i, entry) {
 						entries.append(OC.Journal.Entry.createEntry(entry));
@@ -416,7 +423,11 @@ $(document).ready(function(){
 
 	OC.Journal.init();
 
-	// Show the input with a direcy link the journal entry, binds an event to close
+	$('#controls').on('click', '.settings', function(event){
+		OC.appSettings({appid:'journal', loadJS:true, cache:false});
+	});
+
+	// Show the input with a direct link the journal entry, binds an event to close
 	// it on blur and removes the binding again afterwards.
 	$('#showlink').on('click', function(event){
 		console.log('showlink');

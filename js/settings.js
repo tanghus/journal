@@ -4,13 +4,13 @@ $(document).ready(function(){
 			if(cb) {
 				cb(jsondata.status);
 			}
-			var success = {'padding': '0.5em', 'background-color':'green', 'color': 'white', 'font-weight': 'bold', 'float': 'left'};
-			var failure = {'padding': '0.5em', 'background-color':'red', 'color': 'white', 'font-weight': 'bold', 'float': 'left'};
+			var success = {'background-color':'green', 'color': 'white'};
+			var failure = {'background-color':'red', 'color': 'white'};
 			if(jsondata.status == 'success') {
-				$('#journal_status').css(success).html(t('journal', 'Saved')).fadeIn().fadeOut(5000);
+				$('#settings_status').css(success).html(t('journal', 'Saved')).fadeIn().fadeOut(2000);
 				return true;
 			} else {
-				$('#journal_status').css(failure).html(t('journal', 'Error saving: ')+jsondata.data.message).fadeIn().fadeOut(5000);
+				$('#settings_status').css(failure).html(t('journal', 'Error saving: ')+jsondata.data.message).fadeIn().fadeOut(2000);
 				return false;
 			}
 		});
@@ -23,12 +23,17 @@ $(document).ready(function(){
 	$('#journal_calendar').on('change', function(event){
 		setPreference(this, 'default_calendar', $('#journal_calendar option:selected').val(), function(result) {
 			if(result == 'success') {
+				OC.Journal.Journals.update();
 				$('#journal_single_calendar').prop('disabled', false);
 			}
 		});
 	});
-	
+
 	$('#journal_single_calendar').on('change', function(event){
-		setPreference(this, 'single_calendar', this.checked);
+		setPreference(this, 'single_calendar', Number(this.checked), function(result) {
+			if(result == 'success') {
+				OC.Journal.Journals.update();
+			}
+		});
 	});
 });

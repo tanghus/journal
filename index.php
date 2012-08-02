@@ -39,24 +39,14 @@ if(count($errors) == 0) {
 	$categories = OC_Calendar_App::getCategoryOptions();
 	$calendars = array();
 	$singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
-	if($singlecalendar) {
-		$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
-		$calendar = OC_Calendar_App::getCalendar($cid, true);
-		if(!$calendar) {
-			$error = (string)$l->t('The default calendar with ID %%s is either not owned by %%s or doesn\'t exist.');
-			$errors[] = sprintf($error, $cid, OCP\User::getUser());
-			OCP\Util::writeLog('journal', 'The default calendar '.$cid.' is either not owned by '.OCP\User::getUser().' or doesn\'t exist.', OCP\Util::WARN);
-		}
-		$calendars[] = $calendar;
-	} else {
-		$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
-	}
-	if( count($calendars) == 0 ) {
+	$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
+
+	if(count($calendars) == 0) {
 		$error = (string)$l->t('You have no calendars. Please add one at the <strong><a href="%%s">Calendar app</a></strong>');
 		$errors[] = sprintf($error, OCP\Util::linkTo('calendar', 'index.php'));
 	}
 	// Load a specific entry?
-	$id = isset( $_GET['id'] ) ? $_GET['id'] : null;
+	$id = isset($_GET['id']) ? $_GET['id'] : null;
 
 	OCP\Util::addScript('3rdparty/timepicker', 'jquery.ui.timepicker');
 	OCP\Util::addScript('contacts','jquery.multi-autocomplete');

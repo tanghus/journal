@@ -15,9 +15,11 @@
 			<option value="sumasc">Summary - ascending</option>
 		</select>
 		<button class="tip" id="add" title="Add new journal entry" i18n:attributes="title" i18n:translate="">Add</button>
+		<a class="tip settings"><img class="svg" tal:attributes="src php:OCP\Util::imagePath('core', 'actions/settings.svg')" /></a>
 	</div>
 	<ul id="leftcontent"></ul>
 	<div id="rightcontent">
+		<div id="appsettings" class="popup topright hidden"></div>
 		<div id="entry">
 			<input class="property propertycontainer content" id="summary" name="value" type="text" size="80" placeholder="First enter a short summary" value="" required="required" data-type="SUMMARY" i18n:attributes="placeholder" />
 			<ul id="editortoolbar" class="rte-toolbar svg">
@@ -73,7 +75,7 @@
 			</div>
 			<dt><label for="calendar" i18n:translate="">Calendar</label></dt>
 			<dd>
-				<select id="calendar" name="calendar" tal:condition="not:singlecalendar">
+				<select id="calendar" name="calendar" tal:attributes="disabled not:singlecalendar">
 					<option tal:repeat="calendar calendars" tal:content="calendar/displayname" tal:attributes="value calendar/id"></option>
 				</select>
 				<span tal:condition="singlecalendar" tal:content="calendars/0/displayname"></span>
