@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	var setPreference = function(obj, key, val, cb) {
 		$.post(OC.filePath('journal', 'ajax', 'setpreference.php'), {'key':key, 'value':val}, function(jsondata) {
-			if(cb) {
+			if(cb && typeof cb == 'function') {
 				cb(jsondata.status);
 			}
 			var success = {'background-color':'green', 'color': 'white'};
