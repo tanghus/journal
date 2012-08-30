@@ -5,7 +5,7 @@
 	<version>0.1</version>
 	<licence>AGPL</licence>
 	<author>Thomas Tanghus</author>
-	<require>5</require>
-	<shipped>true</shipped>
+	<require>4.5</require>
+	<shipped>false</shipped>
 	<description>Journal view from calendar</description>
 </info>
