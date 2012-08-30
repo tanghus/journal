@@ -2,8 +2,8 @@
 /**
  * ownCloud - Journal
  *
+ * @author Thomas Tanghus <thomas@tanghus.net>
  * @author Bart Visscher
- * Copyright (c) 2012 Bart Visscher <bartv@thisnet.nl>
  * @copyright 2012 Thomas Tanghus <thomas@tanghus.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -31,7 +31,7 @@ class OC_Journal_App {
 	 * @brief categories of the user
 	 */
 	protected static $categories = null;
-	
+
 	public static function arrayForJSON($id, $calendarid, $vjournal, $user_timezone) {
 		// Possible properties: URL
 		$journal = array( 'id' => $id, 'calendarid' => $calendarid );
@@ -46,7 +46,7 @@ class OC_Journal_App {
 				}
 			}
 			$desc = $vjournal->getAsString('DESCRIPTION');
-			$journal['description'] = array(
+			$journal['description'] = array( // TODO: Also strip style elements in the body.
 									'value' => ($format=='html'?$body = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", $desc):$desc),
 									'format' => $format,
 									'parameters' => self::parametersForProperty($vjournal->DESCRIPTION)
@@ -100,7 +100,7 @@ class OC_Journal_App {
 	/**
 	 * Create a stub for a calendar.
 	 * @return OC_VObject The newly created stub.
-	 */	 
+	 */
 	public static function createVCalendar() {
 		// TODO: Add TIMEZONE object.
 		$vcalendar = new OC_VObject('VCALENDAR');
@@ -116,7 +116,7 @@ class OC_Journal_App {
 	/**
 	 * Create a stub for a new journal entry.
 	 * @return OC_VObject The newly created stub.
-	 */	 
+	 */
 	public static function createVJournal() {
 		$vjournal = new OC_VObject('VJOURNAL');
 		$vjournal->setDateTime('DTSTART', 'now', Sabre_VObject_Property_DateTime::LOCALTZ);
@@ -139,7 +139,7 @@ class OC_Journal_App {
 		}
 		return self::$categories;
 	}
-	
+
 	/**
 	 * @brief returns the categories of the vcategories object
 	 * @return (array) $categories
