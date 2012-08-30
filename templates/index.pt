@@ -6,6 +6,7 @@
 <body>
 <div id="content" metal:fill-slot="content" i18n:domain="journal">
 	<div id='notification'></div>
+	<div id="appsettings" class="popup topright hidden"></div>
 	<form onsubmit="return false;">
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">
@@ -19,7 +20,6 @@
 	</div>
 	<ul id="leftcontent"></ul>
 	<div id="rightcontent">
-		<div id="appsettings" class="popup topright hidden"></div>
 		<div id="entry">
 			<input class="property propertycontainer content" id="summary" name="value" type="text" size="80" placeholder="First enter a short summary" value="" required="required" data-type="SUMMARY" i18n:attributes="placeholder" />
 			<ul id="editortoolbar" class="rte-toolbar svg">
