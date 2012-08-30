@@ -17,4 +17,3 @@ OCP\App::addNavigationEntry( array(
   'name' => $l->t('Journal')));
 
 OC_Search::registerProvider('OC_Search_Provider_Journal');
-OCP\App::registerPersonal('journal','settings');
