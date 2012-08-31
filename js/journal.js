@@ -403,19 +403,6 @@ OC.Journal = {
 						$('#description').rte('destroy');
 						$('#entry,#metadata').hide();
 						$('#firstrun').show();
-						OC.popupHelp({
-							selector:'#controls .settings',
-							content:'<span style="margin:1em;">'
-								+ t('journal', 'First select which calendar to read from and write to.')
-								+ '</span>'},
-							function() {
-								OC.popupHelp({
-									selector:'#add',
-									content:'<span style="margin:1em;">'
-										+ t('journal', 'Then add a new journal entry.')
-										+ '</span>'
-								});
-							});
 					}
 				} else {
 					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
