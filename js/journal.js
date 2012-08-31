@@ -435,61 +435,61 @@ $(document).ready(function(){
 
 	OC.Journal.init();
 
-	$('#controls').on('click', '.settings', function(event){
+	$('#controls').on('click', '.settings', function(event) {
 		OC.appSettings({appid:'journal', loadJS:true, cache:false});
 	});
 
 	// Show the input with a direct link the journal entry, binds an event to close
 	// it on blur and removes the binding again afterwards.
-	$('#showlink').on('click', function(event){
+	$('#showlink').on('click', function(event) {
 		console.log('showlink');
 		$('#link').toggle('slow').val(totalurl+'&id='+OC.Journal.Entry.id).focus().
 			on('blur',function(event) {$(this).hide()}).off('blur', $(this));
 		return false;
 	});
 
-	$('#rightcontent').on('change', '.property', function(event){
+	$('#rightcontent').on('change', '.property', function(event) {
 		OC.Journal.Entry.saveproperty(this);
 	});
 
-	$('#controls').on('click', '#add', function(event){
+	$('#controls').on('click', '#add', function(event) {
 		OC.Journal.Entry.add();
 	});
 
-	$('#metadata').on('change', '#calendar', function(event){
+	$('#metadata').on('change', '#calendar', function(event) {
 		OC.Journal.Entry.moveToCalendar($(event.target).val());
 	});
 
-	$('#metadata').on('change', '#also_time', function(event){
+	$('#metadata').on('change', '#also_time', function(event) {
 		$('#dtstarttime').toggle().trigger('change');
 	});
 
-	$('#metadata').on('click', '#export', function(event){
+	$('#metadata').on('click', '#export', function(event) {
 		OC.Journal.Entry.doExport();
 	});
 
-	$('#metadata').on('click', '#editcategories', function(event){
+	$('#metadata').on('click', '#editcategories', function(event) {
 		$(this).tipsy('hide');
 		OCCategories.edit();
 	});
 
-	$('#metadata').on('click', '#delete', function(event){
+	$('#metadata').on('click', '#delete', function(event) {
 		console.log('delete clicked');
 		OC.Journal.Entry.doDelete();
 	});
 
-	$('#controls').on('change', '#entrysort', function(event){
+	$('#controls').on('change', '#entrysort', function(event) {
 		OC.Journal.Journals.doSort($(this).val());
 	});
 
 	// Proxy click.
-	$('#leftcontent').on('keydown', '#leftcontent', function(event){
+	$('#leftcontent').on('keydown', '#leftcontent', function(event) {
 		if(event.which == 13) {
 			$('#leftcontent').click(event);
 		}
 	});
 	// Journal entry clicked
-	$(document).on('click', '#leftcontent', function(event){
+	$(document).on('click', '#leftcontent', function(event) {
 		var $tgt = $(event.target);
 		var item = $tgt.is('li')?$($tgt):($tgt).parents('li').first();
 		if(item.length == 0) {
@@ -506,18 +506,18 @@ $(document).ready(function(){
 		return false;
 	});
 	// Editor command.
-	$('.rte-toolbar button').on('click', function(event){
+	$('.rte-toolbar button').on('click', function(event) {
 		console.log('cmd: ' + $(this).data('cmd'));
 		$('#description').rte('formatText', $(this).data('cmd'));
 		event.preventDefault();
 		return false;
 	});
 	// Toggle text/html editing mode.
-	$('#togglemode').on('click', function(event){
+	$('#togglemode').on('click', function(event) {
 		OC.Journal.toggleMode(true);
 		return false;
 	});
-	$('#editable').on('change', function(event){
+	$('#editable').on('change', function(event) {
 		OC.Journal.setEnabled($(this).get(0).checked);
 	});
 
