@@ -19,3 +19,16 @@ label:hover, dt:hover { color: #333; }
 input { font-size: 1em; font-weight: bold; }
 a.settings { position: absolute; right: 15em; padding: 0.5em; }
 #settings_status { padding: 0.2em; font-weight: bold; float: left; border-radius: 3px; }
+#firstrun {
+    color: #777777;
+    font-size: 1.5em;
+    font-weight: bold;
+    height: 20em;
+    left: 50%;
+    margin-left: -25em;
+    margin-top: -10em;
+    position: relative;
+    text-align: center;
+    top: 50%;
+    width: 50em;
+}

@@ -126,6 +126,12 @@ OC.Journal = {
 		add:function() {
 			// TODO: wrap a DIV around the summary field with a suggestion(?) to fill out this field first. See OC.Journal.required
 			// Remember to reenable all controls.
+			$('#entry,#metadata').show();
+			$('#firstrun').hide();
+			$('#description').rte({classes: ['property','content']});
+			OC.Journal.setEnabled(false);
+			$('#summary').prop('disabled', false);
+			$('#summary').addClass('editable');
 			$('#leftcontent lidata-id="'+this.id+'"').removeClass('active');
 			this.id = 'new';
 			this.data = undefined;
@@ -143,12 +149,10 @@ OC.Journal = {
 						break;
 				}
 			});
-			$('#description').rte('setEnabled', false);
+			//$('#description').rte('setEnabled', false);
 			$('#editortoolbar li.richtext').hide();
 			$('#editable').attr('checked', true);
 			$('#actions').hide();
-			OC.Journal.setEnabled(false);
-			$('#summary').addClass('editable').prop('disabled', false);
 		},
 		createEntry:function(data) {
 			var date = new Date(parseInt(data.dtstart)*1000);
@@ -288,14 +292,17 @@ OC.Journal = {
 							if(!$(newlistitem).is('li')) {
 								newlistitem = curlistitem.next('li');
 							}
-							if(!$(newlistitem).is('li')) {
-								alert('No more entries. Do something!!!');
-							}
-							$(newlistitem).addClass('active');
-							console.log('newlistitem: ' + newlistitem.toString());
 							curlistitem.remove();
-							var data = newlistitem.data('entry');
-							self.loadEntry(data.id, data);
+							if(!$(newlistitem).is('li')) {
+								OC.Journal.Journals.update();
+								//alert('No more entries. Do something!!!');
+							}
+							console.log('newlistitem: ' + newlistitem.toString());
+							if(newlistitem.length > 0) {
+								$(newlistitem).addClass('active');
+								var data = newlistitem.data('entry');
+								self.loadEntry(data.id, data);
+							}
 							console.log('successful delete');
 						} else {
 							OC.dialogs.alert(jsondata.data.message.text, t('contacts', 'Error'));
@@ -372,13 +379,11 @@ OC.Journal = {
 						$('#calendar').val(jsondata.data.cid).prop('disabled', true);
 					}
 					var entries = $('#leftcontent').empty();
-					$(jsondata.data.entries).each(function(i, entry) {
-						entries.append(OC.Journal.Entry.createEntry(entry));
-					});
-					$('#leftcontent').removeClass('loading');
-					OC.Journal.Journals.doSort('dtasc');
-					console.log('Count: ' + $('#leftcontent li').length);
-					if($('#leftcontent li').length > 0 ){
+					if(jsondata.data.entries.length > 0) {
+						$(jsondata.data.entries).each(function(i, entry) {
+							entries.append(OC.Journal.Entry.createEntry(entry));
+						});
+						OC.Journal.Journals.doSort('dtasc');
 						var firstitem;
 						if(id) {
 							firstitem = $('#leftcontent li[data-id="'+id+'"]');
@@ -392,11 +397,31 @@ OC.Journal = {
 						firstitem.addClass('active');
 						OC.Journal.Journals.scrollTo(id);
 						OC.Journal.Entry.loadEntry(firstitem.data('id'), firstitem.data('entry'));
+						$('#entry,#metadata').show();
+						$('#firstrun').hide();
+					} else {
+						$('#description').rte('destroy');
+						$('#entry,#metadata').hide();
+						$('#firstrun').show();
+						OC.popupHelp({
+							selector:'#controls .settings',
+							content:'<span style="margin:1em;">'
+								+ t('journal', 'First select which calendar to read from and write to.')
+								+ '</span>'},
+							function() {
+								OC.popupHelp({
+									selector:'#add',
+									content:'<span style="margin:1em;">'
+										+ t('journal', 'Then add a new journal entry.')
+										+ '</span>'
+								});
+							});
 					}
 				} else {
 					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
 				}
 			});
+			$('#leftcontent').removeClass('loading');
 		},
 		scrollTo:function(id){
 			var item = $('#leftcontent li[data-id="'+id+'"]');
