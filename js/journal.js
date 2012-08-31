@@ -15,6 +15,61 @@ String.prototype.zeroPad = function(digits) {
 	return n;
 }
 
+	/**
+	 * Opens a popup with the setting for an app.
+	 * @param args.selector String. A jquery selector that resolves to a single DOM element where the bubble help will be positioned..
+	 * @param args.content String. The text or HTML to fill in the bubble help.
+	 * @param cb function. A function that if provided will be called when the help is closed.
+	 */
+	OC.popupHelp = function(args, cb) {
+		if(typeof args === 'undefined' || typeof args.selector != 'string') {
+			throw { name: 'InvalidParameter', message: 'The parameter \'selector\' is missing or not a string.' };
+		}
+		if(typeof args === 'undefined' || typeof args.content != 'string') {
+			throw { name: 'InvalidParameter', message: 'The parameter \'content\' is missing or not a string.' };
+		}
+		var obj = $(args.selector);
+		if(obj.length !== 1) {
+			throw {
+				name: 'InvalidParameter',
+				message: 'The parameter \'selector\' must only resolve to one DOM element. '
+					+ 'It resolved to ' + obj.length
+			};
+		}
+		var arrowclass = 'topleft'; //settings.hasClass('topright') ? 'up' : 'left';
+		var pos = obj.offset();
+		var width = $('body').width();
+		var height = $('body').height();
+		//console.log('w/h:', width, height)
+		var popup = $('<div class="popup hidden"></div>');
+		$('body').prepend(popup);
+		//popup.addClass(settings.hasClass('topright') ? 'topright' : 'bottomleft');
+		popup.html(args.content).show();
+		var posx = parseInt(pos.left + (obj.outerWidth()/2));
+		var posy = parseInt(pos.top + obj.outerHeight());
+		//console.log('posx/width:', popup.innerWidth()+posx, width)
+		if(posx + popup.outerWidth() > width) {
+			//console.log('-' + parseInt(popup.innerWidth() + (obj.outerWidth()/2)))
+			posx = posx - popup.innerWidth();
+			arrowclass = 'topright';
+		}
+		if(posy + popup.outerHeight() > height) {
+			posy = posy - popup.outerHeight();
+		}
+		//console.log('popup:', popup.outerWidth(), popup.outerHeight());
+		//console.log('x/y:', posx, posy)
+		popup.prepend('<span class="arrow '+arrowclass+'"></span><a class="close svg"></a>');
+		popup.css({'left':posx, 'top':posy});
+		popup.find('.close').bind('click', function() {
+				popup.remove();
+				if(typeof cb == 'function') {
+					cb();
+				}
+			});
+		popup.show();
+	}
+
+
 OC.Journal = {
 	categories:undefined,
 	init:function() {
