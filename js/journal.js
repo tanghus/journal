@@ -539,11 +539,12 @@ $(document).ready(function(){
 		if($(this).is(':checked')) {
 			drfrom.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
 			drto.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
+			OC.Journal.Journals.filterDateRange();
 		} else {
 			drfrom.prop('disabled', true).datepicker('destroy');
 			drto.prop('disabled', true).datepicker('destroy');
+			$('#leftcontent li').show();
 		}
-		OC.Journal.Journals.filterDateRange();
 	});
 
 	$('#controls').on('change', '#daterangefrom,#daterangeto', function(event) {
