@@ -17,6 +17,12 @@
 		</select>
 		<button class="tip" id="add" title="Add new journal entry" i18n:attributes="title" i18n:translate="">Add</button>
 		<a class="tip settings"><img class="svg" tal:attributes="src php:OCP\Util::imagePath('core', 'actions/settings.svg')" /></a>
+		<label for="daterangefrom" i18n:translate="">From:</label>
+		<input class="property" id="daterangefrom" name="value" type="date" size="10" autocomplete="off" placeholder="dd-mm-yyyy" value="" i18n:attributes="placeholder" disabled="true" />
+		<label for="daterangeto" i18n:translate="">To:</label>
+		<input class="property" id="daterangeto" name="value" type="date" size="10" autocomplete="off" placeholder="dd-mm-yyyy" value="" i18n:attributes="placeholder" disabled="true" />
+		<input type="checkbox" id="daterangesort" />
+		<label class="tip" for="daterangesort" title="Only show entries between these days." i18n:attributes="title" i18n:translate="">Filter by date</label>
 	</div>
 	<ul id="leftcontent"></ul>
 	<div id="rightcontent">

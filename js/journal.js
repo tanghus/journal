@@ -314,6 +314,28 @@ OC.Journal = {
 	},
 	Journals:{
 		sortmethod:undefined,
+		filterDateRange:function() {
+			var start = $('#daterangefrom').datepicker('getDate');
+			console.log('start', start);
+			if(start == null) {
+				return;
+			}
+			var end = $('#daterangeto').datepicker('getDate');
+			console.log('end', end);
+			if(end == null) {
+				return;
+			}
+			$('#leftcontent li').each(function () {
+				var data = $(this).data('entry');
+				var dtstart = new Date(parseInt(data.dtstart)*1000);
+				//console.log('dtstart', dtstart);
+				if(dtstart >= start && dtstart <= end) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+			});
+		},
 		doSort:function(method) {
 			if(method) {
 				this.sortmethod = method;
@@ -356,7 +378,7 @@ OC.Journal = {
 
 			var arr = []
 			// loop through each list item and get the metadata
-			$('#leftcontent li').each(function () {
+			$('#leftcontent li:not(:hidden)').each(function () {
 				var meta = $(this).data('entry');
 				meta.elem = $(this);
 				arr.push(meta);
@@ -454,6 +476,23 @@ $(document).ready(function(){
 
 	$('#controls').on('click', '#add', function(event) {
 		OC.Journal.Entry.add();
+	});
+
+	$('#controls').on('change', '#daterangesort', function(event) {
+		var drfrom = $('#daterangefrom');
+		var drto = $('#daterangeto');
+		if($(this).is(':checked')) {
+			drfrom.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
+			drto.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
+		} else {
+			drfrom.prop('disabled', true).datepicker('destroy');
+			drto.prop('disabled', true).datepicker('destroy');
+		}
+		OC.Journal.Journals.filterDateRange();
+	});
+
+	$('#controls').on('change', '#daterangefrom,#daterangeto', function(event) {
+		OC.Journal.Journals.filterDateRange();
 	});
 
 	$('#metadata').on('change', '#calendar', function(event) {
