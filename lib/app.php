@@ -46,7 +46,11 @@ class OC_Journal_App {
 				}
 			}
 			$desc = $vjournal->getAsString('DESCRIPTION');
-			$journal['description'] = array( // TODO: Also strip style elements in the body.
+			// Do a double check for format
+			if(stripos($desc, '<!DOCTYPE') !== false || stripos($desc, '<html') !== false) {
+				$format = 'html';
+			}
+			$journal['description'] = array(
 									'value' => ($format=='html'?$body = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", $desc):$desc),
 									'format' => $format,
 									'parameters' => self::parametersForProperty($vjournal->DESCRIPTION)

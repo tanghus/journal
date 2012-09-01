@@ -369,6 +369,28 @@ OC.Journal = {
 	},
 	Journals:{
 		sortmethod:undefined,
+		filterDateRange:function() {
+			var start = $('#daterangefrom').datepicker('getDate');
+			console.log('start', start);
+			if(start == null) {
+				return;
+			}
+			var end = $('#daterangeto').datepicker('getDate');
+			console.log('end', end);
+			if(end == null) {
+				return;
+			}
+			$('#leftcontent li').each(function () {
+				var data = $(this).data('entry');
+				var dtstart = new Date(parseInt(data.dtstart)*1000);
+				//console.log('dtstart', dtstart);
+				if(dtstart >= start && dtstart <= end) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+			});
+		},
 		doSort:function(method) {
 			if(method) {
 				this.sortmethod = method;
@@ -411,7 +433,7 @@ OC.Journal = {
 
 			var arr = []
 			// loop through each list item and get the metadata
-			$('#leftcontent li').each(function () {
+			$('#leftcontent li:not(:hidden)').each(function () {
 				var meta = $(this).data('entry');
 				meta.elem = $(this);
 				arr.push(meta);
@@ -458,19 +480,6 @@ OC.Journal = {
 						$('#description').rte('destroy');
 						$('#entry,#metadata').hide();
 						$('#firstrun').show();
-						OC.popupHelp({
-							selector:'#controls .settings',
-							content:'<span style="margin:1em;">'
-								+ t('journal', 'First select which calendar to read from and write to.')
-								+ '</span>'},
-							function() {
-								OC.popupHelp({
-									selector:'#add',
-									content:'<span style="margin:1em;">'
-										+ t('journal', 'Then add a new journal entry.')
-										+ '</span>'
-								});
-							});
 					}
 				} else {
 					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
@@ -503,61 +512,78 @@ $(document).ready(function(){
 
 	OC.Journal.init();
 
-	$('#controls').on('click', '.settings', function(event){
+	$('#controls').on('click', '.settings', function(event) {
 		OC.appSettings({appid:'journal', loadJS:true, cache:false});
 	});
 
 	// Show the input with a direct link the journal entry, binds an event to close
 	// it on blur and removes the binding again afterwards.
-	$('#showlink').on('click', function(event){
+	$('#showlink').on('click', function(event) {
 		console.log('showlink');
 		$('#link').toggle('slow').val(totalurl+'&id='+OC.Journal.Entry.id).focus().
 			on('blur',function(event) {$(this).hide()}).off('blur', $(this));
 		return false;
 	});
 
-	$('#rightcontent').on('change', '.property', function(event){
+	$('#rightcontent').on('change', '.property', function(event) {
 		OC.Journal.Entry.saveproperty(this);
 	});
 
-	$('#controls').on('click', '#add', function(event){
+	$('#controls').on('click', '#add', function(event) {
 		OC.Journal.Entry.add();
 	});
 
-	$('#metadata').on('change', '#calendar', function(event){
+	$('#controls').on('change', '#daterangesort', function(event) {
+		var drfrom = $('#daterangefrom');
+		var drto = $('#daterangeto');
+		if($(this).is(':checked')) {
+			drfrom.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
+			drto.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
+		} else {
+			drfrom.prop('disabled', true).datepicker('destroy');
+			drto.prop('disabled', true).datepicker('destroy');
+		}
+		OC.Journal.Journals.filterDateRange();
+	});
+
+	$('#controls').on('change', '#daterangefrom,#daterangeto', function(event) {
+		OC.Journal.Journals.filterDateRange();
+	});
+
+	$('#metadata').on('change', '#calendar', function(event) {
 		OC.Journal.Entry.moveToCalendar($(event.target).val());
 	});
 
-	$('#metadata').on('change', '#also_time', function(event){
+	$('#metadata').on('change', '#also_time', function(event) {
 		$('#dtstarttime').toggle().trigger('change');
 	});
 
-	$('#metadata').on('click', '#export', function(event){
+	$('#metadata').on('click', '#export', function(event) {
 		OC.Journal.Entry.doExport();
 	});
 
-	$('#metadata').on('click', '#editcategories', function(event){
+	$('#metadata').on('click', '#editcategories', function(event) {
 		$(this).tipsy('hide');
 		OCCategories.edit();
 	});
 
-	$('#metadata').on('click', '#delete', function(event){
+	$('#metadata').on('click', '#delete', function(event) {
 		console.log('delete clicked');
 		OC.Journal.Entry.doDelete();
 	});
 
-	$('#controls').on('change', '#entrysort', function(event){
+	$('#controls').on('change', '#entrysort', function(event) {
 		OC.Journal.Journals.doSort($(this).val());
 	});
 
 	// Proxy click.
-	$('#leftcontent').on('keydown', '#leftcontent', function(event){
+	$('#leftcontent').on('keydown', '#leftcontent', function(event) {
 		if(event.which == 13) {
 			$('#leftcontent').click(event);
 		}
 	});
 	// Journal entry clicked
-	$(document).on('click', '#leftcontent', function(event){
+	$(document).on('click', '#leftcontent', function(event) {
 		var $tgt = $(event.target);
 		var item = $tgt.is('li')?$($tgt):($tgt).parents('li').first();
 		if(item.length == 0) {
@@ -574,18 +600,18 @@ $(document).ready(function(){
 		return false;
 	});
 	// Editor command.
-	$('.rte-toolbar button').on('click', function(event){
+	$('.rte-toolbar button').on('click', function(event) {
 		console.log('cmd: ' + $(this).data('cmd'));
 		$('#description').rte('formatText', $(this).data('cmd'));
 		event.preventDefault();
 		return false;
 	});
 	// Toggle text/html editing mode.
-	$('#togglemode').on('click', function(event){
+	$('#togglemode').on('click', function(event) {
 		OC.Journal.toggleMode(true);
 		return false;
 	});
-	$('#editable').on('change', function(event){
+	$('#editable').on('change', function(event) {
 		OC.Journal.setEnabled($(this).get(0).checked);
 	});
 

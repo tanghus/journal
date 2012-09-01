@@ -1,6 +1,7 @@
 #leftcontent a { font-weight: bold; }
 #metadata { position: fixed; background-color: #ccc; width: 20em; right: 0; top: 6.5em; bottom: 0; overflow: auto; padding: 1em; margin: 0; font-size: 1em; font-weight: bold; }
-#metadata :disabled.property { background-color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; }
+#controls :disabled { background-color: #f7f7f7; color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
+#metadata :disabled.property { background-color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
 #entry { position: fixed; background: #fff; top: 6.5em; bottom: 0; left: 32.5em !important; right: 22em;  padding: 1em; margin: 0; }
 div.propertycontainer[data-type="DESCRIPTION"] { height: 90%; }
 #description { width: 95%; height: 90%; }
