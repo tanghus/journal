@@ -34,7 +34,12 @@ class OC_Journal_App {
 
 	public static function arrayForJSON($id, $calendarid, $vjournal, $user_timezone) {
 		// Possible properties: URL
-		$journal = array( 'id' => $id, 'calendarid' => $calendarid );
+		$journal = array(
+			'id' => $id,
+			'calendarid' => $calendarid,
+			'owner' => OC_Calendar_Object::getowner($id),
+			'summary' => $vjournal->getAsString('SUMMARY'),
+		);
 		$journal['summary'] = $vjournal->getAsString('SUMMARY');
 		$format = 'text';
 

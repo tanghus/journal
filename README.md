@@ -14,6 +14,8 @@
 
 - Syncs with KDEPIMs Journal part.
 
+- Share Journal entries with other users or groups.
+
 - Completed tasks from the Task app can be automatically added as journal entries.
 
 - Stores entry data as json objects in each element for quich access and to minimize ajax calls.

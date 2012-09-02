@@ -6,10 +6,8 @@ ownCloud Journal TODO
 
 - Check if entered text in one mode gets transfered when changing modes.
 
-- Show explanation page on missing calendar.
+- Export whole journal (In different formats?).
 
-- Export whole journal.
-
-- Show/hide metadata.
+- Show/hide metadata (for smaller form-factors).
 
 - Test, test, test in other browser as well.

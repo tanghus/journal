@@ -2,6 +2,7 @@
 $l=new OC_L10N('journal');
 OC::$CLASSPATH['OC_Calendar_Calendar'] = 'calendar/lib/calendar.php';
 OC::$CLASSPATH['OC_Journal_App'] = 'journal/lib/app.php';
+OC::$CLASSPATH['OC_Share_Backend_Journal'] = 'journal/lib/share.php';
 OC::$CLASSPATH['OC_Journal_VJournal'] = 'journal/lib/vjournal.php';
 OC::$CLASSPATH['OC_Search_Provider_Journal'] = 'journal/lib/search.php';
 OC::$CLASSPATH['OC_Journal_Hooks'] = 'journal/lib/hooks.php';
@@ -17,3 +18,4 @@ OCP\App::addNavigationEntry( array(
   'name' => $l->t('Journal')));
 
 OC_Search::registerProvider('OC_Search_Provider_Journal');
+OCP\Share::registerBackend('journal', 'OC_Share_Backend_Journal');

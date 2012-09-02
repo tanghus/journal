@@ -215,7 +215,18 @@ OC.Journal = {
 			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'&id='+data.id+'">'+data.summary.unEscape()+'</a><br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
-			$('#actions').show();
+			var permissions = 31;
+			if(data.owner != OC.currentUser) {
+				$.ajax({type: 'GET', url: OC.filePath('core', 'ajax', 'share.php'), data: { fetch: 'getItem', itemType: 'journal', itemSource: id, getPermissions: true }, async: false, success: function(result) {
+					if (result && result.status === 'success') {
+						permissions = result.data.info.permissions;
+					} else {
+						OC.Journal.notify({message:t('journal', 'Error getting permissions!')});
+						permissions = OC.PERMISSION_READ;
+					}
+				}});
+			}
+			$('#actions').show().find('a.share').attr('data-item', id).attr('data-possible-permissions', permissions);
 			//$(document).off('change', '.property');
 			console.log('loadEntry: ' + id + ': ' + data.summary);
 			this.id = id;
@@ -250,6 +261,7 @@ OC.Journal = {
 				$('#also_time').attr('checked', true);
 				//$('#also_time').get(0).checked = true;
 			}
+			OC.Share.loadIcons('journal');
 			console.log('dtstart: '+date);
 		},
 		saveproperty:function(obj) {
@@ -537,8 +549,16 @@ $(document).ready(function(){
 		var drfrom = $('#daterangefrom');
 		var drto = $('#daterangeto');
 		if($(this).is(':checked')) {
-			drfrom.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
-			drto.prop('disabled', false).datepicker({dateFormat: 'dd-mm-yy'});
+			drfrom.prop('disabled', false).datepicker({
+				dateFormat: 'dd-mm-yy',
+				changeMonth: true,
+				changeYear: true
+			});
+			drto.prop('disabled', false).datepicker({
+				dateFormat: 'dd-mm-yy',
+				changeMonth: true,
+				changeYear: true
+			});
 			OC.Journal.Journals.filterDateRange();
 		} else {
 			drfrom.prop('disabled', true).datepicker('destroy');

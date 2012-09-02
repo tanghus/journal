@@ -72,15 +72,10 @@
 			<div>
 				<input type="checkbox" id="editable" /><label class="tip" for="editable" title="Set this journal entry in edit mode" i18n:attributes="title" i18n:translate="">Edit</label>
 				<span id="actions">
-					<a class="tip" id="export" title="Export as iCal file" i18n:attributes="title">
-						<img class="svg action" tal:attributes="src image:string:core/actions/download.svg" />
-					</a>
-					<a class="tip" id="showlink" title="Direct link to this journal entry" i18n:attributes="title">
-						<img class="svg action" tal:attributes="src image:string:core/actions/public.svg" />
-					</a>
-					<a class="tip" id="delete" title="Delete this journal entry" i18n:attributes="title">
-						<img class="svg action" tal:attributes="src image:string:core/actions/delete.svg" />
-					</a>
+					<a class="tip download" id="export" title="Export as iCal file" i18n:attributes="title"></a>
+					<a class="tip globe" id="showlink" title="Direct link to this journal entry" i18n:attributes="title"></a>
+					<a class="tip share" title="Sharing" i18n:attributes="title" data-item-type="journal"></a>
+					<a class="tip delete" id="delete" title="Delete this journal entry" i18n:attributes="title"></a>
 				</span>
 				<input class="hidden" id="link" type="text" />
 			</div>
