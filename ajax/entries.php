@@ -29,7 +29,7 @@ session_write_close();
 $journals = array();
 foreach( $calendars as $calendar ){
 	$calendar_journals = OCA\Journal\VJournal::all($calendar['id']);
-	foreach( $calendar_journals as $journal ) {
+	foreach($calendar_journals as $journal) {
 		if(is_null($journal['summary'])) {
 			continue;
 		}
@@ -42,6 +42,21 @@ foreach( $calendars as $calendar ){
 		}
 	}
 }
+
+$shared_journals = OCP\Share::getItemsSharedWith('journal', OCA\Journal\Share_Backend::FORMAT_JOURNAL);
+foreach($shared_journals as $journal) {
+	if(is_null($journal['summary'])) {
+		continue;
+	}
+	$object = OC_VObject::parse($journal['calendardata']);
+	$vjournalobj = $object->VJOURNAL;
+	try {
+		$journals[] = OCA\Journal\App::arrayForJSON($journal['id'], $journal['calendarid'], $vjournalobj, $user_timezone);
+	} catch(Exception $e) {
+		OCP\Util::writeLog('journal', 'ajax/getentries.php. id: '.$journal['id'].' '.$e->getMessage(), OCP\Util::ERROR);
+	}
+}
+
 
 OCP\JSON::success(array(
 	'data' => array(
