@@ -23,9 +23,13 @@ OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('journal');
 OCP\JSON::callCheck();
 
-$id = isset($_POST['id'])?$_POST['id']:null;
+$id = isset($_POST['id']) ? $_POST['id'] : null;
 if(is_null($id)) {
-	OCP\JSON::error(array('data'=>array('message' => OC_Journal_App::$l10n->t('ID is not set!'))));
+	OCP\JSON::error(array(
+		'data'=>array(
+			'message' => OCA\Journal\App::$l10n->t('ID is not set!'))
+		)
+	);
 	exit;
 }
 $journal = OC_Calendar_App::getEventObject($id);
@@ -33,5 +37,12 @@ if($journal) {
 	OC_Calendar_Object::delete($id);
 	OCP\JSON::success(array('data' => array( 'id' => $id )));
 } else {
-	OCP\JSON::error(array('data' => array('id' => $id, 'message' => OC_Journal_App::$l10n->t('Could not find journal entry: '.$id))));
+	OCP\JSON::error(array(
+		'data' => array(
+			'id' => $id,
+			'message' => OCA\Journal\App::$l10n->t(
+				'Could not find journal entry: '.$id)
+			)
+		)
+	);
 }

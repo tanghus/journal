@@ -14,20 +14,32 @@ OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('journal');
 OCP\JSON::callCheck();
 
-$id = isset($_POST['id'])?$_POST['id']:null;
-$cid = isset($_POST['cid'])?$_POST['cid']:null;
-$property = isset($_POST['type'])?$_POST['type']:null;
-$value = isset($_POST['value'])?$_POST['value']:null;
+$id = isset($_POST['id']) ? $_POST['id'] : null;
+$cid = isset($_POST['cid']) ? $_POST['cid'] : null;
+$property = isset($_POST['type']) ? $_POST['type'] : null;
+$value = isset($_POST['value']) ? $_POST['value'] : null;
 if(is_null($id)) {
-	OCP\JSON::error(array('data'=>array('message' => OC_Journal_App::$l10n->t('ID is not set!'))));
+	OCP\JSON::error(array(
+		'data'=>array(
+			'message' => OCA\Journal\App::$l10n->t('ID is not set!'))
+		)
+	);
 	exit;
 }
 if(is_null($property)) {
-	OCP\JSON::error(array('data'=>array('message' => OC_Journal_App::$l10n->t('Property name is not set!'))));
+	OCP\JSON::error(array(
+		'data'=>array(
+			'message' => OCA\Journal\App::$l10n->t('Property name is not set!'))
+		)
+	);
 	exit;
 }
 if(is_null($value)) {
-	OCP\JSON::error(array('data'=>array('message' => OC_Journal_App::$l10n->t('Property value is not set!'))));
+	OCP\JSON::error(array(
+		'data'=>array(
+			'message' => OCA\Journal\App::$l10n->t('Property value is not set!'))
+		)
+	);
 	exit;
 }
 
@@ -35,17 +47,20 @@ foreach($_POST as $key => $val) {
     debug($key.': '.print_r($val, true));
 }
 
-$parameters = isset($_POST['parameters'])? $_POST['parameters']:null;
+$parameters = isset($_POST['parameters']) ? $_POST['parameters'] : null;
+
 if($id == 'new') {
 	debug('Creating new entry.');
-	$vcalendar = OC_Journal_App::createVCalendar();
-	$vjournal = OC_Journal_App::createVJournal();
+	$vcalendar = OCA\Journal\App::createVCalendar();
+	$vjournal = OCA\Journal\App::createVJournal();
 	$vcalendar->add($vjournal);
 } else {
 	$vcalendar = OC_Calendar_App::getVCalendar($id);
 	$vjournal = $vcalendar->VJOURNAL;
 }
-debug('saveproperty: '.$property.': '.print_r($value, true));
+
+debug('saveproperty: ' . $property . ': ' . print_r($value, true));
+
 switch($property) {
 	case 'DESCRIPTION':
 		$hasgenericformat = false;
@@ -88,7 +103,7 @@ switch($property) {
 		break;
 	case 'DTSTART':
 		try {
-			$date_only = isset($_POST['date_only']) && (bool)$_POST['date_only'] == true?true:false;
+			$date_only = isset($_POST['date_only']) && (bool)$_POST['date_only'] == true ? true : false;
 			$timezone = OCP\Config::getUserValue(OCP\User::getUser(), 'calendar', 'timezone', date_default_timezone_get());
 			$timezone = new DateTimeZone($timezone);
 			//$dtstart = new DateTime($value, $timezone);
@@ -143,5 +158,5 @@ if($id == 'new') {
 	OC_Calendar_Object::edit($id, $vcalendar->serialize());
 }
 $user_timezone = OCP\Config::getUserValue(OCP\User::getUser(), 'calendar', 'timezone', date_default_timezone_get());
-$journal_info = OC_Journal_App::arrayForJSON($id, $cid, $vjournal, $user_timezone);
+$journal_info = OCA\Journal\App::arrayForJSON($id, $cid, $vjournal, $user_timezone);
 OCP\JSON::success(array('data' => $journal_info));

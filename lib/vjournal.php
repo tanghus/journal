@@ -20,10 +20,12 @@
  *
  */
 
+namespace OCA\Journal;
+
 /**
  * This class manages our journals
  */
-class OC_Journal_VJournal extends OC_Calendar_Object{
+class VJournal extends \OC_Calendar_Object {
 	/**
 	 * @brief Returns all VJOURNAL objects from a calendar
 	 * @param integer $id
@@ -33,7 +35,7 @@ class OC_Journal_VJournal extends OC_Calendar_Object{
 	 * ['calendardata']
 	 */
 	public static function all($id){
-		$stmt = OCP\DB::prepare( 'SELECT * FROM *PREFIX*calendar_objects WHERE calendarid = ? AND objecttype = "VJOURNAL"' );
+		$stmt = \OCP\DB::prepare( 'SELECT * FROM *PREFIX*calendar_objects WHERE calendarid = ? AND objecttype = "VJOURNAL"' );
 		$result = $stmt->execute(array($id));
 
 		$calendarobjects = array();
@@ -49,9 +51,9 @@ class OC_Journal_VJournal extends OC_Calendar_Object{
 	 * @param array $objects  An array of [id, journaldata].
 	 */
 	public static function updateDataByID($objects){
-		$stmt = OCP\DB::prepare( 'UPDATE *PREFIX*calendar_objects SET calendardata = ?, lastmodified = ? WHERE id = ?' );
+		$stmt = \OCP\DB::prepare( 'UPDATE *PREFIX*calendar_objects SET calendardata = ?, lastmodified = ? WHERE id = ?' );
 		foreach($objects as $object) {
-			$vevent = OC_Calendar_App::getVCalendar($object[0]); // Get existing event.
+			$vevent = \OC_Calendar_App::getVCalendar($object[0]); // Get existing event.
 			$vjournal = OC_VObject::parse($object[1]); // Get updated VJOURNAL part
 			if(!is_null($vjournal) && !is_null($vevent)){
 				try {
@@ -61,8 +63,11 @@ class OC_Journal_VJournal extends OC_Calendar_Object{
 					$data = $vevent->serialize();
 					$result = $stmt->execute(array($data,time(),$object[0]));
 				} catch(Exception $e) {
-					OCP\Util::writeLog('journal',__CLASS__.'::'.__METHOD__.', exception: '.$e->getMessage(),OCP\Util::ERROR);
-					OCP\Util::writeLog('journal',__CLASS__.'::'.__METHOD__.', id: '.$object[0],OCP\Util::DEBUG);
+					\OCP\Util::writeLog('journal',
+						__METHOD__.', exception: ' . $e->getMessage(),
+						OCP\Util::ERROR
+					);
+					\OCP\Util::writeLog('journal', __METHOD__ . ', id: ' . $object[0], OCP\Util::DEBUG);
 				}
 			}
 		}

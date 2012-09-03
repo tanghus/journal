@@ -19,48 +19,66 @@
  *
  */
 
+namespace OCA\Journal;
+
 /**
- * This class manages our journal.
+ * This class manages hooks for our journal.
  */
-class OC_Journal_Hooks {
+class Hooks {
 	/**
-	 * @brief Hook to convert a completed Task (VTODO) to a journal entry and add it to the calendar.
+	 * @brief Hook to convert a completed Task (VTODO) to a journal
+	 * 		entry and add it to the calendar.
 	 * @param $vtodo An OC_VObject of type VTODO.
 	 */
 	public static function taskToJournalEntry($vtodo) {
 		if(!$vtodo) { return; }
-		
-		OCP\Util::writeLog('journal', 'Completed task: '.$vtodo->getAsString('SUMMARY'), OCP\Util::DEBUG);
-		$vcalendar = OC_Journal_App::createVCalendar();
-		$vjournal = OC_Journal_App::createVJournal();
+
+		\OCP\Util::writeLog('journal', __METHOD__ . ', Completed task: '
+			. $vtodo->getAsString('SUMMARY'), \OCP\Util::DEBUG);
+		$vcalendar = App::createVCalendar();
+		$vjournal = App::createVJournal();
 		$vcalendar->add($vjournal);
 		$vjournal->setDateTime('DTSTART',$vtodo->COMPLETED->getDateTime());
 		$vjournal->SUMMARY = $vtodo->SUMMARY;
 		$vjournal->addProperty('RELATED-TO', $vtodo->uid);
-		$vjournal->setString('SUMMARY', OC_Journal_App::$l10n->t('Completed task: ').$vjournal->getAsString('SUMMARY'));
+		$vjournal->setString('SUMMARY', App::$l10n->t('Completed task: ')
+			. $vjournal->getAsString('SUMMARY'));
 		$vjournal->DESCRIPTION = $vtodo->DESCRIPTION;
 
-		$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+		$cid = \OCP\Config::getUserValue(\OCP\User::getUser()
+			, 'journal',
+			'default_calendar',
+			null
+		);
 		if(!$cid) {
-			$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
+			$calendars = \OC_Calendar_Calendar::allCalendars(
+				\OCP\User::getUser(), true);
 			$first_calendar = reset($calendars);
 			$cid = $first_calendar['id'];
 		}
 		try {
-			$id = OC_Calendar_Object::add($cid, $vcalendar->serialize());
+			$id = \OC_Calendar_Object::add($cid, $vcalendar->serialize());
 		} catch (Exception $e) {
-			OCP\Util::writeLog('journal', 'Error adding completed Task to calendar: "'.$cid.'" '. $e->getMessage(), OCP\Util::ERROR);
+			\OCP\Util::writeLog('journal',
+				__METHOD__ . ', Error adding completed Task to calendar: "'
+				. $cid . '" ' . $e->getMessage(), \OCP\Util::ERROR);
 		}
 	}
-	
+
 	/**
-	 * @brief Get notifications on deleted calendars. If it matched out default calendar the property is cleared.
+	 * @brief Get notifications on deleted calendars.
+	 * 		If it matched out default calendar the property is cleared.
 	 * @param $aid Integer calendar ID.
 	 */
 	public static function calendarDeleted($aid) {
-		$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+		$cid = \OCP\Config::getUserValue(
+			\OCP\User::getUser(),
+			'journal',
+			'default_calendar',
+			null
+		);
 		if($aid == $cid) {
-			OC_Preferences::deleteKey(OCP\User::getUser(), 'journal', 'default_calendar');
+			\OC_Preferences::deleteKey(OCP\User::getUser(), 'journal', 'default_calendar');
 		}
 	}
 }

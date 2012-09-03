@@ -29,23 +29,27 @@ OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('journal');
 OCP\JSON::callCheck();
 
+require_once(__DIR__.'/util.php');
+
 $key = isset($_POST['key'])?$_POST['key']:null;
 $value = isset($_POST['value'])?$_POST['value']:null;
 if(is_null($key)) {
-	OCP\JSON::error(array('data' => array('message' => OC_Journal_App::$l10n->t('Key is not set for: '.$value))));
-	OCP\Util::writeLog('journal', __FILE__.', Key is not set for: '.$value, OCP\Util::ERROR);
-	exit;
+	bailOut(OCA\Journal\App::$l10n->t('Key is not set for: '.$value));
 }
 
 if(is_null($value)) {
-	OCP\JSON::error(array('data' => array('message' => OC_Journal_App::$l10n->t('Value is not set for: '.$key))));
-	OCP\Util::writeLog('journal', __FILE__.', Value is not set for: '.$key, OCP\Util::ERROR);
-	exit;
+	bailOut(OCA\Journal\App::$l10n->t('Value is not set for: '.$key));
 }
 
 if(OCP\Config::setUserValue(OCP\USER::getUser(), 'journal', $key, $value)) {
-	OCP\JSON::success(array('data' => array('key' => $key, 'value' => $value)));
+	OCP\JSON::success(array(
+		'data' => array(
+			'key' => $key,
+			'value' => $value)
+		)
+	);
 } else {
-	OCP\JSON::error(array('data' => array('key' => $key, 'value' => $value, 'message' => OC_Journal_App::$l10n->t('Could not set preference: '.$key.':'.$value))));
-	OCP\Util::writeLog('journal', __FILE__.', Could not set preference: '.$key.':'.$value, OCP\Util::ERROR);
+	bailOut(OCA\Journal\App::$l10n->t(
+		'Could not set preference: ' . $key . ':' . $value)
+	);
 }

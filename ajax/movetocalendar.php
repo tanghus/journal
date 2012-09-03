@@ -22,7 +22,7 @@
 /**
  * @brief Move Journal entry to another calendar.
  * @param $id Journal entry ID
- * @param $calendarid 
+ * @param $calendarid
  */
 
 require_once(__DIR__.'/util.php');
@@ -35,15 +35,15 @@ OCP\JSON::callCheck();
 $id = isset($_POST['id'])?strip_tags($_POST['id']):null;
 $calendarid = isset($_POST['calendarid'])?strip_tags($_POST['calendarid']):null;
 if(is_null($id)) {
-	bailOut(OC_Journal_App::$l10n->t('Journal entry ID is not set.'));
+	bailOut(OCA\Journal\App::$l10n->t('Journal entry ID is not set.'));
 }
 
 if(is_null($calendarid)) {
-	bailOut(OC_Journal_App::$l10n->t('Calendar ID is not set.'));
+	bailOut(OCA\Journal\App::$l10n->t('Calendar ID is not set.'));
 }
 
 if(!OC_Calendar_Object::moveToCalendar($id, $calendarid)) {
-	bailOut(OC_Journal_App::$l10n->t('Error moving to calendar'));
+	bailOut(OCA\Journal\App::$l10n->t('Error moving to calendar'));
 }
 
 OCP\JSON::success();

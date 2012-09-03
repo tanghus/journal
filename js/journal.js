@@ -215,18 +215,7 @@ OC.Journal = {
 			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'&id='+data.id+'">'+data.summary.unEscape()+'</a><br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
-			var permissions = 31;
-			if(data.owner != OC.currentUser) {
-				$.ajax({type: 'GET', url: OC.filePath('core', 'ajax', 'share.php'), data: { fetch: 'getItem', itemType: 'journal', itemSource: id, getPermissions: true }, async: false, success: function(result) {
-					if (result && result.status === 'success') {
-						permissions = result.data.info.permissions;
-					} else {
-						OC.Journal.notify({message:t('journal', 'Error getting permissions!')});
-						permissions = OC.PERMISSION_READ;
-					}
-				}});
-			}
-			$('#actions').show().find('a.share').attr('data-item', id).attr('data-possible-permissions', permissions);
+			$('#actions').show().find('a.share').attr('data-item', id).attr('data-possible-permissions', data.permissions);
 			//$(document).off('change', '.property');
 			console.log('loadEntry: ' + id + ': ' + data.summary);
 			this.id = id;

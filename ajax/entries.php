@@ -28,7 +28,7 @@ $user_timezone = OCP\Config::getUserValue(OCP\User::getUser(), 'calendar', 'time
 session_write_close();
 $journals = array();
 foreach( $calendars as $calendar ){
-	$calendar_journals = OC_Journal_VJournal::all($calendar['id']);
+	$calendar_journals = OCA\Journal\VJournal::all($calendar['id']);
 	foreach( $calendar_journals as $journal ) {
 		if(is_null($journal['summary'])) {
 			continue;
@@ -36,11 +36,17 @@ foreach( $calendars as $calendar ){
 		$object = OC_VObject::parse($journal['calendardata']);
 		$vjournalobj = $object->VJOURNAL;
 		try {
-			$journals[] = OC_Journal_App::arrayForJSON($journal['id'], $journal['calendarid'], $vjournalobj, $user_timezone);
+			$journals[] = OCA\Journal\App::arrayForJSON($journal['id'], $journal['calendarid'], $vjournalobj, $user_timezone);
 		} catch(Exception $e) {
 			OCP\Util::writeLog('journal', 'ajax/getentries.php. id: '.$journal['id'].' '.$e->getMessage(), OCP\Util::ERROR);
 		}
 	}
 }
 
-OCP\JSON::success(array('data' => array('entries' => $journals, 'singlecalendar' => (int)$singlecalendar, 'cid' => $singlecalendar ? $cid : null)));
+OCP\JSON::success(array(
+	'data' => array(
+		'entries' => $journals,
+		'singlecalendar' => (int)$singlecalendar,
+		'cid' => $singlecalendar ? $cid : null)
+	)
+);
