@@ -215,27 +215,38 @@ OC.Journal = {
 			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'&id='+data.id+'">'+data.summary.unEscape()+'</a><br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
-			$('#actions').show().find('a.share').attr('data-item', id).attr('data-possible-permissions', data.permissions);
-			//$(document).off('change', '.property');
 			console.log('loadEntry: ' + id + ': ' + data.summary);
+			this.permissions = parseInt(data.permissions);
+			this.readonly = !(this.permissions & OC.PERMISSION_UPDATE);
+			console.log('permissions:', this.permissions);
+			console.log('readonly:', this.readonly);
+			$('#editable').prop('disabled', this.readonly)
+				.next('label').text(this.readonly ? t('journal', 'Read-only') : t('journal', 'Edit'))
+				.attr('title', this.readonly ? t('journal', 'This entry is read-only') : t('journal', 'Set this journal entry in edit mode'));
+			$('#actions').show().find('a.share').attr('data-item', id).attr('data-possible-permissions', data.permissions);
+
 			this.id = id;
 			this.cid = data.calendarid;
 			this.data = data;
 			$('#entry').data('id', id);
-			console.log('summary: ' + data.summary.unEscape());
 			$('#calendar').val(data.calendarid);
 			$('#summary').val(data.summary.unEscape());
 			$('#organizer').val(data.organizer.value.split(':')[1]);
+
 			var format = data.description.format;
 			console.log('format: '+format);
 			$('#description').rte(format, data.description.value.unEscape());
 			$('#description').rte('mode', format);
-			//$('#description').expandingTextarea('resize');
-			(format=='html'&&$('#editable').get(0).checked?$('#editortoolbar li.richtext').show():$('#editortoolbar li.richtext').hide());
+			(format=='html'&&$('#editable').is(':checked')
+				? $('#editortoolbar li.richtext').show()
+				: $('#editortoolbar li.richtext').hide());
+
 			$('#location').val(data.location);
+
 			$('#categories').val(data.categories.join(','));
 			$('#categories').multiple_autocomplete('option', 'source', OC.Journal.categories);
-			console.log('Trying to parse: '+data.dtstart);
+
+			console.log('Trying to parse: ' + data.dtstart);
 			var date = new Date(parseInt(data.dtstart)*1000);
 			//$('#dtstartdate').val(date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()); //
 			$('#dtstartdate').datepicker('setDate', date);
@@ -250,8 +261,9 @@ OC.Journal = {
 				$('#also_time').attr('checked', true);
 				//$('#also_time').get(0).checked = true;
 			}
-			OC.Share.loadIcons('journal');
 			console.log('dtstart: '+date);
+
+			OC.Share.loadIcons('journal');
 		},
 		saveproperty:function(obj) {
 			if(!this.id || this.id == 'new') { // we are adding an entry and want a response back from the server.
