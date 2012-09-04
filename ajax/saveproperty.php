@@ -156,14 +156,14 @@ if($id == 'new') {
 		$id = OC_Calendar_Object::add($cid, $vcalendar->serialize());
 		debug('Added '.$id.' to '.$cid);
 	} catch(Exception $e) {
-		OCP\JSON::error(array('message'=>$e->getMessage()));
+		OCP\JSON::error(array('data' => array('message'=>$e->getMessage())));
 		exit;
 	}
 } else {
 	try {
 		OC_Calendar_Object::edit($id, $vcalendar->serialize());
 	} catch(Exception $e) {
-		OCP\JSON::error(array('message'=>$e->getMessage()));
+		OCP\JSON::error(array('data' => array('message'=>$e->getMessage())));
 		exit;
 	}
 }
