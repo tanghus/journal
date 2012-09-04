@@ -223,7 +223,7 @@ OC.Journal = {
 			$('#editable').prop('disabled', this.readonly)
 				.next('label').text(this.readonly ? t('journal', 'Read-only') : t('journal', 'Edit'))
 				.attr('title', this.readonly ? t('journal', 'This entry is read-only') : t('journal', 'Set this journal entry in edit mode'));
-			$('#actions').show().find('a.share').attr('data-item', id).attr('data-possible-permissions', data.permissions);
+			$('#actions').show().find('a.share').attr('data-item', id).attr('data-possible-permissions', data.permissions).attr('style', null);
 
 			this.id = id;
 			this.cid = data.calendarid;
