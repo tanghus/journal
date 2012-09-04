@@ -152,10 +152,20 @@ if(is_null($cid)) {
 }
 
 if($id == 'new') {
-	$id = OC_Calendar_Object::add($cid, $vcalendar->serialize());
-	debug('Added '.$id.' to '.$cid);
+	try {
+		$id = OC_Calendar_Object::add($cid, $vcalendar->serialize());
+		debug('Added '.$id.' to '.$cid);
+	} catch(Exception $e) {
+		OCP\JSON::error(array('message'=>$e->getMessage()));
+		exit;
+	}
 } else {
-	OC_Calendar_Object::edit($id, $vcalendar->serialize());
+	try {
+		OC_Calendar_Object::edit($id, $vcalendar->serialize());
+	} catch(Exception $e) {
+		OCP\JSON::error(array('message'=>$e->getMessage()));
+		exit;
+	}
 }
 $user_timezone = OCP\Config::getUserValue(OCP\User::getUser(), 'calendar', 'timezone', date_default_timezone_get());
 $journal_info = OCA\Journal\App::arrayForJSON($id, $cid, $vjournal, $user_timezone);
