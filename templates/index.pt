@@ -10,10 +10,10 @@
 	<form onsubmit="return false;">
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">
-			<option value="dtdesc">Date - descending</option>
-			<option value="dtasc">Date - ascending</option>
-			<option value="sumdesc">Summary - descending</option>
-			<option value="sumasc">Summary - ascending</option>
+			<option value="dtdesc" i18n:translate="">Date - descending</option>
+			<option value="dtasc" i18n:translate="">Date - ascending</option>
+			<option value="sumdesc" i18n:translate="">Summary - descending</option>
+			<option value="sumasc" i18n:translate="">Summary - ascending</option>
 		</select>
 		<button class="tip" id="add" title="Add new journal entry" i18n:attributes="title" i18n:translate="">Add</button>
 		<a class="tip settings"><img class="svg" tal:attributes="src php:OCP\Util::imagePath('core', 'actions/settings.svg')" /></a>
