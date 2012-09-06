@@ -1,8 +1,8 @@
 ownCloud Journal TODO
 
-- Check that proper text format is saved.
-
 - Hide empty elements?
+
+- Filter by author (shared by).
 
 - Check if entered text in one mode gets transfered when changing modes.
 

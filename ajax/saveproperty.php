@@ -18,10 +18,13 @@ $id = isset($_POST['id']) ? $_POST['id'] : null;
 $cid = isset($_POST['cid']) ? $_POST['cid'] : null;
 $property = isset($_POST['type']) ? $_POST['type'] : null;
 $value = isset($_POST['value']) ? $_POST['value'] : null;
+
+$l10n = OCA\Journal\App::$l10n;
+
 if(is_null($id)) {
 	OCP\JSON::error(array(
 		'data'=>array(
-			'message' => OCA\Journal\App::$l10n->t('ID is not set!'))
+			'message' => $l10n->t('ID is not set!'))
 		)
 	);
 	exit;
@@ -29,7 +32,7 @@ if(is_null($id)) {
 if(is_null($property)) {
 	OCP\JSON::error(array(
 		'data'=>array(
-			'message' => OCA\Journal\App::$l10n->t('Property name is not set!'))
+			'message' => $l10n->t('Property name is not set!'))
 		)
 	);
 	exit;
@@ -37,7 +40,7 @@ if(is_null($property)) {
 if(is_null($value)) {
 	OCP\JSON::error(array(
 		'data'=>array(
-			'message' => OCA\Journal\App::$l10n->t('Property value is not set!'))
+			'message' => $l10n->t('Property value is not set!'))
 		)
 	);
 	exit;
@@ -63,48 +66,57 @@ debug('saveproperty: ' . $property . ': ' . print_r($value, true));
 
 switch($property) {
 	case 'DESCRIPTION':
-		$hasgenericformat = false;
-		$haskdeformat = false;
 		if(!$vjournal->DESCRIPTION) {
 			$vjournal->setString('DESCRIPTION', $value);
+		} else {
+			$vjournal->DESCRIPTION->value = $value;
 		}
 		if($parameters && isset($parameters['FORMAT']) && strtoupper($parameters['FORMAT']) == 'HTML') {
 			if($value[0] != '<') { // Fugly hack coming up
 				$value = sprintf($divwrap, $value);
 			}
 			$vjournal->DESCRIPTION->value = sprintf($htmlwrap, $value);
-			foreach($vjournal->DESCRIPTION->parameters as $parameter){
-				if(stripos($parameter->name, 'X-KDE-TEXTFORMAT') !== false && stripos($parameter->value, 'HTML') !== false){
-					$haskdeformat = true;
+
+			try {
+				if(!isset($vjournal->DESCRIPTION['X-KDE-TEXTFORMAT'])) {
+					$vjournal->DESCRIPTION->add(
+						new Sabre_VObject_Parameter('X-KDE-TEXTFORMAT', 'HTML'));
 				}
-				if(stripos($parameter->name, 'X-TEXTFORMAT') !== false && stripos($parameter->value, 'HTML') !== false){
-					$hasgenericformat = true;
+				if(!isset($vjournal->DESCRIPTION['X-TEXTFORMAT'])) {
+					$vjournal->DESCRIPTION->add(
+						new Sabre_VObject_Parameter('X-TEXTFORMAT', 'HTML'));
 				}
+			} catch (Exception $e) {
+				OCP\JSON::error(array(
+					'data' => array(
+						'message' => $l10n->t(
+							'Error setting rich text format parameter: '
+								. $e->getMessage()))
+					)
+				);
+				exit();
 			}
-			if(!$haskdeformat) {
-				try {
-					$vjournal->DESCRIPTION->add(new Sabre_VObject_Parameter('X-KDE-TEXTFORMAT', 'HTML'));
-				} catch (Exception $e) {
-					OCP\JSON::error(array('data'=>array('message'=>OC_Journal_App::$l10n->t('Error setting rich text format parameter: '.$e->getMessage()))));
-					exit();
-				}
-			}
-			if(!$hasgenericformat) { // Add a more generic text formatting parameter in case other clients would use VJOURNAL this way.
-				try {
-					$vjournal->DESCRIPTION->add(new Sabre_VObject_Parameter('X-TEXTFORMAT', 'HTML'));
-				} catch (Exception $e) {
-					OCP\JSON::error(array('data'=>array('message'=>OC_Journal_App::$l10n->t('Error setting rich text format parameter: '.$e->getMessage()))));
-					exit();
-				}
-			}
+
 		} else {
-			$vjournal->DESCRIPTION->value = $value;
+			foreach($vjournal->DESCRIPTION->parameters as &$parameter) {
+				// Use some very simple heuristics - or let's just call it guessing ;)
+				if(stripos($parameter->name, 'FORMAT') !== false
+					&& (stripos($parameter->value, 'HTML') !== false
+						|| stripos($parameter->value, 'RICH') !== false)) {
+					unset($parameter);
+				}
+			}
 		}
 		break;
 	case 'DTSTART':
 		try {
-			$date_only = isset($_POST['date_only']) && (bool)$_POST['date_only'] == true ? true : false;
-			$timezone = OCP\Config::getUserValue(OCP\User::getUser(), 'calendar', 'timezone', date_default_timezone_get());
+			$date_only = isset($_POST['date_only'])
+				&& (bool)$_POST['date_only'] == true ? true : false;
+			$timezone = OCP\Config::getUserValue(
+				OCP\User::getUser(),
+				'calendar',
+				'timezone',
+				date_default_timezone_get());
 			$timezone = new DateTimeZone($timezone);
 			//$dtstart = new DateTime($value, $timezone);
 			$dtstart = new DateTime('@'.$value);
@@ -115,7 +127,9 @@ switch($property) {
 			}
 			$vjournal->setDateTime('DTSTART', $dtstart, $type);
 		} catch (Exception $e) {
-			OCP\JSON::error(array('data'=>array('message'=>OC_Journal_App::$l10n->t('Invalid date/time: '.$e->getMessage()))));
+			OCP\JSON::error(array(
+				'data' => array(
+					'message' => $l10n->t('Invalid date/time: '.$e->getMessage()))));
 			exit();
 		}
 		break;
@@ -133,7 +147,11 @@ switch($property) {
 		$vjournal->setString($property, $value);
 		break;
 	default:
-		OCP\JSON::error(array('data'=>array('message'=>'Unknown type: '.$property)));
+		OCP\JSON::error(array(
+			'data' => array(
+				'message' => $l10n->t('Unknown type: ') . $property)
+			)
+		);
 		exit();
 }
 
@@ -141,10 +159,15 @@ $vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre_VObject_Property_DateTime::
 $vjournal->setDateTime('DTSTAMP', 'now', Sabre_VObject_Property_DateTime::UTC);
 
 if(is_null($cid)) {
-	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);
+	$cid = OCP\Config::getUserValue(
+		OCP\User::getUser(),
+		'journal',
+		'default_calendar', null);
 	// Check that the calendar exists and that it's ours.
-	if(OC_Calendar_App::getCalendar($cid, true) == false) {
-		OCP\Util::writeLog('journal', 'The default calendar '.$cid.' is either not owned by '.OCP\User::getUser().' or doesn\'t exist.', OCP\Util::WARN);
+	if(!OC_Calendar_Calendar::find($cid)) {
+		OCP\Util::writeLog('journal',
+			'The default calendar ' . $cid . ' is either not owned by '
+			. OCP\User::getUser() . ' or doesn\'t exist.', OCP\Util::WARN);
 		$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
 		$first_calendar = $calendars[0];
 		$cid = $first_calendar['id'];
