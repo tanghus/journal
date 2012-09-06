@@ -210,9 +210,12 @@ OC.Journal = {
 			$('#actions').hide();
 		},
 		createEntry:function(data) {
+			var sharedindicator = data.owner == OC.currentUser ? ''
+				: '<img class="shared svg" src="'+OC.imagePath('core', 'actions/shared')+'" title="'+t('journal', 'Shared by ')+data.owner+'" />'
 			var date = new Date(parseInt(data.dtstart)*1000);
 			var timestring = (data.only_date?'':' ' + date.toLocaleTimeString());
-			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'&id='+data.id+'">'+data.summary.unEscape()+'</a><br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
+			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'&id='+data.id+'">'+data.summary.unEscape()+'</a>'
+				+ sharedindicator + '<br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
 			console.log('loadEntry: ' + id + ': ' + data.summary);
@@ -320,7 +323,7 @@ OC.Journal = {
 						$('#leftcontent li[data-id="'+self.id+'"]').remove();
 					}
 					var item = self.createEntry(jsondata.data);
-					$('#leftcontent').append(item);
+					$('#leftcontent').append(item).find('img.shared').tipsy();
 					OC.Journal.Journals.doSort();
 					OC.Journal.Journals.scrollTo(self.id);
 					console.log('successful save');
@@ -459,6 +462,7 @@ OC.Journal = {
 			});
 		},
 		update:function(id) {
+			this.owners = [];
 			console.log('update: ' + id);
 			self = this;
 			$('#leftcontent').addClass('loading');
@@ -471,8 +475,12 @@ OC.Journal = {
 					var entries = $('#leftcontent').empty();
 					if(jsondata.data.entries.length > 0) {
 						$(jsondata.data.entries).each(function(i, entry) {
-							entries.append(OC.Journal.Entry.createEntry(entry));
+							entries.append(OC.Journal.Entry.createEntry(entry)).find('img.shared').tipsy();
+							if(OC.Journal.Journals.owners.indexOf(entry.owner) === -1) {
+								OC.Journal.Journals.owners.push(entry.owner);
+							}
 						});
+						console.log('owners', OC.Journal.Journals.owners.length);
 						OC.Journal.Journals.doSort('dtasc');
 						var firstitem;
 						if(id) {

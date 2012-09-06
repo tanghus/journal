@@ -1,6 +1,8 @@
 #content { font-size: 10px; }
 #leftcontent li { padding-left: 1.2em; }
 #leftcontent a { font-weight: bold; font-size: 1.2em; }
+#leftcontent img.shared { float: right; opacity: 0.4; }
+#leftcontent img.shared:hover { opacity: 1; }
 #leftcontent em { font-weight: normal; font-size: 1em; }
 #metadata { position: fixed; background-color: #ccc; width: 20em; right: 0; top: 6.5em; bottom: 0; overflow: auto; padding: 1em; margin: 0; font-size: 1em; font-weight: bold; }
 #controls :disabled { background-color: #f7f7f7; color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
