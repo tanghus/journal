@@ -10,8 +10,8 @@
 	<form onsubmit="return false;">
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">
-			<option value="dtdesc" i18n:translate="">Date - descending</option>
 			<option value="dtasc" i18n:translate="">Date - ascending</option>
+			<option value="dtdesc" i18n:translate="">Date - descending</option>
 			<option value="sumdesc" i18n:translate="">Summary - descending</option>
 			<option value="sumasc" i18n:translate="">Summary - ascending</option>
 		</select>

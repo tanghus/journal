@@ -384,7 +384,7 @@ OC.Journal = {
 		},
 	},
 	Journals:{
-		sortmethod:undefined,
+		sortmethod:'dtasc',
 		filterDateRange:function() {
 			var start = $('#daterangefrom').datepicker('getDate');
 			console.log('start', start);
