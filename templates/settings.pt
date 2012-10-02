@@ -1,7 +1,7 @@
 <form id="journal-settings" class="settings">
 	<fieldset class="personalblock">
 		<dl>
-			<dt i18n:translate="">Select default calendar<br />for storing journals</dt>
+			<dt i18n:translate="">Select default calendar for storing journals</dt>
 			<dd>
 				<select id="journal_calendar" class="float">
 					<option disabled="disabled" value="" tal:attributes="selected not:cid|nothing" i18n:translate="">Select...</option>
