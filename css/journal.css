@@ -1,3 +1,4 @@
+input[type="checkbox"], select { -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; -moz-border-radius: 0px; -webkit-border-radius: 0px; border-radius: 0px; }
 #content { font-size: 10px; }
 #leftcontent li { padding-left: 1.2em; }
 #leftcontent a { font-weight: bold; font-size: 1.2em; }
@@ -23,7 +24,6 @@ label,dt { color: #aaa; }
 label:hover, dt:hover { color: #333; }
 .required { color: red; border: 3px solid red; }
 input { font-size: 1em; font-weight: bold; }
-a.settings { position: absolute; right: 15em; padding: 0.5em; }
 #actions { float: right; padding-right: 1em; }
 #actions a { display: inline-block; width: 16px; height: 16px; opacity: 0.5; padding: 0 0.3em; }
 #actions a:hover { opacity: 1; }
@@ -36,6 +36,7 @@ a.settings { position: absolute; right: 15em; padding: 0.5em; }
 .download { background:url('%webroot%/core/img/actions/download.svg') no-repeat center; }
 .cloud { background:url('%webroot%/core/img/places/picture.svg') no-repeat center; }
 .globe { background:url('%webroot%/core/img/actions/public.svg') no-repeat center; }
+.cog { background:url('%webroot%/core/img/actions/settings.svg') no-repeat center; width: 16px; height: 16px; position: absolute; right: 15em; padding: 0.5em; margin: 0.5em; }
 .drop { margin-right: 0.5em !important; }
 #settings_status { padding: 0.2em; font-weight: bold; float: left; border-radius: 3px; }
 #firstrun {
