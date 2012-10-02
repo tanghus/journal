@@ -25,7 +25,7 @@ namespace OCA\Journal;
 class Search_Provider extends \OC_Search_Provider {
 	function search($query){
 		$calendars = \OC_Calendar_Calendar::allCalendars(\OCP\USER::getUser(), true);
-		if(count($calendars)==0 || !OCP\App::isEnabled('calendar')) {
+		if(count($calendars)==0 || !\OCP\App::isEnabled('calendar')) {
 			//return false;
 		}
 		$results=array();
@@ -37,20 +37,20 @@ class Search_Provider extends \OC_Search_Provider {
 		}
 		error_log('search');
 		$user_timezone = \OCP\Config::getUserValue(\OCP\USER::getUser(), 'calendar', 'timezone', date_default_timezone_get());
-		$l = new OC_l10n('journal');
+		$l = new \OC_l10n('journal');
 		foreach($calendars as $calendar) {
 			$objects = VJournal::all($calendar['id']);
 			foreach($objects as $object) {
 				if(substr_count(strtolower($object['summary']), strtolower($query)) > 0) {
-					$calendardata = OC_VObject::parse($object['calendardata']);
+					$calendardata = \OC_VObject::parse($object['calendardata']);
 					$vjournal = $calendardata->VJOURNAL;
 					$dtstart = $vjournal->DTSTART;
 					if($dtstart) {
 						continue;
 					}
 					$start_dt = $dtstart->getDateTime();
-					$start_dt->setTimezone(new DateTimeZone($user_timezone));
-					if ($dtstart->getDateType() == Sabre_VObject_Property_DateTime::DATE) {
+					$start_dt->setTimezone(new \DateTimeZone($user_timezone));
+					if ($dtstart->getDateType() == \Sabre_VObject_Property_DateTime::DATE) {
 						$info = $l->t('Date') . ': ' . $start_dt->format('d.m.Y');
 					}else{
 						$info = $l->t('Date') . ': ' . $start_dt->format('d.m.y H:i');
