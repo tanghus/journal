@@ -533,7 +533,7 @@ $(document).ready(function(){
 
 	OC.Journal.init();
 
-	$('#controls').on('click', '.settings', function(event) {
+	$('#controls').on('click', '.cog', function(event) {
 		OC.appSettings({appid:'journal', loadJS:true, cache:false});
 	});
 
