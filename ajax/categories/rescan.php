@@ -6,12 +6,12 @@
  * See the COPYING-README file.
  */
 
- 
+
 OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('calendar');
 OCP\JSON::checkAppEnabled('journal');
 
-OC_Journal_App::scanCategories();
-$categories = OC_Journal_App::getCategoryOptions();
+OCA\Journal\App::scanCategories();
+$categories = OCA\Journal\App::getCategoryOptions();
 
 OCP\JSON::success(array('data' => array('categories'=>$categories)));
