@@ -32,7 +32,7 @@ function debug($msg, $tracelevel=0, $debuglevel=OCP\Util::DEBUG) {
 	} else {
 		$call = debug_backtrace(false);
 	}
-	error_log('trace: '.print_r($call, true));
+	//error_log('trace: '.print_r($call, true));
 	$call = $call[$tracelevel];
 	if($debuglevel !== false) {
 		OCP\Util::writeLog('journal', $call['file'].'. Line: '.$call['line'].': '.$msg, $debuglevel);
