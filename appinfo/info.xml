@@ -2,10 +2,10 @@
 <info>
 	<id>journal</id>
 	<name>Journal</name>
-	<version>0.1</version>
+	<version>0.1.1</version>
 	<licence>AGPL</licence>
 	<author>Thomas Tanghus</author>
-	<require>4.9</require>
+	<require>4.9.1</require>
 	<shipped>false</shipped>
 	<description>Journal view from calendar</description>
 </info>
