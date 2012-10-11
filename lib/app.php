@@ -162,10 +162,10 @@ class App {
 	 */
 	public static function createVJournal() {
 		$vjournal = new \OC_VObject('VJOURNAL');
-		$vjournal->setDateTime('DTSTART', 'now', Sabre_VObject_Property_DateTime::LOCALTZ);
-		$vjournal->setDateTime('CREATED', 'now', Sabre_VObject_Property_DateTime::UTC);
+		$vjournal->setDateTime('DTSTART', 'now', \Sabre_VObject_Property_DateTime::LOCALTZ);
+		$vjournal->setDateTime('CREATED', 'now', \Sabre_VObject_Property_DateTime::UTC);
 		$vjournal->setUID();
-		$email = \OCP\Config::getUserValue(OCP\User::getUser(), 'settings', 'email', '');
+		$email = \OCP\Config::getUserValue(\OCP\User::getUser(), 'settings', 'email', '');
 		if($email) {
 			$vjournal->setString('ORGANIZER', 'MAILTO:'.$email);
 		}
