@@ -145,6 +145,7 @@ class App {
 	 */
 	public static function createVCalendar() {
 		// TODO: Add TIMEZONE object.
+		// FIXME: Use Sabre factory method and then wrap in OC_VObject afterwards.
 		$vcalendar = new \OC_VObject('VCALENDAR');
 		$appinfo = \OCP\App::getAppInfo('journal');
 		$appversion = \OCP\App::getAppVersion('journal');
@@ -161,6 +162,7 @@ class App {
 	 * @return OC_VObject The newly created stub.
 	 */
 	public static function createVJournal() {
+		// FIXME: Use Sabre factory method.
 		$vjournal = new \OC_VObject('VJOURNAL');
 		$vjournal->setDateTime('DTSTART', 'now', \Sabre_VObject_Property_DateTime::LOCALTZ);
 		$vjournal->setDateTime('CREATED', 'now', \Sabre_VObject_Property_DateTime::UTC);
@@ -173,12 +175,36 @@ class App {
 	}
 
 	/**
+	 * @brief returns the default categories of ownCloud
+	 * @return (array) $categories
+	 */
+	public static function getDefaultCategories() {
+		return array(
+			(string)self::$l10n->t('Birthday'),
+			(string)self::$l10n->t('Business'),
+			(string)self::$l10n->t('Call'),
+			(string)self::$l10n->t('Clients'),
+			(string)self::$l10n->t('Deliverer'),
+			(string)self::$l10n->t('Holidays'),
+			(string)self::$l10n->t('Ideas'),
+			(string)self::$l10n->t('Journey'),
+			(string)self::$l10n->t('Jubilee'),
+			(string)self::$l10n->t('Meeting'),
+			(string)self::$l10n->t('Other'),
+			(string)self::$l10n->t('Personal'),
+			(string)self::$l10n->t('Projects'),
+			(string)self::$l10n->t('Questions'),
+			(string)self::$l10n->t('Work'),
+		);
+	}
+
+	/**
 	 * @brief returns the vcategories object of the user
 	 * @return (object) $vcategories
 	 */
 	protected static function getVCategories() {
 		if (is_null(self::$categories)) {
-			self::$categories = new \OC_VCategories('journal', null, \OC_Contacts_App::getDefaultCategories());
+			self::$categories = new \OC_VCategories('journal', null, self::getDefaultCategories());
 		}
 		return self::$categories;
 	}
@@ -202,7 +228,7 @@ class App {
 			self::scanCategories();
 			$categories = self::$categories->categories();
 		}
-		return ($categories ? $categories : \OC_Contacts_App::getDefaultCategories());
+		return ($categories ? $categories : self::getDefaultCategories());
 	}
 
 	/**
