@@ -25,14 +25,14 @@ $.widget( 'ui.rte', {
 		this.formatText('styleWithCSS', true);
 		this.validtags = ['A','P','STRONG', 'B', 'I',  'SPAN', 'DIV', 'OL', 'UL', 'LI', 'DL', 'DT', 'DD'];
 		this.enabled = true;
-		
-		/*$(window).resize(function(){  
-			textarea.css({  
+
+		/*$(window).resize(function(){
+			textarea.css({
 				width: textarea.width(),
 				height: textarea.height(),
-				top: textarea.offset().top,  
-				left: textarea.offset().left  
-			});  
+				top: textarea.offset().top,
+				left: textarea.offset().left
+			});
 		});*/
 		this.mirror.on('keydown', function(event){
 			if(event.which == 13) {
@@ -55,7 +55,7 @@ $.widget( 'ui.rte', {
 				self.dirty = false;
 			}
 		});
-		
+
 	},
 	_init: function() {
 		console.log('_init');
@@ -70,14 +70,14 @@ $.widget( 'ui.rte', {
 			this.mirror.html(str);
 			this.element.text(str);
 		} else {
-			console.log('returning: ' + this.element.val());
+			//console.log('returning: ' + this.element.val());
 			return this.element.val();
 		}
 	},
 	html: function(str) {
 		console.log('function html');
 		if(str != undefined) {
-			console.log('str: ' + str);
+			//console.log('str: ' + str);
 			var $str;
 			try {
 				$str = $(str);
