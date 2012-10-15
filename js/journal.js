@@ -249,12 +249,14 @@ OC.Journal = {
 			$('#categories').val(data.categories.join(','));
 			$('#categories').multiple_autocomplete('option', 'source', OC.Journal.categories);
 
-			console.log('Trying to parse: ' + data.dtstart);
 			var date = new Date(parseInt(data.dtstart)*1000);
-			//$('#dtstartdate').val(date.getDate()+'-'+date.getMonth()+'-'+date.getFullYear()); //
-			$('#dtstartdate').datepicker('setDate', date);
+			if(Modernizr.inputtypes.date) {
+				$('#dtstartdate').val($.datepicker.formatDate('yy-mm-dd', date)); //
+			} else {
+				$('#dtstartdate').datepicker('setDate', date);
+			}
 			if(data.only_date) {
-				$('#dtstarttime').hide();
+				$('#dtstarttime').val('').hide();
 				$('#also_time').attr('checked', false);
 				//$('#also_time').get(0).checked = false;
 			} else {
@@ -304,9 +306,22 @@ OC.Journal = {
 					params['parameters']['FORMAT'] = format.toUpperCase();
 					break;
 				case 'DTSTART':
-					var date = $('#dtstartdate').val() || $.datepicker.formatDate('dd-mm-yy', new Date());
+					// FIXME: I need a RegEx wizard to validate the format of these.
+					var date = $('#dtstartdate').val() || $.datepicker.formatDate('yy-mm-dd', new Date());
 					var time = $('#dtstarttime').val() || '00:00';
-					var datetime = new Date(parseInt(date.substring(6, 10), 10), parseInt(date.substring(3, 5), 10)-1, parseInt(date.substring(0, 2), 10) , parseInt(time.substring(0, 2), 10), parseInt(time.substring(3, 5), 10), 0, 0);
+					/* Why doesn't this work?
+					 * var datetime = new Date(
+						parseInt(date.substr(0, 4), 10), // Year
+						parseInt(date.substr(5, 2), 10), // Month
+						parseInt(date.substr(8, 2), 10), // Date
+						parseInt(time.substr(0, 2), 10), // Hours
+						parseInt(time.substr(3, 2), 10), 0, 0); // Minutes and seconds*/
+					var datetime = $.datepicker.parseDate('yy-mm-dd', date);
+					if($('#also_time').is(':checked')) {
+						datetime.setHours(parseInt(time.substr(0, 2), 10));
+						datetime.setMinutes(parseInt(time.substr(3, 2), 10));
+					}
+					console.log('saveproperty, DTSTART', date, time, datetime);
 					params['value'] = datetime.getTime()/1000;
 					break;
 				default:
@@ -386,16 +401,33 @@ OC.Journal = {
 	Journals:{
 		sortmethod:'dtasc',
 		filterDateRange:function() {
-			var start = $('#daterangefrom').datepicker('getDate');
-			console.log('start', start);
+			if(!$('#daterangefrom').val() || ! $('#daterangeto').val())
+			var start, end;
+			if(Modernizr.inputtypes.date) {
+				var dateparts = $('#daterangefrom').val().split('-');
+				if(dateparts.length < 3) {
+					return;
+				}
+				start = new Date(dateparts[0], dateparts[1], dateparts[2]);
+			} else {
+				start = $('#daterangefrom').datepicker('getDate');
+			}
 			if(start == null) {
 				return;
 			}
-			var end = $('#daterangeto').datepicker('getDate');
-			console.log('end', end);
+			if(Modernizr.inputtypes.date) {
+				var dateparts = $('#daterangeto').val().split('-');
+				if(dateparts.length < 3) {
+					return;
+				}
+				end = new Date(dateparts[0], dateparts[1], dateparts[2]);
+			} else {
+				end = $('#daterangeto').datepicker('getDate');
+			}
 			if(end == null) {
 				return;
 			}
+			console.log('filterDateRange', start, end);
 			$('#leftcontent li').each(function () {
 				var data = $(this).data('entry');
 				var dtstart = new Date(parseInt(data.dtstart)*1000);
@@ -526,8 +558,12 @@ $(document).ready(function(){
 	// Initialize controls.
 	$('#categories').multiple_autocomplete({source: OC.Journal.categories});
 	//$('#categories').multiple_autocomplete('option', 'source', categories);
-	$('#dtstartdate').datepicker({dateFormat: 'dd-mm-yy'});
-	$('#dtstarttime').timepicker({timeFormat: 'hh:mm', showPeriodLabels:false});
+	if(!Modernizr.inputtypes.date) {
+		$('#dtstartdate').datepicker({dateFormat: 'dd-mm-yy'});
+	}
+	if(!Modernizr.inputtypes.time) {
+		$('#dtstarttime').timepicker({timeFormat: 'hh:mm', showPeriodLabels:false});
+	}
 	$('#description').rte({classes: ['property','content']});
 	$('.tip').tipsy();
 
@@ -558,25 +594,36 @@ $(document).ready(function(){
 		var drfrom = $('#daterangefrom');
 		var drto = $('#daterangeto');
 		if($(this).is(':checked')) {
-			drfrom.prop('disabled', false).datepicker({
-				dateFormat: 'dd-mm-yy',
-				changeMonth: true,
-				changeYear: true
-			});
-			drto.prop('disabled', false).datepicker({
-				dateFormat: 'dd-mm-yy',
-				changeMonth: true,
-				changeYear: true
-			});
+			drfrom.prop('disabled', false);
+			if(!Modernizr.inputtypes.date) {
+				drfrom.datepicker({
+					dateFormat: 'dd-mm-yy',
+					changeMonth: true,
+					changeYear: true
+				});
+			}
+			drto.prop('disabled', false);
+			if(!Modernizr.inputtypes.date) {
+				drto.datepicker({
+					dateFormat: 'dd-mm-yy',
+					changeMonth: true,
+					changeYear: true
+				});
+			}
 			OC.Journal.Journals.filterDateRange();
 		} else {
-			drfrom.prop('disabled', true).datepicker('destroy');
-			drto.prop('disabled', true).datepicker('destroy');
+			drfrom.prop('disabled', true);
+			drto.prop('disabled', true);
+			if(!Modernizr.inputtypes.date) {
+				drfrom.datepicker('destroy');
+				drto.datepicker('destroy');
+			}
 			$('#leftcontent li').show();
 		}
 	});
 
-	$('#controls').on('change', '#daterangefrom,#daterangeto', function(event) {
+	$('#controls').on('change input', '#daterangefrom,#daterangeto', function(event) {
+		console.log('daterange change')
 		OC.Journal.Journals.filterDateRange();
 	});
 
