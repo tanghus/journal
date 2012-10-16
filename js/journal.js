@@ -481,7 +481,7 @@ OC.Journal = {
 
 			var arr = []
 			// loop through each list item and get the metadata
-			$('#leftcontent li:not(:hidden)').each(function () {
+			$('#leftcontent').children('li:visible').each(function () {
 				var meta = $(this).data('entry');
 				meta.elem = $(this);
 				arr.push(meta);
