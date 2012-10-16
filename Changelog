@@ -2,6 +2,9 @@
 
 - Support for native date input fields.
 - Improved date handling.
+- Improved layout.
+- Fix setting description on non-rich text entries.
+- Disable actions (download/delete/share/link) while editing.
 
 ### 0.1.1
 - Bugfix release.
