@@ -24,7 +24,7 @@ div.propertycontainer[data-type="DESCRIPTION"] { height: 90%; }
 #description { width: 95%; height: 90%; }
 .rte-content { position: absolute; left: 1em; right: 1em; top: 7em; bottom: 1em; overflow: auto; }
 #summary { width: 95%; font-size: 1.4em; font-weight: bold; height: 1.6em; }
-.editable,.content { font-size: 1.2em; background-color: #fff !important; border: 1px solid #fff !important; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; cursor: text; }
+.editable,.content { display:inline-block; font-size: 1.2em; background-color: #fff !important; border: 1px solid #fff !important; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; cursor: text; }
 .editable:hover,.editable:focus,.editable:hover:active { border: 1px solid #1d2d44 !important; }
 #categories,#organizer,#location,#link { width: 18em; clear: right; }
 #dtstartdate { width: 10em; }
