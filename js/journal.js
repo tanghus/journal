@@ -187,7 +187,7 @@ OC.Journal = {
 			OC.Journal.setEnabled(false);
 			$('#summary').prop('disabled', false);
 			$('#summary').addClass('editable');
-			$('#leftcontent lidata-id="'+this.id+'"').removeClass('active');
+			$('#entries lidata-id="'+this.id+'"').removeClass('active');
 			this.id = 'new';
 			this.data = undefined;
 			$('.property').each(function () {
@@ -335,10 +335,10 @@ OC.Journal = {
 						self.loadEntry(jsondata.data.id, jsondata.data);
 						OC.Journal.setEnabled(true);
 					} else {
-						$('#leftcontent li[data-id="'+self.id+'"]').remove();
+						$('#entries li[data-id="'+self.id+'"]').remove();
 					}
 					var item = self.createEntry(jsondata.data);
-					$('#leftcontent').append(item).find('img.shared').tipsy();
+					$('#entries').append(item).find('img.shared').tipsy();
 					OC.Journal.Journals.doSort();
 					OC.Journal.Journals.scrollTo(self.id);
 					console.log('successful save');
@@ -373,7 +373,7 @@ OC.Journal = {
 				if(answer == true) {
 					$.post(OC.filePath('journal', 'ajax', 'delete.php'), {'id': self.id}, function(jsondata) {
 						if(jsondata.status == 'success') {
-							var curlistitem = $('#leftcontent li[data-id="'+self.id+'"]');
+							var curlistitem = $('#entries li[data-id="'+self.id+'"]');
 							var newlistitem = curlistitem.prev('li');
 							if(!$(newlistitem).is('li')) {
 								newlistitem = curlistitem.next('li');
@@ -428,7 +428,7 @@ OC.Journal = {
 				return;
 			}
 			console.log('filterDateRange', start, end);
-			$('#leftcontent li').each(function () {
+			$('#entries li').each(function () {
 				var data = $(this).data('entry');
 				var dtstart = new Date(parseInt(data.dtstart)*1000);
 				//console.log('dtstart', dtstart);
@@ -481,7 +481,7 @@ OC.Journal = {
 
 			var arr = []
 			// loop through each list item and get the metadata
-			$('#leftcontent').children('li:visible').each(function () {
+			$('#entries').children('li:visible').each(function () {
 				var meta = $(this).data('entry');
 				meta.elem = $(this);
 				arr.push(meta);
@@ -497,14 +497,14 @@ OC.Journal = {
 			this.owners = [];
 			console.log('update: ' + id);
 			self = this;
-			$('#leftcontent').addClass('loading');
+			$('#entries').addClass('loading');
 			$.getJSON(OC.filePath('journal', 'ajax', 'entries.php'), function(jsondata) {
 				if(jsondata.status == 'success') {
 					OC.Journal.singlecalendar = Boolean(jsondata.data.singlecalendar);
 					if(OC.Journal.singlecalendar) {
 						$('#calendar').val(jsondata.data.cid).prop('disabled', true);
 					}
-					var entries = $('#leftcontent').empty();
+					var entries = $('#entries').empty();
 					if(jsondata.data.entries.length > 0) {
 						$(jsondata.data.entries).each(function(i, entry) {
 							entries.append(OC.Journal.Entry.createEntry(entry)).find('img.shared').tipsy();
@@ -516,9 +516,9 @@ OC.Journal = {
 						OC.Journal.Journals.doSort('dtasc');
 						var firstitem;
 						if(id) {
-							firstitem = $('#leftcontent li[data-id="'+id+'"]');
+							firstitem = $('#entries li[data-id="'+id+'"]');
 						} else {
-							firstitem = $('#leftcontent li').first();
+							firstitem = $('#entries li').first();
 							if(firstitem.length == 0) {
 								return;
 							}
@@ -538,13 +538,13 @@ OC.Journal = {
 					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
 				}
 			});
-			$('#leftcontent').removeClass('loading');
+			$('#entries').removeClass('loading');
 		},
 		scrollTo:function(id){
-			var item = $('#leftcontent li[data-id="'+id+'"]');
+			var item = $('#entries li[data-id="'+id+'"]');
 			if(item) {
 				try {
-					$('#leftcontent').animate({scrollTop: $('#leftcontent li[data-id="'+id+'"]').offset().top-70}, 'slow','swing');
+					$('#entries').animate({scrollTop: $('#entries li[data-id="'+id+'"]').offset().top-70}, 'slow','swing');
 				} catch(e) {}
 			}
 		}
@@ -618,7 +618,7 @@ $(document).ready(function(){
 				drfrom.datepicker('destroy');
 				drto.datepicker('destroy');
 			}
-			$('#leftcontent li').show();
+			$('#entries li').show();
 		}
 	});
 
@@ -654,13 +654,13 @@ $(document).ready(function(){
 	});
 
 	// Proxy click.
-	$('#leftcontent').on('keydown', '#leftcontent', function(event) {
+	$('#entries').on('keydown', '#entries', function(event) {
 		if(event.which == 13) {
-			$('#leftcontent').click(event);
+			$('#entries').click(event);
 		}
 	});
 	// Journal entry clicked
-	$(document).on('click', '#leftcontent', function(event) {
+	$(document).on('click', '#entries', function(event) {
 		var $tgt = $(event.target);
 		var item = $tgt.is('li')?$($tgt):($tgt).parents('li').first();
 		if(item.length == 0) {
@@ -671,7 +671,7 @@ $(document).ready(function(){
 		var oldid = $('#entry').data('id');
 		console.log('oldid: ' + oldid);
 		if(oldid != 0){
-			$('#leftcontent li[data-id="'+oldid+'"]').removeClass('active');
+			$('#entries li[data-id="'+oldid+'"]').removeClass('active');
 		}
 		OC.Journal.Entry.loadEntry(id, item.data('entry'));
 		return false;

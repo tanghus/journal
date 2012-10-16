@@ -5,8 +5,6 @@
 </head>
 <body>
 <div id="content" metal:fill-slot="content" i18n:domain="journal">
-	<div id='notification'></div>
-	<div id="appsettings" class="popup topright hidden"></div>
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">
 			<option value="dtasc" i18n:translate="">Date - ascending</option>
@@ -23,8 +21,12 @@
 		<label class="tip" for="daterangesort" title="Only show entries between these days." i18n:attributes="title" i18n:translate="">Filter by date</label>
 		<a class="tip cog" title="Settings" i18n:attributes="title"></a>
 	</div>
-	<ul id="leftcontent"></ul>
+	<div id="leftcontent">
+		<ul id="entries"></ul>
+	</div>
 	<div id="rightcontent">
+		<div id='notification'></div>
+		<div id="appsettings" class="popup topright hidden"></div>
 		<div class="hidden" id="firstrun">
 			<h1 i18n:translate="">
 				You have no entries in your journal.
