@@ -154,6 +154,7 @@ OC.Journal = {
 				$('#editortoolbar li').show();
 			}
 			$('#togglemode').show();
+			$('#actions').hide();
 			$('#summary').addClass('editable');
 			$('.property,#also_time').each(function () {
 				$(this).prop('disabled', false);
@@ -165,6 +166,7 @@ OC.Journal = {
 			$('#description').rte('setEnabled', false);
 			$('#editortoolbar .richtext, #togglemode').hide();
 			$('#summary').removeClass('editable');
+			$('#actions').show();
 			$('.property,#also_time').each(function () {
 				$(this).prop('disabled', true);
 			});
@@ -218,7 +220,7 @@ OC.Journal = {
 				+ sharedindicator + '<br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
-			console.log('loadEntry: ' + id + ': ' + data.summary);
+			console.log('loadEntry:', id, data.summary, data.description.format);
 			this.permissions = parseInt(data.permissions);
 			this.readonly = !(this.permissions & OC.PERMISSION_UPDATE);
 			console.log('permissions:', this.permissions);
@@ -337,7 +339,7 @@ OC.Journal = {
 					} else {
 						$('#entries li[data-id="'+self.id+'"]').remove();
 					}
-					var item = self.createEntry(jsondata.data);
+					var item = OC.Journal.Entry.createEntry(jsondata.data);
 					$('#entries').append(item).find('img.shared').tipsy();
 					OC.Journal.Journals.doSort();
 					OC.Journal.Journals.scrollTo(self.id);
@@ -387,6 +389,8 @@ OC.Journal = {
 							if(newlistitem.length > 0) {
 								$(newlistitem).addClass('active');
 								var data = newlistitem.data('entry');
+								OC.Journal.setEnabled(false);
+								$('#editable').prop('checked', false);
 								self.loadEntry(data.id, data);
 							}
 							console.log('successful delete');
