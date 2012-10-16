@@ -7,7 +7,6 @@
 <div id="content" metal:fill-slot="content" i18n:domain="journal">
 	<div id='notification'></div>
 	<div id="appsettings" class="popup topright hidden"></div>
-	<form onsubmit="return false;">
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">
 			<option value="dtasc" i18n:translate="">Date - ascending</option>
@@ -114,7 +113,6 @@
 		var id = '${id}';
 		var totalurl = '${url:string:journal/index.php}';
 	</script>
-</form>
 </div>
 </body>
 </html>
