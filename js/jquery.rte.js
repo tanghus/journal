@@ -10,7 +10,7 @@ $.widget( 'ui.rte', {
 	},
 	// Set up the widget
 	_create: function() {
-		console.log('_create');
+		console.log('rte._create');
 		var self = this,
 			o = self.options,
 			dirty = false,
@@ -58,7 +58,7 @@ $.widget( 'ui.rte', {
 
 	},
 	_init: function() {
-		console.log('_init');
+		console.log('rte._init');
 		self = this;
 		$.each(this.options, function(key, value) {
 			self._setOption(key, value);
@@ -68,7 +68,7 @@ $.widget( 'ui.rte', {
 		console.log('function text');
 		if(str != undefined) {
 			this.mirror.html(str);
-			this.element.text(str);
+			this.element.val(str);
 		} else {
 			//console.log('returning: ' + this.element.val());
 			return this.element.val();
@@ -188,7 +188,7 @@ $.widget( 'ui.rte', {
 	},
 	// Use the _setOption method to respond to changes to options
 	_setOption: function( key, value ) {
-		console.log('option ' + key + ': ' + value);
+		console.log('rte option ' + key + ': ' + value);
 		switch( key ) {
 			case 'disabled':
 				if(value) {
