@@ -2,7 +2,6 @@
 <info>
 	<id>journal</id>
 	<name>Journal</name>
-	<version>0.1.1</version>
 	<licence>AGPL</licence>
 	<author>Thomas Tanghus</author>
 	<require>4.9.1</require>
