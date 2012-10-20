@@ -570,6 +570,7 @@ $(document).ready(function(){
 	}
 	$('#description').rte({classes: ['property','content']});
 	$('.tip').tipsy();
+	$('#actions a,.cog').tipsy({gravity: 'e'});
 
 	OC.Journal.init();
 

@@ -18,8 +18,8 @@
 		<label for="daterangeto" i18n:translate="">To:</label>
 		<input class="property" id="daterangeto" name="value" type="date" size="10" autocomplete="off" placeholder="yyyy-mm-dd" value="" i18n:attributes="placeholder" disabled="true" />
 		<input type="checkbox" id="daterangesort" />
-		<label class="tip" for="daterangesort" title="Only show entries between these days." i18n:attributes="title" i18n:translate="">Filter by date</label>
-		<a class="tip cog" title="Settings" i18n:attributes="title"></a>
+		<label for="daterangesort" title="Only show entries between these days." i18n:attributes="title" i18n:translate="">Filter by date</label>
+		<a class="cog" title="Settings" i18n:attributes="title"></a>
 	</div>
 	<div id="leftcontent">
 		<ul id="entries"></ul>
@@ -73,10 +73,10 @@
 			<div>
 				<input type="checkbox" id="editable" /><label class="tip" for="editable" title="Set this journal entry in edit mode" i18n:attributes="title" i18n:translate="">Edit</label>
 				<span id="actions">
-					<a class="tip download" id="export" title="Export as iCal file" i18n:attributes="title"></a>
-					<a class="tip globe" id="showlink" title="Direct link to this journal entry" i18n:attributes="title"></a>
-					<a class="tip share" title="Sharing" i18n:attributes="title" data-item-type="journal"></a>
-					<a class="tip delete" id="delete" title="Delete this journal entry" i18n:attributes="title"></a>
+					<a class="download" id="export" title="Export as iCal file" i18n:attributes="title"></a>
+					<a class="globe" id="showlink" title="Direct link to this journal entry" i18n:attributes="title"></a>
+					<a class="share" title="Sharing" i18n:attributes="title" data-item-type="journal"></a>
+					<a class="delete" id="delete" title="Delete this journal entry" i18n:attributes="title"></a>
 				</span>
 				<input class="hidden" id="link" type="text" />
 			</div>
