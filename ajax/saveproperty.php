@@ -80,11 +80,11 @@ switch($property) {
 			try {
 				if(!isset($vjournal->DESCRIPTION['X-KDE-TEXTFORMAT'])) {
 					$vjournal->DESCRIPTION->add(
-						new Sabre_VObject_Parameter('X-KDE-TEXTFORMAT', 'HTML'));
+						new Sabre\VObject\Parameter('X-KDE-TEXTFORMAT', 'HTML'));
 				}
 				if(!isset($vjournal->DESCRIPTION['X-TEXTFORMAT'])) {
 					$vjournal->DESCRIPTION->add(
-						new Sabre_VObject_Parameter('X-TEXTFORMAT', 'HTML'));
+						new Sabre\VObject\Parameter('X-TEXTFORMAT', 'HTML'));
 				}
 			} catch (Exception $e) {
 				OCP\JSON::error(array(
@@ -121,9 +121,9 @@ switch($property) {
 			//$dtstart = new DateTime($value, $timezone);
 			$dtstart = new DateTime('@'.$value);
 			$dtstart->setTimezone($timezone);
-			$type = Sabre_VObject_Property_DateTime::LOCALTZ;
+			$type = Sabre\VObject\Property\DateTime::LOCALTZ;
 			if ($date_only) {
-				$type = Sabre_VObject_Property_DateTime::DATE;
+				$type = Sabre\VObject\Property\DateTime::DATE;
 			}
 			$vjournal->setDateTime('DTSTART', $dtstart, $type);
 		} catch (Exception $e) {
@@ -155,8 +155,8 @@ switch($property) {
 		exit();
 }
 
-$vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre_VObject_Property_DateTime::UTC);
-$vjournal->setDateTime('DTSTAMP', 'now', Sabre_VObject_Property_DateTime::UTC);
+$vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre\VObject\Property\DateTime::UTC);
+$vjournal->setDateTime('DTSTAMP', 'now', Sabre\VObject\Property\DateTime::UTC);
 
 if(is_null($cid)) {
 	$cid = OCP\Config::getUserValue(

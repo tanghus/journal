@@ -108,7 +108,7 @@ class App {
 				}
 				$journal['dtstart'] = $dtstart->format('U');
 				$journal['only_date'] = ($vjournal->DTSTART->getDateType()
-							== \Sabre_VObject_Property_DateTime::DATE);
+							== \Sabre\VObject\Property\DateTime::DATE);
 			} else {
 				\OCP\Util::writeLog('journal',
 					'Could not get DTSTART DateTime for ' . $journal['summary'],
@@ -164,8 +164,8 @@ class App {
 	public static function createVJournal() {
 		// FIXME: Use Sabre factory method.
 		$vjournal = new \OC_VObject('VJOURNAL');
-		$vjournal->setDateTime('DTSTART', 'now', \Sabre_VObject_Property_DateTime::LOCALTZ);
-		$vjournal->setDateTime('CREATED', 'now', \Sabre_VObject_Property_DateTime::UTC);
+		$vjournal->setDateTime('DTSTART', 'now', \Sabre\VObject\Property\DateTime::LOCALTZ);
+		$vjournal->setDateTime('CREATED', 'now', \Sabre_VObject_Property\DateTime::UTC);
 		$vjournal->setUID();
 		$email = \OCP\Config::getUserValue(\OCP\User::getUser(), 'settings', 'email', '');
 		if($email) {
