@@ -23,6 +23,8 @@
 
 namespace OCA\Journal;
 
+use Sabre\VObject;
+
 /**
  * This class manages our journal.
  */
@@ -108,7 +110,7 @@ class App {
 				}
 				$journal['dtstart'] = $dtstart->format('U');
 				$journal['only_date'] = ($vjournal->DTSTART->getDateType()
-							== \Sabre\VObject\Property\DateTime::DATE);
+							== VObject\Property\DateTime::DATE);
 			} else {
 				\OCP\Util::writeLog('journal',
 					'Could not get DTSTART DateTime for ' . $journal['summary'],
@@ -145,8 +147,8 @@ class App {
 	 */
 	public static function createVCalendar() {
 		// TODO: Add TIMEZONE object.
-		// FIXME: Use Sabre factory method and then wrap in OC_VObject afterwards.
-		$vcalendar = new \OC_VObject('VCALENDAR');
+		$vobject = VObject\Component::create('VCALENDAR');
+		$vcalendar = new \OC_VObject($vobject);
 		$appinfo = \OCP\App::getAppInfo('journal');
 		$appversion = \OCP\App::getAppVersion('journal');
 		$prodid = '-//ownCloud//NONSGML ' . $appinfo['name']
@@ -162,10 +164,10 @@ class App {
 	 * @return OC_VObject The newly created stub.
 	 */
 	public static function createVJournal() {
-		// FIXME: Use Sabre factory method.
-		$vjournal = new \OC_VObject('VJOURNAL');
-		$vjournal->setDateTime('DTSTART', 'now', \Sabre\VObject\Property\DateTime::LOCALTZ);
-		$vjournal->setDateTime('CREATED', 'now', \Sabre\VObject\Property\DateTime::UTC);
+		$vobject = VObject\Component::create('VJOURNAL');
+		$vjournal = new \OC_VObject($vobject);
+		$vjournal->setDateTime('DTSTART', 'now', VObject\Property\DateTime::LOCALTZ);
+		$vjournal->setDateTime('CREATED', 'now', VObject\Property\DateTime::UTC);
 		$vjournal->setUID();
 		$email = \OCP\Config::getUserValue(\OCP\User::getUser(), 'settings', 'email', '');
 		if($email) {
