@@ -31,7 +31,7 @@ $required_apps = array(
 foreach($required_apps as $app) {
 	if(!OCP\App::isEnabled($app['id'])) {
 		$error = (string)$l->t('The %%s app isn\'t enabled! Please enable it here: <strong><a href="%%s?appid=%%s">Enable %%s app</a></strong>');
-		$errors[] = sprintf($error, $app['name'],OCP\Util::linkTo('settings', 'apps'), $app['id'], $app['name']);
+		$errors[] = sprintf($error, $app['name'],OCP\Util::linkTo('settings', 'apps.php'), $app['id'], $app['name']);
 	}
 }
 
@@ -69,7 +69,7 @@ if($errors) {
 	$tmpl = new OC_TALTemplate('journal', 'index', 'user');
 	$tmpl->assign('categories', $categories);
 	$tmpl->assign('calendars', $calendars);
-	$tmpl->assign('singlecalendar',$singlecalendar);
-	$tmpl->assign('id',$id);
+	$tmpl->assign('singlecalendar', $singlecalendar);
+	$tmpl->assign('id', $id);
 }
 $tmpl->printPage();
