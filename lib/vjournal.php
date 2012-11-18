@@ -73,4 +73,45 @@ class VJournal extends \OC_Calendar_Object {
 		}
 	}
 
+	/**
+	 * @brief deletes an object
+	 * @param integer $id id of object
+	 * @return boolean
+	 */
+	public static function delete($id) {
+		$oldobject = self::find($id);
+		$calendar = OC_Calendar_Calendar::find($oldobject['calendarid']);
+		if ($calendar['userid'] != OCP\User::getUser()) {
+			$sharedCalendar = OCP\Share::getItemSharedWithBySource('calendar', $id);
+			$sharedJournal = OCP\Share::getItemSharedWithBySource('journal', $id, OCP\Share::FORMAT_NONE, null, true);
+			$calendar_permissions = 0;
+			$journal_permissions = 0;
+			if ($sharedCalendar) {
+				$calendar_permissions = $sharedCalendar['permissions'];
+			}
+			if ($sharedJournal) {
+				$journal_permissions = $sharedEvent['permissions'];
+			}
+			$permissions = max($calendar_permissions, $journal_permissions);
+			if (!($permissions & OCP\PERMISSION_DELETE)) {
+				throw new Exception(
+					OC_Contacts_App::$l10n->t(
+						'You do not have the permissions to delete this journal.'
+					)
+				);
+			}
+		}
+		$stmt = OCP\DB::prepare( 'DELETE FROM `*PREFIX*calendar_objects` WHERE `id` = ?' );
+		$stmt->execute(array($id));
+		OC_Calendar_Calendar::touchCalendar($oldobject['calendarid']);
+
+		OCP\Share::unshareAll('journal', $id);
+
+		OCP\Util::emitHook('OC_Calendar', 'deleteEvent', $id);
+
+		App::getVCategories()->purgeObject($id);
+
+		return true;
+	}
+
 }
