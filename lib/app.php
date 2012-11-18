@@ -40,9 +40,7 @@ class App {
 	public static function arrayForJSON($id, $calendarid, $vjournal, $user_timezone) {
 
 		$owner = \OC_Calendar_Object::getowner($id);
-		$permissions = \OCP\Share::PERMISSION_CREATE
-				| \OCP\Share::PERMISSION_READ | \OCP\Share::PERMISSION_UPDATE
-				| \OCP\Share::PERMISSION_DELETE | \OCP\Share::PERMISSION_SHARE;
+		$permissions = \OCP\PERMISSION_ALL;
 
 		if($owner !== \OCP\User::getUser()) {
 			$sharedJournal = \OCP\Share::getItemSharedWithBySource('journal', $id);
@@ -92,12 +90,10 @@ class App {
 		}
 
 		if(isset($vjournal->ORGANIZER)) {
-			$journal['organizer'] = array(
-									'value' => $vjournal->getAsString('ORGANIZER'),
-									'parameters' => self::parametersForProperty($vjournal->ORGANIZER)
-									);
+			$organizer = $vjournal->getAsString('ORGANIZER');
+			$journal['organizer'] = strpos($organizer, ':') !== false ? explode(':', $organizer)[1] : $organizer;
 		} else {
-			$journal['organizer'] = array('value' => '', 'parameters' => array());
+			$journal['organizer'] = '';
 		}
 		$journal['categories'] = $vjournal->getAsArray('CATEGORIES');
 		if(isset($vjournal->DTSTART)) {

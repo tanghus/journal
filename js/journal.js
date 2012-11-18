@@ -236,7 +236,8 @@ OC.Journal = {
 			$('#entry').data('id', id);
 			$('#calendar').val(data.calendarid);
 			$('#summary').val(data.summary.unEscape());
-			$('#organizer').val(data.organizer.value.split(':')[1]);
+			console.log('organizer', data.organizer);
+			$('#organizer').val(data.organizer);
 
 			var format = data.description.format;
 			console.log('format: '+format);

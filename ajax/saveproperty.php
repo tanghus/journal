@@ -134,17 +134,12 @@ switch($property) {
 		}
 		break;
 	case 'ORGANIZER':
+		if(strpos($organizer, '@') !== false) {
+			$value = "MAILTO:" . $value;
+		}
 	case 'SUMMARY':
 	case 'CATEGORIES':
-		$vobject = $vjournal->getVObject();
-		if(isset($vobject[$property])) {
-			debug('Adding property: '.$property.': '.$value);
-			$vobject[$property]['value'] = $value;
-		} else {
-			$vjournal->setString($property, $value);
-		}
-		break;
-		$vjournal->setString($property, $value);
+		$vjournal->{$property} = $value;
 		break;
 	default:
 		OCP\JSON::error(array(
