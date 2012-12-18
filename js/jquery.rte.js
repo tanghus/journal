@@ -59,7 +59,7 @@ $.widget( 'ui.rte', {
 	},
 	_init: function() {
 		console.log('rte._init');
-		self = this;
+		var self = this;
 		$.each(this.options, function(key, value) {
 			self._setOption(key, value);
 		});
@@ -142,7 +142,7 @@ $.widget( 'ui.rte', {
 		alert("You selected: " + selectedText);
 	},
 	formatText: function(command, option) {
-		self = this, useDialog = false;
+		var self = this, useDialog = false;
 		switch(command) {
 			case 'ulist':
 				command = 'insertUnorderedList';

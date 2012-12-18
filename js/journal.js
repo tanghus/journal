@@ -73,7 +73,7 @@ String.prototype.zeroPad = function(digits) {
 OC.Journal = {
 	categories:undefined,
 	init:function() {
-		self = this;
+		var self = this;
 		this.setEnabled(false);
 		// Fetch journal entries. If it's a direct link 'id' will be loaded.
 		OC.Journal.Journals.update(id);
@@ -94,7 +94,7 @@ OC.Journal = {
 	 * data: An object that will be passed as argument to the timeouthandler and clickhandler functions.
 	 */
 	notify:function(params) {
-		self = this;
+		var self = this;
 		if(!self.notifier) {
 			self.notifier = $('#notification');
 		}
@@ -331,7 +331,7 @@ OC.Journal = {
 					$.extend(1, $(obj).serializeArray(), params);
 					break;
 			}
-			self = this;
+			var self = this;
 			$.post(OC.filePath('journal', 'ajax', 'saveproperty.php'), params, function(jsondata) {
 				if(jsondata.status == 'success') {
 					if(self.id == 'new') {
@@ -353,7 +353,7 @@ OC.Journal = {
 			});
 		},
 		moveToCalendar:function(calendarid) {
-			self = this;
+			var self = this;
 			$.post(OC.filePath('journal', 'ajax', 'movetocalendar.php'), {'id':this.id, 'calendarid':calendarid}, function(jsondata) {
 				if(jsondata.status == 'success') {
 					console.log('successful move');
@@ -371,7 +371,7 @@ OC.Journal = {
 			// TODO: Do something when there are no more entries.
 			if(this.id == 'new') { return; }
 			$('#delete').tipsy('hide');
-			self = this;
+			var self = this;
 			OC.dialogs.confirm(t('contacts', 'Are you sure you want to delete this entry?'), t('journal', 'Warning'), function(answer) {
 				if(answer == true) {
 					$.post(OC.filePath('journal', 'ajax', 'delete.php'), {'id': self.id}, function(jsondata) {
@@ -501,7 +501,7 @@ OC.Journal = {
 		update:function(id) {
 			this.owners = [];
 			console.log('update: ' + id);
-			self = this;
+			var self = this;
 			$('#entries').addClass('loading');
 			$.getJSON(OC.filePath('journal', 'ajax', 'entries.php'), function(jsondata) {
 				if(jsondata.status == 'success') {
