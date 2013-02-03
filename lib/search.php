@@ -45,17 +45,17 @@ class Search_Provider extends \OC_Search_Provider {
 					$calendardata = \OC_VObject::parse($object['calendardata']);
 					$vjournal = $calendardata->VJOURNAL;
 					$dtstart = $vjournal->DTSTART;
-					if($dtstart) {
+					if(!$dtstart) {
 						continue;
 					}
 					$start_dt = $dtstart->getDateTime();
 					$start_dt->setTimezone(new \DateTimeZone($user_timezone));
-					if ($dtstart->getDateType() == \Sabre_VObject_Property_DateTime::DATE) {
+					if ($dtstart->getDateType() == \Sabre\VObject\Property\DateTime::DATE) {
 						$info = $l->t('Date') . ': ' . $start_dt->format('d.m.Y');
 					}else{
 						$info = $l->t('Date') . ': ' . $start_dt->format('d.m.y H:i');
 					}
-					$link = \OCP\Util::linkTo('journal', 'index.php') . '&id=' . urlencode($object['id']);
+					$link = \OCP\Util::linkTo('journal', 'index.php') . '?id=' . urlencode($object['id']);
 					$results[]=new \OC_Search_Result($object['summary'], $info, $link, (string)$l->t('Journal'));
 				}
 			}
