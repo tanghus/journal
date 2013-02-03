@@ -34,6 +34,10 @@ foreach( $calendars as $calendar ){
 			continue;
 		}
 		$object = OC_VObject::parse($journal['calendardata']);
+		if(!$object) {
+			OCP\Util::writeLog('journal', 'ajax/getentries.php. Error parsing journal with id: '.$journal['id'], OCP\Util::ERROR);
+			continue;
+		}
 		$vjournalobj = $object->VJOURNAL;
 		try {
 			$journals[] = OCA\Journal\App::arrayForJSON($journal['id'], $journal['calendarid'], $vjournalobj, $user_timezone);
@@ -49,6 +53,10 @@ foreach($shared_journals as $journal) {
 		continue;
 	}
 	$object = OC_VObject::parse($journal['calendardata']);
+	if(!$object) {
+		OCP\Util::writeLog('journal', 'ajax/getentries.php. Error parsing journal with id: '.$journal['id'], OCP\Util::ERROR);
+		continue;
+	}
 	$vjournalobj = $object->VJOURNAL;
 	try {
 		$journals[] = OCA\Journal\App::arrayForJSON($journal['id'], $journal['calendarid'], $vjournalobj, $user_timezone);
