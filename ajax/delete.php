@@ -35,6 +35,7 @@ if(is_null($id)) {
 $journal = OC_Calendar_App::getEventObject($id);
 if($journal) {
 	OC_Calendar_Object::delete($id);
+	OCP\Share::unshareAll('journal', $id);
 	OCP\JSON::success(array('data' => array( 'id' => $id )));
 } else {
 	OCP\JSON::error(array(
