@@ -24,7 +24,7 @@ OCP\App::addNavigationEntry( array(
 	'id' => 'journal_index',
 	'order' => 11,
 	'href' => OCP\Util::linkTo( 'journal', 'index.php' ),
-	'icon' => OCP\Util::imagePath( 'journal', 'journal.png' ),
+	'icon' => OCP\Util::imagePath( 'journal', 'journal.svg' ),
 	'name' => $l->t('Journal')
 	)
 );
