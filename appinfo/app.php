@@ -4,7 +4,7 @@ OC::$CLASSPATH['OC_Calendar_Calendar'] = 'calendar/lib/calendar.php';
 OC::$CLASSPATH['OCA\Journal\App'] = 'journal/lib/app.php';
 OC::$CLASSPATH['OCA\Journal\Share_Backend'] = 'journal/lib/share.php';
 OC::$CLASSPATH['OCA\Journal\VJournal'] = 'journal/lib/vjournal.php';
-OC::$CLASSPATH['OCA\\Journal\\Search_Provider'] = 'journal/lib/search.php';
+OC::$CLASSPATH['OCA\\Journal\\SearchProvider'] = 'journal/lib/search.php';
 OC::$CLASSPATH['OCA\Journal\Hooks'] = 'journal/lib/hooks.php';
 
 OCP\Util::connectHook(
@@ -29,5 +29,5 @@ OCP\App::addNavigationEntry( array(
 	)
 );
 
-OC_Search::registerProvider('OCA\Journal\Search_Provider');
+OC_Search::registerProvider('OCA\Journal\SearchProvider');
 OCP\Share::registerBackend('journal', 'OCA\Journal\Share_Backend');
