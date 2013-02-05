@@ -22,7 +22,7 @@
 
 namespace OCA\Journal;
 
-class Search_Provider extends \OC_Search_Provider {
+class SearchProvider extends \OC_Search_Provider {
 	function search($query){
 		$calendars = \OC_Calendar_Calendar::allCalendars(\OCP\USER::getUser(), true);
 		if(count($calendars)==0 || !\OCP\App::isEnabled('calendar')) {
