@@ -21,7 +21,7 @@
 		<label for="daterangesort" title="Only show entries between these days." i18n:attributes="title" i18n:translate="">Filter by date</label>
 		<a class="cog" title="Settings" i18n:attributes="title"></a>
 	</div>
-	<div id="leftcontent">
+	<div id="leftcontent" class="hascontrols">
 		<ul id="entries"></ul>
 	</div>
 	<div id="rightcontent">
