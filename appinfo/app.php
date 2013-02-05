@@ -10,13 +10,13 @@ OC::$CLASSPATH['OCA\Journal\Hooks'] = 'journal/lib/hooks.php';
 OCP\Util::connectHook(
 	'OC_Task',
 	'taskCompleted',
-	'OC_Journal_Hooks',
+	'OCA\Journal\Hooks',
 	'taskToJournalEntry'
 );
 OCP\Util::connectHook(
 	'OC_Calendar',
 	'deleteCalendar',
-	'OC_Journal_Hooks',
+	'OCA\Journal\Hooks',
 	'calendarDeleted'
 );
 
