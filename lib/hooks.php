@@ -34,16 +34,22 @@ class Hooks {
 		if(!$vtodo) { return; }
 
 		\OCP\Util::writeLog('journal', __METHOD__ . ', Completed task: '
-			. $vtodo->getAsString('SUMMARY'), \OCP\Util::DEBUG);
+			. $vtodo->SUMMARY, \OCP\Util::DEBUG);
 		$vcalendar = App::createVCalendar();
 		$vjournal = App::createVJournal();
 		$vcalendar->add($vjournal);
-		$vjournal->setDateTime('DTSTART',$vtodo->COMPLETED->getDateTime());
-		$vjournal->SUMMARY = $vtodo->SUMMARY;
-		$vjournal->addProperty('RELATED-TO', $vtodo->uid);
-		$vjournal->setString('SUMMARY', App::$l10n->t('Completed task: ')
-			. $vjournal->getAsString('SUMMARY'));
-		$vjournal->DESCRIPTION = $vtodo->DESCRIPTION;
+
+		if($vtodo->DTSTART) {
+			$vjournal->DTSTART = $vtodo->COMPLETED;
+		}
+		if($vtodo->UID) {
+			$vjournal->{'RELATED-TO'} = $vtodo->UID;
+		}
+		$vjournal->SUMMARY = App::$l10n->t('Completed task: ')
+			. $vtodo->getAsString('SUMMARY');
+		if($vtodo->DESCRIPTION) {
+			$vjournal->DESCRIPTION = $vtodo->DESCRIPTION;
+		}
 
 		$cid = \OCP\Config::getUserValue(\OCP\User::getUser()
 			, 'journal',
