@@ -26,7 +26,7 @@ OCP\User::checkLoggedIn();
 $required_apps = array(
     array('id' => 'tal', 'name' => 'TAL Page Templates'),
     array('id' => 'journal', 'name' => 'Journal'),
-    array('id' => 'contacts', 'name' => 'Contacts'),
+    array('id' => 'calendar', 'name' => 'Calendar'),
 );
 foreach($required_apps as $app) {
 	if(!OCP\App::isEnabled($app['id'])) {
