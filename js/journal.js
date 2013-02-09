@@ -76,6 +76,7 @@ OC.Journal = {
 		var self = this;
 		this.setEnabled(false);
 		// Fetch journal entries. If it's a direct link 'id' will be loaded.
+		var id = parseInt(window.location.hash.substr(1));
 		OC.Journal.Journals.update(id);
 		$.getJSON(OC.filePath('journal', 'ajax', 'categories/list.php'), function(jsondata) {
 			if(jsondata.status == 'success') {
@@ -682,6 +683,16 @@ $(document).ready(function(){
 		OC.Journal.Entry.loadEntry(id, item.data('entry'));
 		return false;
 	});
+
+	$(window).bind('hashchange', function() {
+		console.log('hashchange', window.location.hash)
+		var id = parseInt(window.location.hash.substr(1));
+		if(id) {
+			entry = $('#entries li[data-id="'+id+'"]');
+			OC.Journal.Entry.loadEntry(id, entry.data('entry'));
+		}
+	});
+
 	// Editor command.
 	$('.rte-toolbar button').on('click', function(event) {
 		console.log('cmd: ' + $(this).data('cmd'));

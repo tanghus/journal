@@ -55,7 +55,7 @@ class SearchProvider extends \OC_Search_Provider {
 					}else{
 						$info = $l->t('Date') . ': ' . $start_dt->format('d.m.y H:i');
 					}
-					$link = \OCP\Util::linkTo('journal', 'index.php') . '?id=' . urlencode($object['id']);
+					$link = \OCP\Util::linkTo('journal', 'index.php') . '#' . urlencode($object['id']);
 					$results[]=new \OC_Search_Result($object['summary'], $info, $link, (string)$l->t('Journal'));
 				}
 			}
