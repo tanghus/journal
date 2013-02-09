@@ -584,7 +584,7 @@ $(document).ready(function(){
 	// it on blur and removes the binding again afterwards.
 	$('#showlink').on('click', function(event) {
 		console.log('showlink');
-		$('#link').toggle('slow').val(totalurl+'&id='+OC.Journal.Entry.id).focus().
+		$('#link').toggle('slow').val(window.location.protocol + '//' + window.location.host + OC.linkTo('journal', 'index.php')+'#'+OC.Journal.Entry.id).focus().
 			on('blur',function(event) {$(this).hide()}).off('blur', $(this));
 		return false;
 	});

@@ -25,7 +25,6 @@
 		<ul id="entries"></ul>
 	</div>
 	<div id="rightcontent">
-		<div id='notification'></div>
 		<div id="appsettings" class="popup topright hidden"></div>
 		<div class="hidden" id="firstrun">
 			<h1 i18n:translate="">
@@ -110,11 +109,6 @@
 			</dd>
 		</dl>
 	</div>
-	<script type="text/javascript">
-		var categories = ${structure php:json_encode(categories)};
-		var id = '${id}';
-		var totalurl = '${url:string:journal/index.php}';
-	</script>
 </div>
 </body>
 </html>
