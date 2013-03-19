@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html metal:use-macro="${maintemplate}/page">
-<head>
-	<title>Journal</title>
-</head>
-<body>
-<div id="content" metal:fill-slot="content" i18n:domain="journal">
+<div id="content" i18n:domain="journal">
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">
 			<option value="dtasc" i18n:translate="">Date - ascending</option>
@@ -110,5 +104,3 @@
 		</dl>
 	</div>
 </div>
-</body>
-</html>
