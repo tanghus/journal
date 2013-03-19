@@ -35,7 +35,7 @@ class SearchProvider extends \OC_Search_Provider {
 		}else{
 			$searchquery[] = $query;
 		}
-		error_log('search');
+
 		$user_timezone = \OCP\Config::getUserValue(\OCP\USER::getUser(), 'calendar', 'timezone', date_default_timezone_get());
 		$l = new \OC_l10n('journal');
 		foreach($calendars as $calendar) {
