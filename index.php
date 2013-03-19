@@ -66,7 +66,7 @@ if($errors) {
 	$tmpl = new OCP\Template( "journal", "rtfm", "user" );
 	$tmpl->assign('errors',$errors, false);
 } else {
-	$tmpl = new OC_TALTemplate('journal', 'index', 'user');
+	$tmpl = new OCA\TAL\Template('journal', 'index', 'user');
 	$tmpl->assign('categories', $categories);
 	$tmpl->assign('calendars', $calendars);
 	$tmpl->assign('singlecalendar', $singlecalendar);
