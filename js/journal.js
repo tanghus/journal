@@ -275,6 +275,7 @@ OC.Journal = {
 			OC.Share.loadIcons('journal');
 		},
 		saveproperty:function(obj) {
+			console.log('saveproperty, this.id', this.id)
 			if(!this.id || this.id == 'new') { // we are adding an entry and want a response back from the server.
 				this.id = 'new';
 				this.cid = $('#calendar').val();
@@ -313,6 +314,7 @@ OC.Journal = {
 					// FIXME: I need a RegEx wizard to validate the format of these.
 					var date = $('#dtstartdate').val() || $.datepicker.formatDate('yy-mm-dd', new Date());
 					var time = $('#dtstarttime').val() || '00:00';
+					console.log('saveproperty, DTSTART', date, time);
 					/* Why doesn't this work?
 					 * var datetime = new Date(
 						parseInt(date.substr(0, 4), 10), // Year
@@ -320,7 +322,11 @@ OC.Journal = {
 						parseInt(date.substr(8, 2), 10), // Date
 						parseInt(time.substr(0, 2), 10), // Hours
 						parseInt(time.substr(3, 2), 10), 0, 0); // Minutes and seconds*/
-					var datetime = $.datepicker.parseDate('yy-mm-dd', date);
+					try {
+					var datetime = $.datepicker.parseDate('dd-mm-yy', date);
+					} catch(e) {
+						console.log('exception', e);
+					}
 					if($('#also_time').is(':checked')) {
 						datetime.setHours(parseInt(time.substr(0, 2), 10));
 						datetime.setMinutes(parseInt(time.substr(3, 2), 10));
@@ -337,6 +343,7 @@ OC.Journal = {
 				if(jsondata.status == 'success') {
 					if(self.id == 'new') {
 						self.loadEntry(jsondata.data.id, jsondata.data);
+						self.id = jsondata.data.id;
 						OC.Journal.setEnabled(true);
 					} else {
 						$('#entries li[data-id="'+self.id+'"]').remove();
@@ -505,12 +512,14 @@ OC.Journal = {
 			var self = this;
 			$('#entries').addClass('loading');
 			$.getJSON(OC.filePath('journal', 'ajax', 'entries.php'), function(jsondata) {
+				console.log(jsondata)
 				if(jsondata.status == 'success') {
 					OC.Journal.singlecalendar = Boolean(jsondata.data.singlecalendar);
 					if(OC.Journal.singlecalendar) {
 						$('#calendar').val(jsondata.data.cid).prop('disabled', true);
 					}
 					var entries = $('#entries').empty();
+					console.log('entries', jsondata.data.entries.length);
 					if(jsondata.data.entries.length > 0) {
 						$(jsondata.data.entries).each(function(i, entry) {
 							entries.append(OC.Journal.Entry.createEntry(entry)).find('img.shared').tipsy();
@@ -591,6 +600,15 @@ $(document).ready(function(){
 
 	$('#rightcontent').on('change', '.property', function(event) {
 		OC.Journal.Entry.saveproperty(this);
+		// Prevent a second save on blur.
+		this.defaultValue = this.value;
+	});
+
+	// change event isn't triggered when clicking on a disabled element.
+	$('#summary').on('blur', function(event) {
+		if(this.defaultValue !== this.value) {
+			$(this).trigger('change');
+		}
 	});
 
 	$('#controls').on('click', '#add', function(event) {

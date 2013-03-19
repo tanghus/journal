@@ -208,10 +208,12 @@ $.widget( 'ui.rte', {
 			case 'mode':
 				switch(value) {
 					case 'html':
+						this.mirror.html(this.element.val());
 						this.mirror.show();
 						this.element.hide();
 						break;
 					case 'text':
+						this.element.val(this.mirror.text());
 						this.mirror.hide();
 						this.element.show();
 						this.element.trigger('resize');
