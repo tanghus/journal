@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.3
+ - Updated for ownCloud 5 and TAL Page Templates 0.2.
+ - Fix: Author not being saved.
+ - Fix: Share entry not removed.
+ - Fix: Journals didn't show in search.
+
 ### 0.2
 - Support for native date input fields.
 - Improved date handling.
