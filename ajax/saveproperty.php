@@ -134,7 +134,9 @@ switch($property) {
 		}
 		break;
 	case 'ORGANIZER':
-		if(strpos($organizer, '@') !== false) {
+		if(trim($value) === '') {
+			unset($vjournal->ORGANIZER);
+		} elseif(strpos($value, '@') !== false) {
 			$value = "MAILTO:" . $value;
 		}
 	case 'SUMMARY':
