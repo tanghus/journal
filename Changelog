@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.3.1 (current master)
+ - Delete organizer if empty or prepend 'MAILTO:' if '@' present.
+ - Remove PHP 5.4 construct.
+
 ### 0.3
  - Updated for ownCloud 5 and TAL Page Templates 0.2.
  - Fix: Author not being saved.
