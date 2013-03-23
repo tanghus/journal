@@ -91,7 +91,10 @@ class App {
 
 		if(isset($vjournal->ORGANIZER)) {
 			$organizer = $vjournal->getAsString('ORGANIZER');
-			$journal['organizer'] = strpos($organizer, ':') !== false ? explode(':', $organizer)[1] : $organizer;
+			if(strpos($organizer, ':') !== false) {
+				list(,$organizer) = explode(':', $organizer);
+			}
+			$journal['organizer'] = $organizer;
 		} else {
 			$journal['organizer'] = '';
 		}
