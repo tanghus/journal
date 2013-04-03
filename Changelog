@@ -1,6 +1,9 @@
 # Changelog
 
-### 0.3.1 (current master)
+### 0.3.2 (current master)
+ - New Icon to match the theme in ownCloud 5. Bih thanks to @StefanBruens
+
+### 0.3.1
  - Delete organizer if empty or prepend 'MAILTO:' if '@' present.
  - Remove PHP 5.4 construct.
 
