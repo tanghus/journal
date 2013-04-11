@@ -77,14 +77,14 @@ $.widget( 'ui.rte', {
 	html: function(str) {
 		console.log('function html');
 		if(str != undefined) {
-			//console.log('str: ' + str);
+			console.log('str: ' + str);
 			var $str;
 			try {
 				$str = $(str);
-				this.mirror.empty().html($str); // Call empty() for IE 8.
+				this.mirror.html(str);
 				this.element.text($str.text());
 			} catch(e) {
-				console.log(e.message);
+				console.warn(e.message);
 				this.mirror.empty().html(str);
 				this.element.text(str);
 			}
@@ -137,9 +137,10 @@ $.widget( 'ui.rte', {
 		else if (textComponent.selectionStart != undefined) {
 			var startPos = textComponent.selectionStart;
 			var endPos = textComponent.selectionEnd;
+			console.log(startPos, endPos);
 			selectedText = textComponent.value.substring(startPos, endPos)
 		}
-		alert("You selected: " + selectedText);
+		//alert("You selected: " + selectedText);
 	},
 	formatText: function(command, option) {
 		var self = this, useDialog = false;
@@ -211,12 +212,14 @@ $.widget( 'ui.rte', {
 						this.mirror.html(this.element.val());
 						this.mirror.show();
 						this.element.hide();
+						this.mirror.trigger('change');
 						break;
 					case 'text':
-						this.element.val(this.mirror.text());
+						this.element.val($(this.mirror.html().replace(/<br>/g, "\n")).text());
 						this.mirror.hide();
 						this.element.show();
 						this.element.trigger('resize');
+						this.element.trigger('change');
 						break;
 					default:
 						throw { name: 'UnknownMode', message: 'Invalid mode: ' + value }

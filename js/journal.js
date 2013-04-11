@@ -217,7 +217,7 @@ OC.Journal = {
 				: '<img class="shared svg" src="'+OC.imagePath('core', 'actions/shared')+'" title="'+t('journal', 'Shared by ')+data.owner+'" />'
 			var date = new Date(parseInt(data.dtstart)*1000);
 			var timestring = (data.only_date?'':' ' + date.toLocaleTimeString());
-			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'&id='+data.id+'">'+data.summary.unEscape()+'</a>'
+			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'#'+data.id+'">'+data.summary.unEscape()+'</a>'
 				+ sharedindicator + '<br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
@@ -242,8 +242,8 @@ OC.Journal = {
 
 			var format = data.description.format;
 			console.log('format: '+format);
-			$('#description').rte(format, data.description.value.unEscape());
 			$('#description').rte('mode', format);
+			$('#description').rte(format, data.description.value.unEscape());
 			(format=='html'&&$('#editable').is(':checked')
 				? $('#editortoolbar li.richtext').show()
 				: $('#editortoolbar li.richtext').hide());
