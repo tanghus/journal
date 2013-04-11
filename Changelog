@@ -1,10 +1,14 @@
 # Changelog
 
 ### 0.3.2 (current master)
- - New Icon to match the theme in ownCloud 5. Bih thanks to @StefanBruens
+ - New Icon to match the theme in ownCloud 5. Big thanks to @StefanBruens
+ - Moved version to appinfo/info.xml to please ownCloud installer.
+ - Properly escape/unescape SUMMARY and DESCRIPTION.
+ - Improved switching between edit modes.
+ - Fix links in journal list.
 
 ### 0.3.1
- - Delete organizer if empty or prepend 'MAILTO:' if '@' present.
+ - Delete ORGANIZER if empty or prepend 'MAILTO:' if '@' present.
  - Remove PHP 5.4 construct.
 
 ### 0.3
