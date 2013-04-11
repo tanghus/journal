@@ -96,7 +96,7 @@ class App {
 		}
 
 		if(isset($vjournal->ORGANIZER)) {
-			$organizer = $vjournal->getAsString('ORGANIZER');
+			$organizer = (string)$vjournal->ORGANIZER;
 			if(strpos($organizer, ':') !== false) {
 				list(,$organizer) = explode(':', $organizer);
 			}
@@ -104,7 +104,9 @@ class App {
 		} else {
 			$journal['organizer'] = '';
 		}
-		$journal['categories'] = $vjournal->getAsArray('CATEGORIES');
+		$journal['categories'] = isset($vjournal->CATEGORIES)
+			? $vjournal->CATEGORIES->getParts()
+			: array();
 		if(isset($vjournal->DTSTART)) {
 			$dtstart = $vjournal->DTSTART->getDateTime();
 			if($dtstart) {

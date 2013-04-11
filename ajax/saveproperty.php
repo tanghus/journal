@@ -58,8 +58,16 @@ if($id == 'new') {
 	$vjournal = OCA\Journal\App::createVJournal();
 	$vcalendar->add($vjournal);
 } else {
-	$vcalendar = OC_Calendar_App::getVCalendar($id);
-	$vjournal = $vcalendar->VJOURNAL;
+	$calendarRow = OC_Calendar_App::getEventObject($id, true, true);
+	if(!$calendarRow) {
+		bailOut($l10n->t('Error getting object for: ' . $id));
+	}
+	try {
+		$vcalendar = Sabre\VObject\Reader::read($calendarRow['calendardata']);
+		$vjournal = $vcalendar->VJOURNAL;
+	} catch (Exception $e) {
+		bailOut($e->getMessage());
+	}
 }
 
 debug('saveproperty: ' . $property . ': ' . print_r($value, true));
@@ -67,43 +75,47 @@ debug('saveproperty: ' . $property . ': ' . print_r($value, true));
 switch($property) {
 	case 'DESCRIPTION':
 		if(!$vjournal->DESCRIPTION) {
-			$vjournal->setString('DESCRIPTION', $value);
+			$vjournal->add('DESCRIPTION', $value);
 		} else {
 			$vjournal->DESCRIPTION->value = $value;
 		}
-		if($parameters && isset($parameters['FORMAT']) && strtoupper($parameters['FORMAT']) == 'HTML') {
-			if($value[0] != '<') { // Fugly hack coming up
-				$value = sprintf($divwrap, $value);
-			}
-			$vjournal->DESCRIPTION->value = sprintf($htmlwrap, $value);
-
-			try {
-				if(!isset($vjournal->DESCRIPTION['X-KDE-TEXTFORMAT'])) {
-					$vjournal->DESCRIPTION->add(
-						new Sabre\VObject\Parameter('X-KDE-TEXTFORMAT', 'HTML'));
+		if($parameters && isset($parameters['FORMAT'])) {
+			if(strtoupper($parameters['FORMAT']) == 'HTML') {
+				if($value[0] != '<') { // Fugly hack coming up
+					$value = sprintf($divwrap, $value);
 				}
-				if(!isset($vjournal->DESCRIPTION['X-TEXTFORMAT'])) {
-					$vjournal->DESCRIPTION->add(
-						new Sabre\VObject\Parameter('X-TEXTFORMAT', 'HTML'));
-				}
-			} catch (Exception $e) {
-				OCP\JSON::error(array(
-					'data' => array(
-						'message' => $l10n->t(
-							'Error setting rich text format parameter: '
-								. $e->getMessage()))
-					)
-				);
-				exit();
-			}
+				$vjournal->DESCRIPTION->value = sprintf($htmlwrap, $value);
 
-		} else {
-			foreach($vjournal->DESCRIPTION->parameters as &$parameter) {
-				// Use some very simple heuristics - or let's just call it guessing ;)
-				if(stripos($parameter->name, 'FORMAT') !== false
-					&& (stripos($parameter->value, 'HTML') !== false
-						|| stripos($parameter->value, 'RICH') !== false)) {
-					unset($parameter);
+				try {
+					if(!isset($vjournal->DESCRIPTION['X-KDE-TEXTFORMAT'])) {
+						$vjournal->DESCRIPTION->add(
+							new Sabre\VObject\Parameter('X-KDE-TEXTFORMAT', 'HTML'));
+					}
+					if(!isset($vjournal->DESCRIPTION['X-TEXTFORMAT'])) {
+						$vjournal->DESCRIPTION->add(
+							new Sabre\VObject\Parameter('X-TEXTFORMAT', 'HTML'));
+					}
+				} catch (Exception $e) {
+					OCP\JSON::error(array(
+						'data' => array(
+							'message' => $l10n->t(
+								'Error setting rich text format parameter: '
+									. $e->getMessage()))
+						)
+					);
+					exit();
+				}
+
+			} else {
+				foreach($vjournal->DESCRIPTION->parameters as $key => &$parameter) {
+					debug('parameter: ' . $parameter->name . ' ' . $parameter->value);
+					// Use some very simple heuristics - or let's just call it guessing ;)
+					if(stripos($parameter->name, 'FORMAT') !== false
+						&& (stripos($parameter->value, 'HTML') !== false
+							|| stripos($parameter->value, 'RICH') !== false)) {
+						debug('unsetting: ' . $parameter->name . ' ' . $parameter->value);
+						unset($vjournal->DESCRIPTION->parameters[$key]);
+					}
 				}
 			}
 		}
@@ -125,7 +137,10 @@ switch($property) {
 			if ($date_only) {
 				$type = Sabre\VObject\Property\DateTime::DATE;
 			}
-			$vjournal->setDateTime('DTSTART', $dtstart, $type);
+			if(!isset($vjournal->{'DTSTART'})) {
+				$vjournal->add('DTSTART');
+			}
+			$vjournal->{'DTSTART'}->setDateTime($dtstart, $type);
 		} catch (Exception $e) {
 			OCP\JSON::error(array(
 				'data' => array(
@@ -152,8 +167,15 @@ switch($property) {
 		exit();
 }
 
-$vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre\VObject\Property\DateTime::UTC);
-$vjournal->setDateTime('DTSTAMP', 'now', Sabre\VObject\Property\DateTime::UTC);
+$now = new \DateTime;
+if(!isset($vjournal->{'LAST-MODIFIED'})) {
+	$vjournal->add('LAST-MODIFIED');
+}
+if(!isset($vjournal->{'DTSTAMP'})) {
+	$vjournal->add('DTSTAMP');
+}
+$vjournal->{'LAST-MODIFIED'}->setDateTime($now, Sabre\VObject\Property\DateTime::UTC);
+$vjournal->{'DTSTAMP'}->setDateTime($now, Sabre\VObject\Property\DateTime::UTC);
 
 if(is_null($cid)) {
 	$cid = OCP\Config::getUserValue(
