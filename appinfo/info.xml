@@ -4,7 +4,8 @@
 	<name>Journal</name>
 	<licence>AGPL</licence>
 	<author>Thomas Tanghus</author>
-	<require>4.91</require>
+	<require>4.93</require>
 	<shipped>false</shipped>
+	<version>0.3.2</version>
 	<description>Journal view from calendar</description>
 </info>
