@@ -60,9 +60,12 @@ class App {
 			'calendarid' => $calendarid,
 			'permissions' => $permissions,
 			'owner' => $owner,
-			'summary' => $vjournal->getAsString('SUMMARY'),
+			'summary' =>  strtr(
+				(string)$vjournal->SUMMARY,
+				array('\,' => ',', '\;' => ';', '\\\\' => '\\')
+				),
 		);
-		$journal['summary'] = $vjournal->getAsString('SUMMARY');
+		//$journal['summary'] = $vjournal->getAsString('SUMMARY');
 		$format = 'text';
 
 		if(isset($vjournal->DESCRIPTION)) {
@@ -73,7 +76,10 @@ class App {
 					break;
 				}
 			}
-			$desc = $vjournal->getAsString('DESCRIPTION');
+			$desc = strtr(
+				(string)$vjournal->DESCRIPTION,
+				array('\,' => ',', '\;' => ';', '\\\\' => '\\')
+			);
 			// Do a double check for format
 			if(stripos($desc, '<!DOCTYPE') !== false || stripos($desc, '<html') !== false) {
 				$format = 'html';
