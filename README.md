@@ -21,6 +21,7 @@
 - Stores entry data as json objects in each element for quich access and to minimize ajax calls.
 
 To install this app you will first have to install the [TAL Page Templates for ownCloud](https://github.com/tanghus/tal#readme) app.
+You will also need to have the shipped Calendar app enabled, and at least one calendar enabled to store your Journal entries in.
 
 ## Installation from git
 
