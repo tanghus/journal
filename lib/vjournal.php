@@ -35,7 +35,7 @@ class VJournal extends \OC_Calendar_Object {
 	 * ['calendardata']
 	 */
 	public static function all($id){
-		$stmt = \OCP\DB::prepare( 'SELECT * FROM *PREFIX*calendar_objects WHERE calendarid = ? AND objecttype = "VJOURNAL"' );
+		$stmt = \OCP\DB::prepare( 'SELECT * FROM *PREFIX*clndr_objects WHERE calendarid = ? AND objecttype = "VJOURNAL"' );
 		$result = $stmt->execute(array($id));
 
 		$calendarobjects = array();
@@ -51,7 +51,7 @@ class VJournal extends \OC_Calendar_Object {
 	 * @param array $objects  An array of [id, journaldata].
 	 */
 	public static function updateDataByID($objects){
-		$stmt = \OCP\DB::prepare( 'UPDATE *PREFIX*calendar_objects SET calendardata = ?, lastmodified = ? WHERE id = ?' );
+		$stmt = \OCP\DB::prepare( 'UPDATE *PREFIX*clndr_objects SET calendardata = ?, lastmodified = ? WHERE id = ?' );
 		foreach($objects as $object) {
 			$vevent = \OC_Calendar_App::getVCalendar($object[0]); // Get existing event.
 			$vjournal = OC_VObject::parse($object[1]); // Get updated VJOURNAL part
@@ -101,7 +101,7 @@ class VJournal extends \OC_Calendar_Object {
 				);
 			}
 		}
-		$stmt = OCP\DB::prepare( 'DELETE FROM `*PREFIX*calendar_objects` WHERE `id` = ?' );
+		$stmt = OCP\DB::prepare( 'DELETE FROM `*PREFIX*clndr_objects` WHERE `id` = ?' );
 		$stmt->execute(array($id));
 		OC_Calendar_Calendar::touchCalendar($oldobject['calendarid']);
 
