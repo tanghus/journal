@@ -1,6 +1,10 @@
 # Changelog
 
-### 0.3.2 (current master)
+### 0.3.3 (current master)
+ - Update to work both on ownCloud 5 and 6.
+ - Fix wrong link to app installer when there were missing dependencies.
+
+### 0.3.2
  - New Icon to match the theme in ownCloud 5. Big thanks to @StefanBruens
  - Moved version to appinfo/info.xml to please ownCloud installer.
  - Properly escape/unescape SUMMARY and DESCRIPTION.
