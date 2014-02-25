@@ -50,7 +50,12 @@ input { font-size: 1em; font-weight: bold; }
 #actions { float: right; padding-right: 1em; }
 #actions a { display: inline-block; width: 16px; height: 16px; opacity: 0.5; padding: 0 0.3em; }
 #actions a:hover { opacity: 1; }
-.cog { float: right; }
+.cog {
+	float: right;
+	height: 16px;
+	padding: 10px;
+	width: 16px;
+}
 .drop { margin-right: 0.5em !important; }
 #settings_status { padding: 0.2em; font-weight: bold; float: left; border-radius: 3px; }
 #firstrun {

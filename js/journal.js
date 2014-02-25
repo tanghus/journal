@@ -561,7 +561,11 @@ OC.Journal = {
 						$('#entry,#metadata').show();
 						$('#firstrun').hide();
 					} else {
-						$('#description').rte('destroy');
+						try {
+							$('#description').rte('destroy');
+						} catch(e) {
+							console.warn(e);
+						}
 						$('#entry,#metadata').hide();
 						$('#firstrun').show();
 					}
