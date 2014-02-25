@@ -1,4 +1,4 @@
-<div id="content" i18n:domain="journal">
+<div id="journal-content" tal:attributes="data-version version" i18n:domain="journal">
 	<div id="controls">
 		<select class="tip" id="entrysort" title="Sort journal entries" i18n:attributes="title">
 			<option value="dtasc" i18n:translate="">Date - ascending</option>
@@ -13,7 +13,7 @@
 		<input class="property" id="daterangeto" name="value" type="date" size="10" autocomplete="off" placeholder="yyyy-mm-dd" value="" i18n:attributes="placeholder" disabled="true" />
 		<input type="checkbox" id="daterangesort" />
 		<label for="daterangesort" title="Only show entries between these days." i18n:attributes="title" i18n:translate="">Filter by date</label>
-		<a class="cog" title="Settings" i18n:attributes="title"></a>
+		<a class="icon icon-settings cog" title="Settings" i18n:attributes="title"></a>
 	</div>
 	<div id="leftcontent" class="hascontrols">
 		<ul id="entries"></ul>
@@ -66,10 +66,10 @@
 			<div>
 				<input type="checkbox" id="editable" /><label class="tip" for="editable" title="Set this journal entry in edit mode" i18n:attributes="title" i18n:translate="">Edit</label>
 				<span id="actions">
-					<a class="download" id="export" title="Export as iCal file" i18n:attributes="title"></a>
-					<a class="globe" id="showlink" title="Direct link to this journal entry" i18n:attributes="title"></a>
-					<a class="share" title="Sharing" i18n:attributes="title" data-item-type="journal"></a>
-					<a class="delete" id="delete" title="Delete this journal entry" i18n:attributes="title"></a>
+					<a class="icon icon-download download" id="export" title="Export as iCal file" i18n:attributes="title"></a>
+					<a class="icon icon-public globe" id="showlink" title="Direct link to this journal entry" i18n:attributes="title"></a>
+					<a class="icon icon-share share" title="Sharing" i18n:attributes="title" data-item-type="journal"></a>
+					<a class="icon icon-delete delete" id="delete" title="Delete this journal entry" i18n:attributes="title"></a>
 				</span>
 				<input class="hidden" id="link" type="text" />
 			</div>

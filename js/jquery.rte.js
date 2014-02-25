@@ -65,7 +65,7 @@ $.widget( 'ui.rte', {
 		});
 	},
 	text: function(str) {
-		console.log('function text');
+		console.log('function text', str);
 		if(str != undefined) {
 			this.mirror.html(str);
 			this.element.val(str);
@@ -215,7 +215,11 @@ $.widget( 'ui.rte', {
 						this.mirror.trigger('change');
 						break;
 					case 'text':
+						try {
 						this.element.val($(this.mirror.html().replace(/<br>/g, "\n")).text());
+						} catch(e) {
+							console.warn('Exception:', e);
+						}
 						this.mirror.hide();
 						this.element.show();
 						this.element.trigger('resize');

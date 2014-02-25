@@ -1,0 +1,7 @@
+.delete { background:url('%webroot%/core/img/actions/delete.svg') no-repeat center; }
+.edit { background:url('%webroot%/core/img/actions/rename.svg') no-repeat center; }
+.share { background:url('%webroot%/core/img/actions/share.svg') no-repeat center; }
+.mail { background:url('%webroot%/core/img/actions/mail.svg') no-repeat center; }
+.download { background:url('%webroot%/core/img/actions/download.svg') no-repeat center; }
+.globe { background:url('%webroot%/core/img/actions/public.svg') no-repeat center; }
+.cog { background:url('%webroot%/core/img/actions/settings.svg') no-repeat center; float: right; }

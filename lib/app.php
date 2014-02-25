@@ -212,8 +212,21 @@ class App {
 	 * @return (object) $vcategories
 	 */
 	protected static function getVCategories() {
+		// Version check
+		list($version,) = \OCP\Util::getVersion();
+
 		if (is_null(self::$categories)) {
-			self::$categories = new \OC_VCategories('journal', null, self::getDefaultCategories());
+			if($version < 6) {
+				self::$categories = new \OC_VCategories('journal', null, self::getDefaultCategories());
+			} else {
+				$categories = \OC::$server->getTagManager()->load('journal');
+				if($categories->isEmpty('journal')) {
+					self::scanCategories();
+				}
+				self::$categories = \OC::$server->getTagManager()
+					->load('journal', self::getDefaultCategories());
+			}
+
 		}
 		return self::$categories;
 	}
@@ -222,8 +235,21 @@ class App {
 	 * @brief returns the categories of the vcategories object
 	 * @return (array) $categories
 	 */
-	public static function getCategoryOptions(){
-		$categories = self::getVCategories()->categories();
+	public static function getCategories(){
+		// Version check
+		list($version,) = \OCP\Util::getVersion();
+
+		if($version < 6) {
+			$categories = self::getVCategories()->categories();
+		} else {
+
+			$getNames = function($tag) {
+				return $tag['name'];
+			};
+			$categories = self::getVCategories()->getTags();
+			$categories = array_map($getNames, $categories);
+		}
+
 		return $categories;
 	}
 
@@ -231,14 +257,14 @@ class App {
 	 * @brief returns the categories for the user
 	 * @return (Array) $categories
 	 */
-	public static function getCategories() {
+	/*public static function getCategories() {
 		$categories = self::getVCategories()->categories();
 		if(count($categories) == 0) {
 			self::scanCategories();
 			$categories = self::$categories->categories();
 		}
 		return ($categories ? $categories : self::getDefaultCategories());
-	}
+	}*/
 
 	/**
 	 * scan journals for categories.

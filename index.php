@@ -36,7 +36,7 @@ foreach($required_apps as $app) {
 }
 
 if(count($errors) == 0) {
-	$categories = OC_Calendar_App::getCategoryOptions();
+	$categories = OCA\Journal\App::getCategories();
 	$calendars = array();
 	$singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
 	$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
@@ -48,9 +48,16 @@ if(count($errors) == 0) {
 	// Load a specific entry?
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 
+	// Version check
+	list($version,) = \OCP\Util::getVersion();
+
 	OCP\Util::addScript('3rdparty/timepicker', 'jquery.ui.timepicker');
 	OCP\Util::addScript('contacts','jquery.multi-autocomplete');
-	OCP\Util::addScript('','oc-vcategories');
+	if($version < 6) {
+		OCP\Util::addScript('','oc-vcategories');
+	} else {
+		OCP\Util::addScript('','tags');
+	}
 	OCP\Util::addScript('journal', 'jquery.rte');
 	OCP\Util::addScript('journal', 'jquery.textchange');
 	OCP\Util::addScript('journal', 'journal');
@@ -58,6 +65,9 @@ if(count($errors) == 0) {
 	OCP\Util::addStyle('3rdparty/timepicker', 'jquery.ui.timepicker');
 	OCP\Util::addStyle('journal', 'rte');
 	OCP\Util::addStyle('journal', 'journal');
+	if($version < 6) {
+		OCP\Util::addStyle('journal', 'icons');
+	}
 	OCP\App::setActiveNavigationEntry('journal_index');
 }
 
@@ -71,5 +81,6 @@ if($errors) {
 	$tmpl->assign('calendars', $calendars);
 	$tmpl->assign('singlecalendar', $singlecalendar);
 	$tmpl->assign('id', $id);
+	$tmpl->assign('version', $version);
 }
 $tmpl->printPage();

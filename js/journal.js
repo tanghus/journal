@@ -72,8 +72,20 @@ String.prototype.zeroPad = function(digits) {
 
 OC.Journal = {
 	categories:undefined,
+	version:undefined,
 	init:function() {
 		var self = this;
+		this.version = $('#journal-content').data('version');
+		if(this.version < 6) {
+			OCCategories.changed = OC.Journal.categoriesChanged;
+			OCCategories.app = 'journal';
+		} else {
+			$(OC.Tags).on('change', function(event, data) {
+				if(data.type === 'journal') {
+					self.categoriesChanged(data.tags);
+				}
+			});
+		}
 		this.setEnabled(false);
 		// Fetch journal entries. If it's a direct link 'id' will be loaded.
 		var id = parseInt(window.location.hash.substr(1));
@@ -124,7 +136,11 @@ OC.Journal = {
 		}
 	},
 	categoriesChanged:function(newcategories) { // Categories added/deleted.
-		this.categories = $.map(newcategories, function(v) {return v;});
+		if(this.version < 6) {
+			this.categories = $.map(newcategories, function(v) {return v;});
+		} else {
+			this.categories = $.map(newcategories, function(v) {return v.name;});
+		}
 		$('#categories').multiple_autocomplete('option', 'source', this.categories);
 	},
 	propertyContainerFor:function(obj) {
@@ -567,8 +583,6 @@ OC.Journal = {
 };
 
 $(document).ready(function(){
-	OCCategories.changed = OC.Journal.categoriesChanged;
-	OCCategories.app = 'journal';
 
 	// Initialize controls.
 	$('#categories').multiple_autocomplete({source: OC.Journal.categories});
@@ -666,7 +680,11 @@ $(document).ready(function(){
 
 	$('#metadata').on('click', '#editcategories', function(event) {
 		$(this).tipsy('hide');
-		OCCategories.edit();
+		if(OC.Journal.version < 6) {
+			OCCategories.edit();
+		} else {
+			OC.Tags.edit('journal');
+		}
 	});
 
 	$('#metadata').on('click', '#delete', function(event) {
