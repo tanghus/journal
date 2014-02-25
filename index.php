@@ -31,10 +31,11 @@ $required_apps = array(
 foreach($required_apps as $app) {
 	if(!OCP\App::isEnabled($app['id'])) {
 		$error = (string)$l->t('The %%s app isn\'t enabled! Please enable it here: <strong><a href="%%s?appid=%%s">Enable %%s app</a></strong>');
-		$errors[] = sprintf($error, $app['name'],OCP\Util::linkTo('settings', 'apps.php'), $app['id'], $app['name']);
+		$errors[] = sprintf($error, $app['name'],OC_Helper::linkToRoute('settings_apps'), $app['id'], $app['name']);
 	}
 }
-
+//http://localhost/owncloud5/settings/apps?appid=tal
+//http://localhost/owncloud5/index.php/settings/apps?installed
 if(count($errors) == 0) {
 	$categories = OCA\Journal\App::getCategories();
 	$calendars = array();
