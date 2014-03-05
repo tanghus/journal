@@ -17,7 +17,7 @@ input[type="checkbox"], select { -moz-appearance:none  !important; -webkit-box-s
 #entries em { font-weight: normal; font-size: 1em; }
 #metadata { position: fixed; background-color: #ccc; width: 20em; right: 0; top: 6.5em; bottom: 0; overflow: auto; padding: 1em; margin: 0; font-size: 1em; font-weight: bold; }
 #controls :disabled { background-color: #f7f7f7; color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
-#metadata :disabled.property { color: #000; background-color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
+#metadata :disabled { color: #000; background-color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
 #entry {
 	position: fixed;
 	top: 6.5em; bottom: 0; left: 25em !important; right: 22em;
@@ -47,6 +47,13 @@ label,dt { color: #000; }
 label:hover, dt:hover { color: #333; }
 .required { color: red; border: 3px solid red; }
 input { font-size: 1em; font-weight: bold; }
+#metadata select, #metadata input[type="date"], #metadata input[type="time"], #metadata input[type="text"] {
+    -moz-appearance: textfield;
+    -moz-box-sizing: content-box;
+	border: 1px solid #DDDDDD;
+	height: 30px;
+	padding: 3px;
+}
 #actions { float: right; padding-right: 1em; }
 #actions a { display: inline-block; width: 16px; height: 16px; opacity: 0.5; padding: 0 0.3em; }
 #actions a:hover { opacity: 1; }
