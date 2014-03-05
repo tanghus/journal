@@ -343,6 +343,7 @@ OC.Journal = {
 					// FIXME: I need a RegEx wizard to validate the format of these.
 					var date = $('#dtstartdate').val() || $.datepicker.formatDate('yy-mm-dd', new Date());
 					var time = $('#dtstarttime').val() || '00:00';
+					var datetime;
 					console.log('saveproperty, DTSTART', date, time);
 					/* Why doesn't this work?
 					 * var datetime = new Date(
@@ -352,9 +353,11 @@ OC.Journal = {
 						parseInt(time.substr(0, 2), 10), // Hours
 						parseInt(time.substr(3, 2), 10), 0, 0); // Minutes and seconds*/
 					try {
-					var datetime = $.datepicker.parseDate('dd-mm-yy', date);
+						datetime = $.datepicker.parseDate('dd-mm-yy', date);
 					} catch(e) {
-						console.log('exception', e);
+						console.warn('exception', e);
+						OC.Journal.notify({message:t('journal', 'Invalid date/time')})
+						return;
 					}
 					if($('#also_time').is(':checked')) {
 						datetime.setHours(parseInt(time.substr(0, 2), 10));
