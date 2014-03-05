@@ -4,4 +4,8 @@
 .rte-content { cursor:text;position:absolute; border-color:#000;border-style:solid; white-space: pre-wrap; word-wrap: break-word; padding: 0.2em; }
 .rte-content ul { list-style: circle inside; }
 .rte-content li { padding-left: 1em; }
-
+.rte-content h1 { font-size: 200%; }
+.rte-content h2 { font-size: 170%; }
+.rte-content h3 { font-size: 140%; }
+.rte-content h4 { font-size: 120%; }
+.rte-content h5 { font-size: 100%; }

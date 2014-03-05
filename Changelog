@@ -1,6 +1,11 @@
 # Changelog
 
-### 0.3.3 (current master)
+### 0.4 (current master)
+ - Switching from text to html format removed all text (sorry about that...)
+ - Problem adding more than one entry possibly caused by updated jquery library.
+ - When switching from text to html the text is now parsed as MarkDown and vice-versa.
+
+### 0.3.3
  - Update to work both on ownCloud 5 and 6.
  - Fix wrong link to app installer when there were missing dependencies.
 

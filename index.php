@@ -19,9 +19,17 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-$errors = array();
-$l = new OC_L10N('journal');
+
 OCP\User::checkLoggedIn();
+
+$errors = array();
+$categories = array();
+$calendars = array();
+
+$l = new OC_L10N('journal');
+
+// Version check
+list($version,) = \OCP\Util::getVersion();
 
 $required_apps = array(
     array('id' => 'tal', 'name' => 'TAL Page Templates'),
@@ -36,7 +44,7 @@ foreach($required_apps as $app) {
 }
 //http://localhost/owncloud5/settings/apps?appid=tal
 //http://localhost/owncloud5/index.php/settings/apps?installed
-if(count($errors) == 0) {
+if(count($errors) === 0) {
 	$categories = OCA\Journal\App::getCategories();
 	$calendars = array();
 	$singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
@@ -49,9 +57,6 @@ if(count($errors) == 0) {
 	// Load a specific entry?
 	$id = isset($_GET['id']) ? $_GET['id'] : null;
 
-	// Version check
-	list($version,) = \OCP\Util::getVersion();
-
 	OCP\Util::addScript('3rdparty/timepicker', 'jquery.ui.timepicker');
 	OCP\Util::addScript('contacts','jquery.multi-autocomplete');
 	if($version < 6) {
@@ -59,8 +64,12 @@ if(count($errors) == 0) {
 	} else {
 		OCP\Util::addScript('','tags');
 	}
+	OCP\Util::addScript('journal', 'Markdown.Converter');
+	OCP\Util::addScript('journal', 'Markdown.Sanitizer');
+	OCP\Util::addScript('journal', 'markdown_dom_parser');
+	OCP\Util::addScript('journal', 'html2markdown');
 	OCP\Util::addScript('journal', 'jquery.rte');
-	OCP\Util::addScript('journal', 'jquery.textchange');
+	//OCP\Util::addScript('journal', 'jquery.textchange');
 	OCP\Util::addScript('journal', 'journal');
 	OCP\Util::addscript('tal','modernizr');
 	OCP\Util::addStyle('3rdparty/timepicker', 'jquery.ui.timepicker');

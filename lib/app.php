@@ -271,42 +271,40 @@ class App {
 	 * @param $vevents VJOURNALs to scan. null to check all journals for the current user.
 	 * @returns bool
 	 */
-	public static function scanCategories($vevents = null) {
-		if (is_null($vevents)) {
-			$vevents = array();
-			$calendars = array();
-			$singlecalendar = (bool)\OCP\Config::getUserValue(
-				\OCP\User::getUser(), 'journal', 'single_calendar', false);
-			if($singlecalendar) {
-				$cid = \OCP\Config::getUserValue(
-					\OCP\User::getUser(), 'journal', 'default_calendar', null);
-				$calendar = \OC_Calendar_App::getCalendar($cid, true);
-				if(!$calendar) {
-					\OCP\Util::writeLog('journal',
-						'The default calendar ' . $cid . ' is either not owned by '
-						. \OCP\User::getUser() . ' or doesn\'t exist.',
-						\OCP\Util::WARN
-					);
-					return false;
-				}
-				$calendars[] = $calendar;
-			} else {
-				$calendars = \OC_Calendar_Calendar::allCalendars(\OCP\User::getUser(), true);
+	public static function scanCategories() {
+		$calendars = array();
+		$singlecalendar = (bool)\OCP\Config::getUserValue(
+			\OCP\User::getUser(), 'journal', 'single_calendar', false
+		);
+		if($singlecalendar) {
+			$cid = \OCP\Config::getUserValue(
+				\OCP\User::getUser(), 'journal', 'default_calendar', null);
+			$calendar = \OC_Calendar_App::getCalendar($cid, true);
+			if(!$calendar) {
+				\OCP\Util::writeLog('journal',
+					'The default calendar ' . $cid . ' is either not owned by '
+					. \OCP\User::getUser() . ' or doesn\'t exist.',
+					\OCP\Util::WARN
+				);
+				return false;
 			}
-			\OCP\Util::writeLog('journal', __METHOD__ . ', calendars: '
-				. count($calendars), \OCP\Util::DEBUG);
-			if(count($calendars) > 0) {
-				foreach($calendars as $calendar) {
-					foreach(VJournal::all($calendar['id']) as $vevent) {
-						$vobject = \OC_VObject::parse($vevent['calendardata']);
-						try {
-							self::getVCategories()->loadFromVObject($vobject->VJOURNAL, true);
-						} catch(Exception $e) {
-							\OCP\Util::writeLog('journal',
-								__METHOD__.', exception: ' . $e->getMessage(),
-								\OCP\Util::ERROR
-							);
-						}
+			$calendars[] = $calendar;
+		} else {
+			$calendars = \OC_Calendar_Calendar::allCalendars(\OCP\User::getUser(), true);
+		}
+		\OCP\Util::writeLog('journal', __METHOD__ . ', calendars: '
+			. count($calendars), \OCP\Util::DEBUG);
+		if(count($calendars) > 0) {
+			foreach($calendars as $calendar) {
+				foreach(VJournal::all($calendar['id']) as $vevent) {
+					$vobject = \OC_VObject::parse($vevent['calendardata']);
+					try {
+						self::getVCategories()->loadFromVObject($vobject->VJOURNAL, true);
+					} catch(\Exception $e) {
+						\OCP\Util::writeLog('journal',
+							__METHOD__.', exception: ' . $e->getMessage(),
+							\OCP\Util::ERROR
+						);
 					}
 				}
 			}

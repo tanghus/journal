@@ -17,6 +17,7 @@ $.widget( 'ui.rte', {
 			textarea = this.element; //.hide(),
 			pos = textarea.position();
 			//this.element.text = this.text;
+		this.converter = new Markdown.Converter();
 		this.mirror = $('<div class="rte-content" contenteditable="true"></div>').css({
 				top:pos.top,
 				left: pos.left,
@@ -209,14 +210,18 @@ $.widget( 'ui.rte', {
 			case 'mode':
 				switch(value) {
 					case 'html':
-						this.mirror.html(this.element.val());
+						console.log('converting to html:', this.element.val());
+						this.mirror.html(this.converter.makeHtml(this.element.val()));
 						this.mirror.show();
 						this.element.hide();
 						this.mirror.trigger('change');
 						break;
 					case 'text':
+						console.log('converting to text:', $(this.mirror).html());
 						try {
-						this.element.val($(this.mirror.html().replace(/<br>/g, "\n")).text());
+							//this.element.val($(this.mirror).html().replace(/<br>/g, "\n"));
+							this.element.val(html2markdown($(this.mirror).html()));
+							//this.element.val(this.converter.makeMarkdown($(this.mirror).html()));
 						} catch(e) {
 							console.warn('Exception:', e);
 						}

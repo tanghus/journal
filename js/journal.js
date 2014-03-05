@@ -73,6 +73,7 @@ String.prototype.zeroPad = function(digits) {
 OC.Journal = {
 	categories:undefined,
 	version:undefined,
+	enabled:false,
 	init:function() {
 		var self = this;
 		this.version = $('#journal-content').data('version');
@@ -149,7 +150,7 @@ OC.Journal = {
 		}
 		return $(obj).parents('.propertycontainer').first();
 	},
-	required:function(event){ // eventhandler for required elements
+	required:function(event) { // eventhandler for required elements
 			// FIXME: This doesn't seem to work.
 			console.log('blur on required');
 			var obj = $(event.target);
@@ -162,8 +163,12 @@ OC.Journal = {
 				$(obj).off('blur', OC.Journal.required);
 			}
 	},
+	isEnabled: function() {
+		return this.enabled;
+	},
 	setEnabled:function(state) {
 		if(typeof state == 'undefined') { state = true; }
+		this.enabled = state;
 		console.log('OC.Journal.setEnabled: ' + state);
 		if(state) {
 			$('#description').rte('setEnabled', true);
@@ -198,6 +203,7 @@ OC.Journal = {
 		id:'',
 		data:undefined,
 		add:function() {
+			OC.Journal.setEnabled(false);
 			// TODO: wrap a DIV around the summary field with a suggestion(?) to fill out this field first. See OC.Journal.required
 			// Remember to reenable all controls.
 			$('#entry,#metadata').show();
@@ -206,10 +212,11 @@ OC.Journal = {
 			OC.Journal.setEnabled(false);
 			$('#summary').prop('disabled', false);
 			$('#summary').addClass('editable');
-			$('#entries lidata-id="'+this.id+'"').removeClass('active');
+			$('#entries li[data-id="' + this.id + '"]').removeClass('active');
 			this.id = 'new';
 			this.data = undefined;
 			$('.property').each(function () {
+				console.log('Emptying properties', this, $(this).get(0).nodeName);
 				switch($(this).get(0).nodeName) {
 					case 'DIV':
 						$(this).html('');
@@ -227,8 +234,10 @@ OC.Journal = {
 			$('#editortoolbar li.richtext').hide();
 			$('#editable').attr('checked', true);
 			$('#actions').hide();
+			OC.Journal.setEnabled(true);
 		},
 		createEntry:function(data) {
+			console.log('createEntry', data);
 			var sharedindicator = data.owner == OC.currentUser ? ''
 				: '<img class="shared svg" src="'+OC.imagePath('core', 'actions/shared')+'" title="'+t('journal', 'Shared by ')+data.owner+'" />'
 			var date = new Date(parseInt(data.dtstart)*1000);
@@ -237,6 +246,7 @@ OC.Journal = {
 				+ sharedindicator + '<br /><em>'+date.toDateString()+timestring+'<em></li>').data('entry', data);
 		},
 		loadEntry:function(id, data) {
+			OC.Journal.setEnabled(false);
 			console.log('loadEntry:', id, data.summary, data.description.format);
 			this.permissions = parseInt(data.permissions);
 			this.readonly = !(this.permissions & OC.PERMISSION_UPDATE);
@@ -286,11 +296,14 @@ OC.Journal = {
 				$('#also_time').attr('checked', true);
 				//$('#also_time').get(0).checked = true;
 			}
-			console.log('dtstart: '+date);
+			console.log('dtstart: ' + date);
 
 			OC.Share.loadIcons('journal');
 		},
 		saveproperty:function(obj) {
+			if(!OC.Journal.isEnabled()) {
+				return;
+			}
 			console.log('saveproperty, this.id', this.id)
 			if(!this.id || this.id == 'new') { // we are adding an entry and want a response back from the server.
 				this.id = 'new';
@@ -561,11 +574,11 @@ OC.Journal = {
 						$('#entry,#metadata').show();
 						$('#firstrun').hide();
 					} else {
-						try {
+						/*try {
 							$('#description').rte('destroy');
 						} catch(e) {
 							console.warn(e);
-						}
+						}*/
 						$('#entry,#metadata').hide();
 						$('#firstrun').show();
 					}
@@ -589,6 +602,7 @@ OC.Journal = {
 $(document).ready(function(){
 
 	// Initialize controls.
+	$('#description').rte({classes: ['property','content']});
 	$('#categories').multiple_autocomplete({source: OC.Journal.categories});
 	//$('#categories').multiple_autocomplete('option', 'source', categories);
 	if(!Modernizr.inputtypes.date) {
@@ -597,7 +611,6 @@ $(document).ready(function(){
 	if(!Modernizr.inputtypes.time) {
 		$('#dtstarttime').timepicker({timeFormat: 'hh:mm', showPeriodLabels:false});
 	}
-	$('#description').rte({classes: ['property','content']});
 	$('.tip').tipsy();
 	$('#actions a,.cog').tipsy({gravity: 'e'});
 

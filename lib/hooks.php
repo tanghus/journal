@@ -64,7 +64,7 @@ class Hooks {
 		}
 		try {
 			$id = \OC_Calendar_Object::add($cid, $vcalendar->serialize());
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			\OCP\Util::writeLog('journal',
 				__METHOD__ . ', Error adding completed Task to calendar: "'
 				. $cid . '" ' . $e->getMessage(), \OCP\Util::ERROR);

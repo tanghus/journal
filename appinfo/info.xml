@@ -6,6 +6,6 @@
 	<author>Thomas Tanghus</author>
 	<require>4.93</require>
 	<shipped>false</shipped>
-	<version>0.3.3.1</version>
+	<version>0.4</version>
 	<description>Journal view from calendar</description>
 </info>
