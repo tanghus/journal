@@ -46,7 +46,6 @@ foreach($required_apps as $app) {
 //http://localhost/owncloud5/index.php/settings/apps?installed
 if(count($errors) === 0) {
 	$categories = OCA\Journal\App::getCategories();
-	$calendars = array();
 	$singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
 	$calendars = OC_Calendar_Calendar::allCalendars(OCP\User::getUser(), true);
 
@@ -64,10 +63,10 @@ if(count($errors) === 0) {
 	} else {
 		OCP\Util::addScript('','tags');
 	}
-	OCP\Util::addScript('journal', 'Markdown.Converter');
-	OCP\Util::addScript('journal', 'Markdown.Sanitizer');
-	OCP\Util::addScript('journal', 'markdown_dom_parser');
-	OCP\Util::addScript('journal', 'html2markdown');
+	OCP\Util::addScript('journal', '3rdparty/Markdown.Converter');
+	OCP\Util::addScript('journal', '3rdparty/Markdown.Sanitizer');
+	OCP\Util::addScript('journal', '3rdparty/markdown_dom_parser');
+	OCP\Util::addScript('journal', '3rdparty/html2markdown');
 	OCP\Util::addScript('journal', 'jquery.rte');
 	//OCP\Util::addScript('journal', 'jquery.textchange');
 	OCP\Util::addScript('journal', 'journal');

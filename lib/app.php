@@ -102,7 +102,7 @@ class App {
 			}
 			$journal['organizer'] = $organizer;
 		} else {
-			$journal['organizer'] = '';
+			$journal['organizer'] = \OCP\User::getUser();
 		}
 		$journal['categories'] = isset($vjournal->CATEGORIES)
 			? $vjournal->CATEGORIES->getParts()

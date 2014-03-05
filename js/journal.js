@@ -446,7 +446,9 @@ OC.Journal = {
 	Journals:{
 		sortmethod:'dtasc',
 		filterDateRange:function() {
-			if(!$('#daterangefrom').val() || ! $('#daterangeto').val())
+			if(!$('#daterangefrom').val() || !$('#daterangeto').val()) {
+				return;
+			}
 			var start, end;
 			if(Modernizr.inputtypes.date) {
 				var dateparts = $('#daterangefrom').val().split('-');
@@ -520,7 +522,7 @@ OC.Journal = {
 					func = compareSummaryDesc;
 					break;
 				default:
-					var func = compareDateTimeDesc;
+					func = compareDateTimeDesc;
 					break;
 			}
 

@@ -1,0 +1,7 @@
+filter:
+    excluded_paths:
+        - 'js/3rdparty/*'
+
+imports:
+    - php
+    - javascript
