@@ -356,7 +356,7 @@ OC.Journal = {
 						datetime = $.datepicker.parseDate('dd-mm-yy', date);
 					} catch(e) {
 						console.warn('exception', e);
-						OC.Journal.notify({message:t('journal', 'Invalid date/time')})
+						OC.Journal.notify({message:t('journal', 'Invalid date/time')});
 						return;
 					}
 					if($('#also_time').is(':checked')) {

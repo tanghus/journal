@@ -1,5 +1,7 @@
 # Journal/Notes app for ownCloud
 
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/tanghus/journal/badges/quality-score.png?s=126186f91faaf8adcfe463e4fe26e252a3fe4dad)](https://scrutinizer-ci.com/g/tanghus/journal/)
+
 ## Features
 
 - Saves notes/journal entries as VJOURNAL records in the ownCloud Calendar.
@@ -11,6 +13,8 @@
 - Filter entries by timerange.
 
 - Plain text or rich text editing (rich text editing is still buggy and immature).
+
+- When switching from text to html the text is now parsed as MarkDown and vice-versa.
 
 - Syncs with KDEPIMs Journal part.
 
