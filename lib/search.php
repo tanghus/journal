@@ -29,12 +29,6 @@ class SearchProvider extends \OC_Search_Provider {
 			//return false;
 		}
 		$results=array();
-		$searchquery=array();
-		if(substr_count($query, ' ') > 0) {
-			$searchquery = explode(' ', $query);
-		}else{
-			$searchquery[] = $query;
-		}
 
 		$user_timezone = \OCP\Config::getUserValue(\OCP\USER::getUser(), 'calendar', 'timezone', date_default_timezone_get());
 		$l = new \OC_l10n('journal');

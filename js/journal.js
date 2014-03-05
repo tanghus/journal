@@ -449,9 +449,9 @@ OC.Journal = {
 			if(!$('#daterangefrom').val() || !$('#daterangeto').val()) {
 				return;
 			}
-			var start, end;
+			var start, end, dateparts;
 			if(Modernizr.inputtypes.date) {
-				var dateparts = $('#daterangefrom').val().split('-');
+				dateparts = $('#daterangefrom').val().split('-');
 				if(dateparts.length < 3) {
 					return;
 				}
@@ -463,7 +463,7 @@ OC.Journal = {
 				return;
 			}
 			if(Modernizr.inputtypes.date) {
-				var dateparts = $('#daterangeto').val().split('-');
+				dateparts = $('#daterangeto').val().split('-');
 				if(dateparts.length < 3) {
 					return;
 				}

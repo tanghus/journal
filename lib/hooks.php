@@ -63,7 +63,7 @@ class Hooks {
 			$cid = $first_calendar['id'];
 		}
 		try {
-			$id = \OC_Calendar_Object::add($cid, $vcalendar->serialize());
+			\OC_Calendar_Object::add($cid, $vcalendar->serialize());
 		} catch (\Exception $e) {
 			\OCP\Util::writeLog('journal',
 				__METHOD__ . ', Error adding completed Task to calendar: "'

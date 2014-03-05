@@ -61,8 +61,8 @@ class VJournal extends \OC_Calendar_Object {
 					unset($vevent->VJOURNAL); // Unset old VJOURNAL element
 					$vevent->add($vjournal); // and add the updated.
 					$data = $vevent->serialize();
-					$result = $stmt->execute(array($data,time(),$object[0]));
-				} catch(Exception $e) {
+					$stmt->execute(array($data, time(), $object[0]));
+				} catch(\Exception $e) {
 					\OCP\Util::writeLog('journal',
 						__METHOD__.', exception: ' . $e->getMessage(),
 						OCP\Util::ERROR
@@ -90,7 +90,7 @@ class VJournal extends \OC_Calendar_Object {
 				$calendar_permissions = $sharedCalendar['permissions'];
 			}
 			if ($sharedJournal) {
-				$journal_permissions = $sharedEvent['permissions'];
+				$journal_permissions = $sharedJournal['permissions'];
 			}
 			$permissions = max($calendar_permissions, $journal_permissions);
 			if (!($permissions & OCP\PERMISSION_DELETE)) {
