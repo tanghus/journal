@@ -17,7 +17,7 @@ input[type="checkbox"], select { -moz-appearance:none  !important; -webkit-box-s
 #entries em { font-weight: normal; font-size: 1em; }
 #metadata { position: fixed; background-color: #ccc; width: 20em; right: 0; top: 6.5em; bottom: 0; overflow: auto; padding: 1em; margin: 0; font-size: 1em; font-weight: bold; }
 #controls :disabled { background-color: #f7f7f7; color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
-#metadata :disabled.property { background-color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
+#metadata :disabled.property { color: #000; background-color: #ccc; -webkit-appearance:none !important; -moz-appearance:none  !important; -webkit-box-sizing:none !important; -moz-box-sizing:none !important; box-sizing:none !important; -moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none; cursor: default; }
 #entry {
 	position: fixed;
 	top: 6.5em; bottom: 0; left: 25em !important; right: 22em;
@@ -25,9 +25,9 @@ input[type="checkbox"], select { -moz-appearance:none  !important; -webkit-box-s
 	background: #fff;
 }
 div.propertycontainer[data-type="DESCRIPTION"] { height: 90%; }
-#description { width: 95%; height: 90%; }
+#description { width: 95%; height: 90%; color: #000; }
 .rte-content { position: absolute; left: 1em; right: 1em; top: 7em; bottom: 1em; overflow: auto; }
-#summary { width: 95%; font-size: 1.4em; font-weight: bold; height: 1.6em; }
+#summary { width: 95%; font-size: 1.4em; font-weight: bold; height: 1.6em; color: #000; }
 .editable,.content {
 	display:inline-block; font-size: 1.2em; background-color: #fff !important; border: 1px solid #fff !important;
 	-webkit-appearance:none !important; -moz-appearance:none  !important;
@@ -38,12 +38,12 @@ div.propertycontainer[data-type="DESCRIPTION"] { height: 90%; }
 	opacity: 1;
 }
 .editable:hover,.editable:focus,.editable:hover:active { border: 1px solid #1d2d44 !important; }
-#categories,#organizer,#location,#link { width: 18em; clear: right; }
+#calendar,#categories,#organizer,#location,#link { width: 18em; clear: right; }
 #dtstartdate { width: 10em; }
 #dtstarttime { width: 5em; }
 .loading { background: url('%webroot%/core/img/loading.gif') no-repeat center !important; cursor: wait; }
 .action { padding-left: 0.5em; }
-label,dt { color: #aaa; }
+label,dt { color: #000; }
 label:hover, dt:hover { color: #333; }
 .required { color: red; border: 3px solid red; }
 input { font-size: 1em; font-weight: bold; }
