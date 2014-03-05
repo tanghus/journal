@@ -31,7 +31,9 @@ class Hooks {
 	 * @param $vtodo An OC_VObject of type VTODO.
 	 */
 	public static function taskToJournalEntry($vtodo) {
-		if(!$vtodo) { return; }
+		if (!$vtodo) {
+			return;
+		}
 
 		\OCP\Util::writeLog('journal', __METHOD__ . ', Completed task: '
 			. $vtodo->SUMMARY, \OCP\Util::DEBUG);
@@ -39,15 +41,18 @@ class Hooks {
 		$vjournal = App::createVJournal();
 		$vcalendar->add($vjournal);
 
-		if($vtodo->DTSTART) {
+		if ($vtodo->DTSTART) {
 			$vjournal->DTSTART = $vtodo->COMPLETED;
 		}
-		if($vtodo->UID) {
+
+		if ($vtodo->UID) {
 			$vjournal->{'RELATED-TO'} = $vtodo->UID;
 		}
+
 		$vjournal->SUMMARY = App::$l10n->t('Completed task: ')
 			. $vtodo->getAsString('SUMMARY');
-		if($vtodo->DESCRIPTION) {
+
+		if ($vtodo->DESCRIPTION) {
 			$vjournal->DESCRIPTION = $vtodo->DESCRIPTION;
 		}
 
@@ -56,12 +61,14 @@ class Hooks {
 			'default_calendar',
 			null
 		);
-		if(!$cid) {
+
+		if (!$cid) {
 			$calendars = \OC_Calendar_Calendar::allCalendars(
 				\OCP\User::getUser(), true);
-			$first_calendar = reset($calendars);
-			$cid = $first_calendar['id'];
+			$firstCalendar = reset($calendars);
+			$cid = $firstCalendar['id'];
 		}
+
 		try {
 			\OC_Calendar_Object::add($cid, $vcalendar->serialize());
 		} catch (\Exception $e) {
@@ -83,7 +90,8 @@ class Hooks {
 			'default_calendar',
 			null
 		);
-		if($aid == $cid) {
+
+		if ($aid == $cid) {
 			\OC_Preferences::deleteKey(OCP\User::getUser(), 'journal', 'default_calendar');
 		}
 	}

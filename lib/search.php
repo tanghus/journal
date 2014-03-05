@@ -25,32 +25,36 @@ namespace OCA\Journal;
 class SearchProvider extends \OC_Search_Provider {
 	function search($query){
 		$calendars = \OC_Calendar_Calendar::allCalendars(\OCP\USER::getUser(), true);
-		if(count($calendars)==0 || !\OCP\App::isEnabled('calendar')) {
-			//return false;
-		}
-		$results=array();
+		$results = array();
 
-		$user_timezone = \OCP\Config::getUserValue(\OCP\USER::getUser(), 'calendar', 'timezone', date_default_timezone_get());
+		if (count($calendars) === 0 || !\OCP\App::isEnabled('calendar')) {
+			return $results;
+		}
+
+		$userTimezone = \OCP\Config::getUserValue(\OCP\USER::getUser(), 'calendar', 'timezone', date_default_timezone_get());
+
 		$l = new \OC_l10n('journal');
-		foreach($calendars as $calendar) {
+		foreach ($calendars as $calendar) {
 			$objects = VJournal::all($calendar['id']);
-			foreach($objects as $object) {
-				if(substr_count(strtolower($object['summary']), strtolower($query)) > 0) {
+			foreach ($objects as $object) {
+				if (substr_count(strtolower($object['summary']), strtolower($query)) > 0) {
 					$calendardata = \OC_VObject::parse($object['calendardata']);
 					$vjournal = $calendardata->VJOURNAL;
-					$dtstart = $vjournal->DTSTART;
-					if(!$dtstart) {
+
+					if (!isset($vjournal->DTSTART)) {
 						continue;
 					}
-					$start_dt = $dtstart->getDateTime();
-					$start_dt->setTimezone(new \DateTimeZone($user_timezone));
-					if ($dtstart->getDateType() == \Sabre\VObject\Property\DateTime::DATE) {
-						$info = $l->t('Date') . ': ' . $start_dt->format('d.m.Y');
+
+					$dtStart = $vjournal->DTSTART->getDateTime();
+					$dtStart->setTimezone(new \DateTimeZone($userTimezone));
+
+					if ($vjournal->DTSTART->getDateType() == \Sabre\VObject\Property\DateTime::DATE) {
+						$info = $l->t('Date') . ': ' . $dtStart->format('d.m.Y');
 					}else{
-						$info = $l->t('Date') . ': ' . $start_dt->format('d.m.y H:i');
+						$info = $l->t('Date') . ': ' . $dtStart->format('d.m.y H:i');
 					}
 					$link = \OCP\Util::linkTo('journal', 'index.php') . '#' . urlencode($object['id']);
-					$results[]=new \OC_Search_Result($object['summary'], $info, $link, (string)$l->t('Journal'));
+					$results[] = new \OC_Search_Result($object['summary'], $info, $link, (string)$l->t('Journal'), null);
 				}
 			}
 		}

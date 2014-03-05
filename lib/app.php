@@ -37,27 +37,31 @@ class App {
 	 */
 	protected static $categories = null;
 
-	public static function arrayForJSON($id, $calendarid, $vjournal, $user_timezone) {
+	public static function arrayForJSON($id, $calendarId, $vjournal, $userTimeZone) {
 
 		$owner = \OC_Calendar_Object::getowner($id);
 		$permissions = \OCP\PERMISSION_ALL;
 
-		if($owner !== \OCP\User::getUser()) {
+		if ($owner !== \OCP\User::getUser()) {
 			$sharedJournal = \OCP\Share::getItemSharedWithBySource('journal', $id);
-			$sharedCalendar = \OCP\Share::getItemSharedWithBySource('calendar', $calendarid);
-			$calendar_permissions = 0;
-			$journal_permissions = 0;
+			$sharedCalendar = \OCP\Share::getItemSharedWithBySource('calendar', $calendarId);
+			$calendarPermissions = 0;
+			$journalPermissions = 0;
+
 			if ($sharedCalendar) {
-				$calendar_permissions = $sharedCalendar['permissions'];
+				$calendarPermissions = $sharedCalendar['permissions'];
 			}
+
 			if ($sharedJournal) {
-				$journal_permissions = $sharedJournal['permissions'];
+				$journalPermissions = $sharedJournal['permissions'];
 			}
-			$permissions = max($calendar_permissions, $journal_permissions);
+
+			$permissions = max($calendarPermissions, $journalPermissions);
 		}
+
 		$journal = array(
 			'id' => $id,
-			'calendarid' => $calendarid,
+			'calendarid' => $calendarId,
 			'permissions' => $permissions,
 			'owner' => $owner,
 			'summary' =>  strtr(
@@ -68,22 +72,25 @@ class App {
 		//$journal['summary'] = $vjournal->getAsString('SUMMARY');
 		$format = 'text';
 
-		if(isset($vjournal->DESCRIPTION)) {
-			foreach($vjournal->DESCRIPTION->parameters as $parameter){
-				if(stripos($parameter->name, 'FORMAT') !== false
+		if (isset($vjournal->DESCRIPTION)) {
+			foreach ($vjournal->DESCRIPTION->parameters as $parameter){
+				if (stripos($parameter->name, 'FORMAT') !== false
 						&& stripos($parameter->value, 'HTML') !== false) {
 					$format = 'html'; // an educated guess ;-)
 					break;
 				}
 			}
+
 			$desc = strtr(
 				(string)$vjournal->DESCRIPTION,
 				array('\,' => ',', '\;' => ';', '\\\\' => '\\')
 			);
+
 			// Do a double check for format
-			if(stripos($desc, '<!DOCTYPE') !== false || stripos($desc, '<html') !== false) {
+			if (stripos($desc, '<!DOCTYPE') !== false || stripos($desc, '<html') !== false) {
 				$format = 'html';
 			}
+
 			$journal['description'] = array(
 									'value' => ($format=='html'
 											? $body = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", $desc)
@@ -95,23 +102,25 @@ class App {
 			$journal['description'] = array('value' => '', 'format' => 'text');
 		}
 
-		if(isset($vjournal->ORGANIZER)) {
+		if (isset($vjournal->ORGANIZER)) {
 			$organizer = (string)$vjournal->ORGANIZER;
-			if(strpos($organizer, ':') !== false) {
+			if (strpos($organizer, ':') !== false) {
 				list(,$organizer) = explode(':', $organizer);
 			}
 			$journal['organizer'] = $organizer;
 		} else {
 			$journal['organizer'] = \OCP\User::getUser();
 		}
+
 		$journal['categories'] = isset($vjournal->CATEGORIES)
 			? $vjournal->CATEGORIES->getParts()
 			: array();
-		if(isset($vjournal->DTSTART)) {
+
+		if (isset($vjournal->DTSTART)) {
 			$dtstart = $vjournal->DTSTART->getDateTime();
-			if($dtstart) {
-				$tz = new \DateTimeZone($user_timezone);
-				if($tz->getName() != $dtstart->getTimezone()->getName()
+			if ($dtstart) {
+				$tz = new \DateTimeZone($userTimeZone);
+				if ($tz->getName() != $dtstart->getTimezone()->getName()
 					&& !$vjournal->DTSTART->offsetExists('TZID')) {
 					$dtstart->setTimezone($tz);
 				}
@@ -139,13 +148,17 @@ class App {
 	 */
 	public static function parametersForProperty($property) {
 		$temp = array();
-		if(!$property) {
+
+		if (!$property) {
 			return;
 		}
-		foreach($property->parameters as $parameter){
+
+		foreach ($property->parameters as $parameter){
 			$temp[$parameter->name] = $parameter->value;
 		}
+
 		return $temp;
+
 	}
 
 	/**
@@ -254,19 +267,6 @@ class App {
 	}
 
 	/**
-	 * @brief returns the categories for the user
-	 * @return (Array) $categories
-	 */
-	/*public static function getCategories() {
-		$categories = self::getVCategories()->categories();
-		if(count($categories) == 0) {
-			self::scanCategories();
-			$categories = self::$categories->categories();
-		}
-		return ($categories ? $categories : self::getDefaultCategories());
-	}*/
-
-	/**
 	 * scan journals for categories.
 	 * @param $vevents VJOURNALs to scan. null to check all journals for the current user.
 	 * @returns bool
@@ -276,11 +276,13 @@ class App {
 		$singlecalendar = (bool)\OCP\Config::getUserValue(
 			\OCP\User::getUser(), 'journal', 'single_calendar', false
 		);
-		if($singlecalendar) {
+
+		if ($singlecalendar) {
 			$cid = \OCP\Config::getUserValue(
 				\OCP\User::getUser(), 'journal', 'default_calendar', null);
 			$calendar = \OC_Calendar_App::getCalendar($cid, true);
-			if(!$calendar) {
+
+			if (!$calendar) {
 				\OCP\Util::writeLog('journal',
 					'The default calendar ' . $cid . ' is either not owned by '
 					. \OCP\User::getUser() . ' or doesn\'t exist.',
@@ -288,15 +290,17 @@ class App {
 				);
 				return false;
 			}
+
 			$calendars[] = $calendar;
 		} else {
 			$calendars = \OC_Calendar_Calendar::allCalendars(\OCP\User::getUser(), true);
 		}
+
 		\OCP\Util::writeLog('journal', __METHOD__ . ', calendars: '
 			. count($calendars), \OCP\Util::DEBUG);
-		if(count($calendars) > 0) {
-			foreach($calendars as $calendar) {
-				foreach(VJournal::all($calendar['id']) as $vevent) {
+		if (count($calendars) > 0) {
+			foreach ($calendars as $calendar) {
+				foreach (VJournal::all($calendar['id']) as $vevent) {
 					$vobject = \OC_VObject::parse($vevent['calendardata']);
 					try {
 						self::getVCategories()->loadFromVObject($vobject->VJOURNAL, true);
@@ -309,6 +313,7 @@ class App {
 				}
 			}
 		}
+
 		return true;
 	}
 }
