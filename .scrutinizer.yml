@@ -8,8 +8,10 @@ imports:
 
 tools:
     js_hint:
-        config:
-            laxbreak: true
+        command:              ~
+
+        # Whether to use JSHint's native config file, .jshintrc.
+        use_native_config: true
 
     php_mess_detector:
         config:

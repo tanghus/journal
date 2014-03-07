@@ -1,0 +1,9 @@
+{
+  "laxbreak": true,
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,
+  "quotmark": "single",
+  "unused": true,
+  "globals": { "MY_GLOBAL": false }
+}
