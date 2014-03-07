@@ -1,14 +1,16 @@
+'use strict';
+
 String.prototype.unEscape = function(){
-	str = this;
+	var str = this;
 	return str.replace(/\\"/g, '"');
 };
 String.prototype.stripTags = function(){
-	tags = this;
+	var tags = this;
 	stripped = tags.replace(/<(.|\n)*?>/g, '');
 	return stripped;
 };
 String.prototype.zeroPad = function(digits) {
-	n = this.toString();
+	var n = this.toString();
 	while (n.length < digits) {
 		n = '0' + n;
 	}
@@ -222,6 +224,7 @@ OC.Journal = {
 						$(this).html('');
 						break;
 					case 'INPUT':
+						/* falls through */
 					case 'TEXTAREA':
 						$(this).val('');
 						break;
@@ -496,16 +499,16 @@ OC.Journal = {
 			// Thanks to http://www.java2s.com/Tutorial/JavaScript/0220__Array/Usinganalphabeticalsortmethodonstrings.html
 			// and http://stackoverflow.com/questions/4258974/sort-list-based-on-data-attribute-using-jquery-metadata-plugin#4259074
 			// and http://stackoverflow.com/questions/8882418/jquery-sorting-lib-that-supports-multilanguage-sorting
-			compareDateTimeAsc = function(a, b){
+			var compareDateTimeAsc = function(a, b){
 				return (parseInt(a.dtstart) > parseInt(b.dtstart)?-1:1);
 			};
-			compareDateTimeDesc = function(a, b){
+			var compareDateTimeDesc = function(a, b){
 				return (parseInt(b.dtstart) > parseInt(a.dtstart)?-1:1);
 			};
-			compareSummaryAsc = function(a, b){
+			var compareSummaryAsc = function(a, b){
 				return b.summary.toLowerCase().localeCompare(a.summary.toLowerCase());
 			};
-			compareSummaryDesc = function(a, b){
+			var compareSummaryDesc = function(a, b){
 				return a.summary.toLowerCase().localeCompare(b.summary.toLowerCase());
 			};
 			var func;
