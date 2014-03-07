@@ -25,6 +25,8 @@ OCP\User::checkLoggedIn();
 $errors = array();
 $categories = array();
 $calendars = array();
+$singlecalendar = false;
+$id = null;
 
 $l = new OC_L10N('journal');
 

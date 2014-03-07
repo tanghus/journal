@@ -11,6 +11,8 @@ OCP\JSON::checkLoggedIn();
 OCP\JSON::checkAppEnabled('journal');
 
 $calendars = array();
+$cid = null;
+
 $singlecalendar = (bool)OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'single_calendar', false);
 if($singlecalendar) {
 	$cid = OCP\Config::getUserValue(OCP\User::getUser(), 'journal', 'default_calendar', null);

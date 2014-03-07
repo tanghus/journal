@@ -52,6 +52,8 @@ foreach($_POST as $key => $val) {
 
 $parameters = isset($_POST['parameters']) ? $_POST['parameters'] : null;
 
+$vjournal = null;
+
 if($id == 'new') {
 	debug('Creating new entry.');
 	$vcalendar = OCA\Journal\App::createVCalendar();
@@ -68,6 +70,10 @@ if($id == 'new') {
 	} catch (Exception $e) {
 		bailOut($e->getMessage());
 	}
+}
+
+if(is_null($vjournal)) {
+	bailOut($l10n->t('Error getting Journal entry!'));
 }
 
 debug('saveproperty: ' . $property . ': ' . print_r($value, true));

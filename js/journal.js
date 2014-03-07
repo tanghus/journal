@@ -67,7 +67,7 @@ String.prototype.zeroPad = function(digits) {
 				}
 			});
 		popup.show();
-	}
+	};
 
 
 OC.Journal = {
@@ -155,7 +155,7 @@ OC.Journal = {
 			console.log('blur on required');
 			var obj = $(event.target);
 			$(obj).addClass('required');
-			if($(this).val().trim() == '') {
+			if($(this).val().trim() === '') {
 				$('<strong>This field is required!</strong>').appendTo($(obj));
 				return;
 			} else {
@@ -238,8 +238,8 @@ OC.Journal = {
 		},
 		createEntry:function(data) {
 			console.log('createEntry', data);
-			var sharedindicator = data.owner == OC.currentUser ? ''
-				: '<img class="shared svg" src="'+OC.imagePath('core', 'actions/shared')+'" title="'+t('journal', 'Shared by ')+data.owner+'" />'
+			var sharedindicator = data.owner === OC.currentUser ? ''
+				: '<img class="shared svg" src="'+OC.imagePath('core', 'actions/shared')+'" title="'+t('journal', 'Shared by ')+data.owner+'" />';
 			var date = new Date(parseInt(data.dtstart)*1000);
 			var timestring = (data.only_date?'':' ' + date.toLocaleTimeString());
 			return $('<li data-id="'+data.id+'"><a href="'+OC.linkTo('journal', 'index.php')+'#'+data.id+'">'+data.summary.unEscape()+'</a>'
@@ -270,9 +270,11 @@ OC.Journal = {
 			console.log('format: '+format);
 			$('#description').rte('mode', format);
 			$('#description').rte(format, data.description.value.unEscape());
-			(format=='html'&&$('#editable').is(':checked')
-				? $('#editortoolbar li.richtext').show()
-				: $('#editortoolbar li.richtext').hide());
+			if(format=='html'&&$('#editable').is(':checked')) {
+				$('#editortoolbar li.richtext').show();
+			} else {
+				$('#editortoolbar li.richtext').hide();
+			}
 
 			$('#location').val(data.location);
 
@@ -304,7 +306,6 @@ OC.Journal = {
 			if(!OC.Journal.isEnabled()) {
 				return;
 			}
-			console.log('saveproperty, this.id', this.id)
 			if(!this.id || this.id == 'new') { // we are adding an entry and want a response back from the server.
 				this.id = 'new';
 				this.cid = $('#calendar').val();
@@ -313,13 +314,13 @@ OC.Journal = {
 			}
 			var container = OC.Journal.propertyContainerFor(obj);
 			var params = {'id':this.id, cid:this.cid};
-			params['type'] = container.data('type');
-			params['parameters'] = {};
-			switch(params['type']) {
+			params.type = container.data('type');
+			params.parameters = {};
+			switch(params.type) {
 				case 'ORGANIZER':
 				case 'LOCATION':
 				case 'CATEGORIES':
-					params['value'] = $(obj).val();
+					params.value = $(obj).val();
 					break;
 				case 'SUMMARY':
 					if(this.id == 'new' && $(obj).val().trim() == '') {
@@ -328,7 +329,7 @@ OC.Journal = {
 						$(obj).on('blur', OC.Journal.required);
 						return;
 					}
-					params['value'] = $(obj).val();
+					params.value = $(obj).val();
 					break;
 				case 'DESCRIPTION':
 					// Check if we get the description from the textarea or the contenteditable.
@@ -336,7 +337,7 @@ OC.Journal = {
 					var value = $('#description').rte(format); // calls either the 'text' or 'html' method of the rte.
 					//var value = ($(obj).get(0).nodeName == 'DIV' ? $(obj).html() : $(obj).text());
 					console.log('nodeName: ' + $(obj).get(0).nodeName);
-					params['value'] = value;
+					params.value = value;
 					params['parameters']['FORMAT'] = format.toUpperCase();
 					break;
 				case 'DTSTART':
@@ -364,7 +365,7 @@ OC.Journal = {
 						datetime.setMinutes(parseInt(time.substr(3, 2), 10));
 					}
 					console.log('saveproperty, DTSTART', date, time, datetime);
-					params['value'] = datetime.getTime()/1000;
+					params.value = datetime.getTime()/1000;
 					break;
 				default:
 					$.extend(1, $(obj).serializeArray(), params);
@@ -413,7 +414,7 @@ OC.Journal = {
 			$('#delete').tipsy('hide');
 			var self = this;
 			OC.dialogs.confirm(t('contacts', 'Are you sure you want to delete this entry?'), t('journal', 'Warning'), function(answer) {
-				if(answer == true) {
+				if(answer === true) {
 					$.post(OC.filePath('journal', 'ajax', 'delete.php'), {'id': self.id}, function(jsondata) {
 						if(jsondata.status == 'success') {
 							var curlistitem = $('#entries li[data-id="'+self.id+'"]');
@@ -459,7 +460,7 @@ OC.Journal = {
 			} else {
 				start = $('#daterangefrom').datepicker('getDate');
 			}
-			if(start == null) {
+			if(start === null) {
 				return;
 			}
 			if(Modernizr.inputtypes.date) {
@@ -490,23 +491,23 @@ OC.Journal = {
 			if(method) {
 				this.sortmethod = method;
 			} else {
-				 method = this.sortmethod;
+				method = this.sortmethod;
 			}
 			// Thanks to http://www.java2s.com/Tutorial/JavaScript/0220__Array/Usinganalphabeticalsortmethodonstrings.html
 			// and http://stackoverflow.com/questions/4258974/sort-list-based-on-data-attribute-using-jquery-metadata-plugin#4259074
 			// and http://stackoverflow.com/questions/8882418/jquery-sorting-lib-that-supports-multilanguage-sorting
 			compareDateTimeAsc = function(a, b){
 				return (parseInt(a.dtstart) > parseInt(b.dtstart)?-1:1);
-			}
+			};
 			compareDateTimeDesc = function(a, b){
 				return (parseInt(b.dtstart) > parseInt(a.dtstart)?-1:1);
-			}
+			};
 			compareSummaryAsc = function(a, b){
 				return b.summary.toLowerCase().localeCompare(a.summary.toLowerCase());
-			}
+			};
 			compareSummaryDesc = function(a, b){
 				return a.summary.toLowerCase().localeCompare(b.summary.toLowerCase());
-			}
+			};
 			var func;
 			switch(method) {
 				case 'dtasc':
@@ -526,7 +527,7 @@ OC.Journal = {
 					break;
 			}
 
-			var arr = []
+			var arr = [];
 			// loop through each list item and get the metadata
 			$('#entries').children('li:visible').each(function () {
 				var meta = $(this).data('entry');
@@ -546,7 +547,7 @@ OC.Journal = {
 			var self = this;
 			$('#entries').addClass('loading');
 			$.getJSON(OC.filePath('journal', 'ajax', 'entries.php'), function(jsondata) {
-				console.log(jsondata)
+				console.log(jsondata);
 				if(jsondata.status == 'success') {
 					OC.Journal.singlecalendar = Boolean(jsondata.data.singlecalendar);
 					if(OC.Journal.singlecalendar) {
@@ -568,7 +569,7 @@ OC.Journal = {
 							firstitem = $('#entries li[data-id="'+id+'"]');
 						} else {
 							firstitem = $('#entries li').first();
-							if(firstitem.length == 0) {
+							if(firstitem.length === 0) {
 								return;
 							}
 							id = firstitem.data('entry').id;
@@ -629,8 +630,10 @@ $(document).ready(function(){
 	// it on blur and removes the binding again afterwards.
 	$('#showlink').on('click', function(event) {
 		console.log('showlink');
-		$('#link').toggle('slow').val(window.location.protocol + '//' + window.location.host + OC.linkTo('journal', 'index.php')+'#'+OC.Journal.Entry.id).focus().
-			on('blur',function(event) {$(this).hide()}).off('blur', $(this));
+		$('#link').toggle('slow').val(window.location.protocol + '//' + window.location.host + OC.linkTo('journal', 'index.php')+'#'+OC.Journal.Entry.id).focus()
+			.on('blur',function(event) {
+				$(this).hide();
+			}).off('blur', $(this));
 		return false;
 	});
 

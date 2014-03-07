@@ -7,6 +7,10 @@ imports:
     - javascript
 
 tools:
+    js_hint:
+        config:
+            laxbreak: true
+
     php_mess_detector:
         config:
             controversial_rules:
