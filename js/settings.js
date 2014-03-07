@@ -1,12 +1,14 @@
+/* global OC */
+
 $(document).ready(function(){
 	var setPreference = function(obj, key, val, cb) {
 		$.post(OC.filePath('journal', 'ajax', 'setpreference.php'), {'key':key, 'value':val}, function(jsondata) {
-			if(cb && typeof cb == 'function') {
+			if(cb && typeof cb === 'function') {
 				cb(jsondata.status);
 			}
 			var success = {'background-color':'green', 'color': 'white'};
 			var failure = {'background-color':'red', 'color': 'white'};
-			if(jsondata.status == 'success') {
+			if(jsondata.status === 'success') {
 				$('#settings_status').css(success).html(t('journal', 'Saved')).fadeIn().fadeOut(2000);
 				return true;
 			} else {
@@ -14,15 +16,15 @@ $(document).ready(function(){
 				return false;
 			}
 		});
-	}
+	};
 
-	if($('#journal_calendar option:selected').val() == '') {
+	if($('#journal_calendar option:selected').val().trim() === '') {
 		$('#journal_single_calendar').prop('disabled', true);
 	}
 
 	$('#journal_calendar').on('change', function(event){
 		setPreference(this, 'default_calendar', $('#journal_calendar option:selected').val(), function(result) {
-			if(result == 'success') {
+			if(result === 'success') {
 				OC.Journal.Journals.update();
 				$('#journal_single_calendar').prop('disabled', false);
 			}
@@ -31,7 +33,7 @@ $(document).ready(function(){
 
 	$('#journal_single_calendar').on('change', function(event){
 		setPreference(this, 'single_calendar', Number(this.checked), function(result) {
-			if(result == 'success') {
+			if(result === 'success') {
 				OC.Journal.Journals.update();
 			}
 		});

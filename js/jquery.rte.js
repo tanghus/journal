@@ -35,7 +35,8 @@ $.widget( 'ui.rte', {
 				left: textarea.offset().left
 			});
 		});*/
-		this.mirror.on('keydown', function(event){
+		this.mirror.on('keydown', function(event) {
+			// Enter
 			if(event.which == 13) {
 				self.insertAtCaret('<br />');
 			}
@@ -67,17 +68,16 @@ $.widget( 'ui.rte', {
 	},
 	text: function(str) {
 		console.log('function text', str);
-		if(str != undefined) {
+		if(str !== undefined) {
 			this.mirror.html(str);
 			this.element.val(str);
 		} else {
-			//console.log('returning: ' + this.element.val());
 			return this.element.val();
 		}
 	},
 	html: function(str) {
 		console.log('function html');
-		if(str != undefined) {
+		if(str !== undefined) {
 			console.log('str: ' + str);
 			var $str;
 			try {
@@ -107,7 +107,7 @@ $.widget( 'ui.rte', {
 				sel.text = myValue;
 				this.focus();
 			}
-			else if (this.selectionStart || this.selectionStart == '0') {
+			else if (this.selectionStart || this.selectionStart === '0') {
 				console.log('FF');
 				//For browsers like Firefox and Webkit based
 				var startPos = this.selectionStart;
@@ -129,13 +129,13 @@ $.widget( 'ui.rte', {
 		var textComponent = this.mirror.get(0); //document.getElementById('Editor');
 		var selectedText;
 		// IE version
-		if (document.selection != undefined) {
+		if (document.selection !== undefined) {
 			textComponent.focus();
 			var sel = document.selection.createRange();
 			selectedText = sel.text;
 		}
 		// Mozilla version
-		else if (textComponent.selectionStart != undefined) {
+		else if (textComponent.selectionStart !== undefined) {
 			var startPos = textComponent.selectionStart;
 			var endPos = textComponent.selectionEnd;
 			console.log(startPos, endPos);
@@ -169,13 +169,13 @@ $.widget( 'ui.rte', {
 	},
 	setEnabled: function(state) {
 		console.log('function setEnabled: ' + state);
-		if(state != undefined) {
+		if(state !== undefined) {
 			this._setOption('disabled', !state);
 		}
 		return this.options['disabled'];
 	},
 	mode: function(mode) {
-		if(mode != undefined) {
+		if(mode !== undefined) {
 			this._setOption('mode', mode);
 		}
 		return this.options['mode'];
@@ -185,7 +185,7 @@ $.widget( 'ui.rte', {
 		return !this.options['disabled'];
 	},*/
 	toggleMode: function() {
-		this._setOption('mode', (this.options['mode'] == 'html'?'text':'html'));
+		this._setOption('mode', (this.options['mode'] === 'html' ? 'text' : 'html'));
 		return this.options['mode'];
 	},
 	// Use the _setOption method to respond to changes to options

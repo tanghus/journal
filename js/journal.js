@@ -1,3 +1,5 @@
+/* global OC */
+
 'use strict';
 
 String.prototype.unEscape = function(){
@@ -5,9 +7,7 @@ String.prototype.unEscape = function(){
 	return str.replace(/\\"/g, '"');
 };
 String.prototype.stripTags = function(){
-	var tags = this;
-	stripped = tags.replace(/<(.|\n)*?>/g, '');
-	return stripped;
+	return this.replace(/<(.|\n)*?>/g, '');
 };
 String.prototype.zeroPad = function(digits) {
 	var n = this.toString();
@@ -24,10 +24,10 @@ String.prototype.zeroPad = function(digits) {
 	 * @param cb function. A function that if provided will be called when the help is closed.
 	 */
 	OC.popupHelp = function(args, cb) {
-		if(typeof args === 'undefined' || typeof args.selector != 'string') {
+		if(typeof args === 'undefined' || typeof args.selector !== 'string') {
 			throw { name: 'InvalidParameter', message: 'The parameter \'selector\' is missing or not a string.' };
 		}
-		if(typeof args === 'undefined' || typeof args.content != 'string') {
+		if(typeof args === 'undefined' || typeof args.content !== 'string') {
 			throw { name: 'InvalidParameter', message: 'The parameter \'content\' is missing or not a string.' };
 		}
 		var obj = $(args.selector);
@@ -64,7 +64,7 @@ String.prototype.zeroPad = function(digits) {
 		popup.css({'left':posx, 'top':posy});
 		popup.find('.close').bind('click', function() {
 				popup.remove();
-				if(typeof cb == 'function') {
+				if(typeof cb === 'function') {
 					cb();
 				}
 			});
@@ -80,6 +80,7 @@ OC.Journal = {
 		var self = this;
 		this.version = $('#journal-content').data('version');
 		if(this.version < 6) {
+			/* global OCCategories */
 			OCCategories.changed = OC.Journal.categoriesChanged;
 			OCCategories.app = 'journal';
 		} else {
@@ -94,7 +95,7 @@ OC.Journal = {
 		var id = parseInt(window.location.hash.substr(1));
 		OC.Journal.Journals.update(id);
 		$.getJSON(OC.filePath('journal', 'ajax', 'categories/list.php'), function(jsondata) {
-			if(jsondata.status == 'success') {
+			if(jsondata.status === 'success') {
 				OC.Journal.categories = jsondata.data.categories;
 			} else {
 				OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
@@ -169,12 +170,12 @@ OC.Journal = {
 		return this.enabled;
 	},
 	setEnabled:function(state) {
-		if(typeof state == 'undefined') { state = true; }
+		if(typeof state === 'undefined') { state = true; }
 		this.enabled = state;
 		console.log('OC.Journal.setEnabled: ' + state);
 		if(state) {
 			$('#description').rte('setEnabled', true);
-			if($('#description').rte('mode') == 'html') {
+			if($('#description').rte('mode') === 'html') {
 				$('#editortoolbar li').show();
 			}
 			$('#togglemode').show();
@@ -273,7 +274,7 @@ OC.Journal = {
 			console.log('format: '+format);
 			$('#description').rte('mode', format);
 			$('#description').rte(format, data.description.value.unEscape());
-			if(format=='html'&&$('#editable').is(':checked')) {
+			if(format === 'html'&&$('#editable').is(':checked')) {
 				$('#editortoolbar li.richtext').show();
 			} else {
 				$('#editortoolbar li.richtext').hide();
@@ -309,7 +310,7 @@ OC.Journal = {
 			if(!OC.Journal.isEnabled()) {
 				return;
 			}
-			if(!this.id || this.id == 'new') { // we are adding an entry and want a response back from the server.
+			if(!this.id || this.id === 'new') { // we are adding an entry and want a response back from the server.
 				this.id = 'new';
 				this.cid = $('#calendar').val();
 				console.log('OC.Journal.Entry.saveproperty: We need to add a new one.');
@@ -326,7 +327,7 @@ OC.Journal = {
 					params.value = $(obj).val();
 					break;
 				case 'SUMMARY':
-					if(this.id == 'new' && $(obj).val().trim() == '') {
+					if(this.id === 'new' && $(obj).val().trim() === '') {
 						$(obj).focus();
 						$(obj).addClass('required');
 						$(obj).on('blur', OC.Journal.required);
@@ -336,7 +337,7 @@ OC.Journal = {
 					break;
 				case 'DESCRIPTION':
 					// Check if we get the description from the textarea or the contenteditable.
-					var format = ($(obj).get(0).nodeName == 'DIV' ? 'html' : 'text'); // FIXME: should check rte instead.
+					var format = ($(obj).get(0).nodeName === 'DIV' ? 'html' : 'text'); // FIXME: should check rte instead.
 					var value = $('#description').rte(format); // calls either the 'text' or 'html' method of the rte.
 					//var value = ($(obj).get(0).nodeName == 'DIV' ? $(obj).html() : $(obj).text());
 					console.log('nodeName: ' + $(obj).get(0).nodeName);
@@ -376,8 +377,8 @@ OC.Journal = {
 			}
 			var self = this;
 			$.post(OC.filePath('journal', 'ajax', 'saveproperty.php'), params, function(jsondata) {
-				if(jsondata.status == 'success') {
-					if(self.id == 'new') {
+				if(jsondata.status === 'success') {
+					if(self.id === 'new') {
 						self.loadEntry(jsondata.data.id, jsondata.data);
 						self.id = jsondata.data.id;
 						OC.Journal.setEnabled(true);
@@ -389,7 +390,7 @@ OC.Journal = {
 					OC.Journal.Journals.doSort();
 					OC.Journal.Journals.scrollTo(self.id);
 					console.log('successful save');
-				} else if(jsondata.status == 'error') {
+				} else if(jsondata.status === 'error') {
 					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
 				} else {
 					console.log('saveproperty: Unknown return value');
@@ -399,9 +400,9 @@ OC.Journal = {
 		moveToCalendar:function(calendarid) {
 			var self = this;
 			$.post(OC.filePath('journal', 'ajax', 'movetocalendar.php'), {'id':this.id, 'calendarid':calendarid}, function(jsondata) {
-				if(jsondata.status == 'success') {
+				if(jsondata.status === 'success') {
 					console.log('successful move');
-				} else if(jsondata.status == 'error') {
+				} else if(jsondata.status === 'error') {
 					OC.dialogs.alert(jsondata.data.message, t('contacts', 'Error'));
 				} else {
 					console.log('saveproperty: Unknown return value');
@@ -413,13 +414,13 @@ OC.Journal = {
 		},
 		doDelete:function() {
 			// TODO: Do something when there are no more entries.
-			if(this.id == 'new') { return; }
+			if(this.id === 'new') { return; }
 			$('#delete').tipsy('hide');
 			var self = this;
 			OC.dialogs.confirm(t('contacts', 'Are you sure you want to delete this entry?'), t('journal', 'Warning'), function(answer) {
 				if(answer === true) {
 					$.post(OC.filePath('journal', 'ajax', 'delete.php'), {'id': self.id}, function(jsondata) {
-						if(jsondata.status == 'success') {
+						if(jsondata.status === 'success') {
 							var curlistitem = $('#entries li[data-id="'+self.id+'"]');
 							var newlistitem = curlistitem.prev('li');
 							if(!$(newlistitem).is('li')) {
@@ -475,7 +476,7 @@ OC.Journal = {
 			} else {
 				end = $('#daterangeto').datepicker('getDate');
 			}
-			if(end == null) {
+			if(end === null) {
 				return;
 			}
 			console.log('filterDateRange', start, end);
@@ -551,7 +552,7 @@ OC.Journal = {
 			$('#entries').addClass('loading');
 			$.getJSON(OC.filePath('journal', 'ajax', 'entries.php'), function(jsondata) {
 				console.log(jsondata);
-				if(jsondata.status == 'success') {
+				if(jsondata.status === 'success') {
 					OC.Journal.singlecalendar = Boolean(jsondata.data.singlecalendar);
 					if(OC.Journal.singlecalendar) {
 						$('#calendar').val(jsondata.data.cid).prop('disabled', true);
@@ -726,7 +727,8 @@ $(document).ready(function(){
 
 	// Proxy click.
 	$('#entries').on('keydown', '#entries', function(event) {
-		if(event.which == 13) {
+		// Enter
+		if(event.which === 13) {
 			$('#entries').click(event);
 		}
 	});
@@ -734,14 +736,14 @@ $(document).ready(function(){
 	$(document).on('click', '#entries', function(event) {
 		var $tgt = $(event.target);
 		var item = $tgt.is('li')?$($tgt):($tgt).parents('li').first();
-		if(item.length == 0) {
+		if(item.length === 0) {
 			return true;
 		}
 		var id = item.data('id');
 		item.addClass('active');
 		var oldid = $('#entry').data('id');
 		console.log('oldid: ' + oldid);
-		if(oldid != 0){
+		if(oldid !== 0){
 			$('#entries li[data-id="'+oldid+'"]').removeClass('active');
 		}
 		OC.Journal.Entry.loadEntry(id, item.data('entry'));
