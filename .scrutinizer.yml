@@ -8,9 +8,6 @@ imports:
 
 tools:
     js_hint:
-        command:              ~
-
-        # Whether to use JSHint's native config file, .jshintrc.
         use_native_config: true
 
     php_mess_detector:
