@@ -198,7 +198,7 @@ class App {
 
 	/**
 	 * @brief returns the default categories of ownCloud
-	 * @return (array) $categories
+	 * @return string[] $categories
 	 */
 	public static function getDefaultCategories() {
 		return array(
