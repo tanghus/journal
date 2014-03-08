@@ -1,4 +1,4 @@
-/* global OC */
+/* global OC,t,Modernizr */
 
 'use strict';
 
