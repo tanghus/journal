@@ -85,7 +85,6 @@ if (count($errors) === 0) {
 	OCP\App::setActiveNavigationEntry('journal_index');
 }
 
-//$tmpl = new OCP\Template('journal', 'journals', 'user');
 if ($errors) {
 	$tmpl = new OCP\Template('journal', 'rtfm', 'user' );
 	$tmpl->assign('errors',$errors, false);
