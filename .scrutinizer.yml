@@ -20,6 +20,11 @@ tools:
                 camel_case_variable_name: true
                 superglobals: false
 
+            unused_code_rules:
+                unused_local_variable: true
+                unused_private_method: true
+                unused_formal_parameter: true
+
     php_code_sniffer:
         config:
             sniffs:
@@ -32,22 +37,23 @@ tools:
                         language_construct_spacing_sniff: true
                         operator_spacing_sniff: true
                         control_structure_spacing_sniff: true
-                        function_spacing_sniff: true
+                        function_spacing_sniff: false
                         scope_keyword_spacing_sniff: true
                         semicolon_spacing_sniff: true
-                        object_operator_spacing_sniff: true
+                        object_operator_spacing_sniff: false
                     functions:
                         lowercase_function_keywords_sniff: true
                     commenting:
                         class_comment_sniff: true
                         doc_comment_alignment_sniff: true
                         function_comment_throw_tag_sniff: true
-                    control_structures:
-                        lowercase_declaration_sniff: true
                     strings:
                         double_quote_usage_sniff: true
                     operators:
                         valid_logical_operators_sniff: true
+                psr1:
+                    files:
+                        side_effects_sniff: false
                 psr2:
                     classes:
                         class_declaration_sniff: false
