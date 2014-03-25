@@ -2,8 +2,7 @@
 
 | Code quality | Latest release |
 |--------------|----------------|
-| [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/tanghus/journal/badges/quality-score.png?s=126186f91faaf8adcfe463e4fe26e252a3fe4dad)](https://scrutinizer-ci.com/g/tanghus/journal/) |
- [![Latest release](http://img.shields.io/github/release/tanghus/journal.svg)](https://github.com/tanghus/journal/releases) |
+| [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/tanghus/journal/badges/quality-score.png?s=126186f91faaf8adcfe463e4fe26e252a3fe4dad)](https://scrutinizer-ci.com/g/tanghus/journal/) | [![Latest release](http://img.shields.io/github/release/tanghus/journal.svg)](https://github.com/tanghus/journal/releases) |
 
 ## Features
 
