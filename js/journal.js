@@ -15,7 +15,7 @@ String.prototype.zeroPad = function(digits) {
 		n = '0' + n;
 	}
 	return n;
-}
+};
 
 	/**
 	 * Opens a popup with the setting for an app.
@@ -754,7 +754,7 @@ $(document).ready(function(){
 		console.log('hashchange', window.location.hash)
 		var id = parseInt(window.location.hash.substr(1));
 		if(id) {
-			entry = $('#entries li[data-id="'+id+'"]');
+			var entry = $('#entries li[data-id="'+id+'"]');
 			OC.Journal.Entry.loadEntry(id, entry.data('entry'));
 		}
 	});

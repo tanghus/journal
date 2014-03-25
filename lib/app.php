@@ -64,7 +64,7 @@ class App {
 			'calendarid' => $calendarId,
 			'permissions' => $permissions,
 			'owner' => $owner,
-			'summary' =>  strtr(
+			'summary' => strtr(
 				(string)$vjournal->SUMMARY,
 				array('\,' => ',', '\;' => ';', '\\\\' => '\\')
 				),
@@ -73,7 +73,7 @@ class App {
 		$format = 'text';
 
 		if (isset($vjournal->DESCRIPTION)) {
-			foreach ($vjournal->DESCRIPTION->parameters as $parameter){
+			foreach ($vjournal->DESCRIPTION->parameters as $parameter) {
 				if (stripos($parameter->name, 'FORMAT') !== false
 						&& stripos($parameter->value, 'HTML') !== false) {
 					$format = 'html'; // an educated guess ;-)
@@ -92,8 +92,8 @@ class App {
 			}
 
 			$journal['description'] = array(
-									'value' => ($format=='html'
-											? $body = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", $desc)
+									'value' => ($format === 'html'
+											? $body = preg_replace('/.*<body[^>]*>|<\/body>.*/si', '', $desc)
 											: $desc),
 									'format' => $format,
 									'parameters' => self::parametersForProperty($vjournal->DESCRIPTION)
@@ -104,9 +104,11 @@ class App {
 
 		if (isset($vjournal->ORGANIZER)) {
 			$organizer = (string)$vjournal->ORGANIZER;
+
 			if (strpos($organizer, ':') !== false) {
 				list(,$organizer) = explode(':', $organizer);
 			}
+
 			$journal['organizer'] = $organizer;
 		} else {
 			$journal['organizer'] = \OCP\User::getUser();
@@ -118,6 +120,7 @@ class App {
 
 		if (isset($vjournal->DTSTART)) {
 			$dtstart = $vjournal->DTSTART->getDateTime();
+
 			if ($dtstart) {
 				$tz = new \DateTimeZone($userTimeZone);
 				if ($tz->getName() != $dtstart->getTimezone()->getName()
@@ -133,12 +136,14 @@ class App {
 					\OCP\Util::ERROR
 				);
 			}
+
 		} else {
 			\OCP\Util::writeLog('journal',
 				'Could not get DTSTART for ' . $journal['summary'],
 				\OCP\Util::ERROR
 			);
 		}
+
 		return $journal;
 	}
 
@@ -189,10 +194,13 @@ class App {
 		$vjournal->setDateTime('DTSTART', 'now', VObject\Property\DateTime::LOCALTZ);
 		$vjournal->setDateTime('CREATED', 'now', VObject\Property\DateTime::UTC);
 		$vjournal->setUID();
+
 		$email = \OCP\Config::getUserValue(\OCP\User::getUser(), 'settings', 'email', '');
-		if($email) {
+
+		if ($email) {
 			$vjournal->setString('ORGANIZER', 'MAILTO:'.$email);
 		}
+
 		return $vjournal;
 	}
 
@@ -229,11 +237,11 @@ class App {
 		list($version,) = \OCP\Util::getVersion();
 
 		if (is_null(self::$categories)) {
-			if($version < 6) {
+			if ($version < 6) {
 				self::$categories = new \OC_VCategories('journal', null, self::getDefaultCategories());
 			} else {
 				$categories = \OC::$server->getTagManager()->load('journal');
-				if($categories->isEmpty('journal')) {
+				if ($categories->isEmpty('journal')) {
 					self::scanCategories();
 				}
 				self::$categories = \OC::$server->getTagManager()
@@ -252,10 +260,9 @@ class App {
 		// Version check
 		list($version,) = \OCP\Util::getVersion();
 
-		if($version < 6) {
+		if ($version < 6) {
 			$categories = self::getVCategories()->categories();
 		} else {
-
 			$getNames = function($tag) {
 				return $tag['name'];
 			};

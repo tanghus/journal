@@ -12,11 +12,9 @@ $.widget( 'ui.rte', {
 	_create: function() {
 		console.log('rte._create');
 		var self = this,
-			o = self.options,
-			dirty = false,
 			textarea = this.element; //.hide(),
 			pos = textarea.position();
-			//this.element.text = this.text;
+		this.dirty = false;
 		this.converter = new Markdown.Converter();
 		this.mirror = $('<div class="rte-content" contenteditable="true"></div>').css({
 				top:pos.top,
@@ -37,7 +35,7 @@ $.widget( 'ui.rte', {
 		});*/
 		this.mirror.on('keydown', function(event) {
 			// Enter
-			if(event.which == 13) {
+			if(event.which === 13) {
 				self.insertAtCaret('<br />');
 			}
 		});
@@ -98,7 +96,7 @@ $.widget( 'ui.rte', {
 	},
 	insertAtCaret: function(myValue){
 		// Found this at stackoverflow
-		return this.mirror.each(function(i) {
+		return this.mirror.each(function() {
 			if (document.selection) {
 				console.log('IE');
 				//For browsers like Internet Explorer
@@ -123,7 +121,7 @@ $.widget( 'ui.rte', {
 				this.value += myValue;
 				this.focus();
 			}
-		})
+		});
 	},
 	showSelection: function() {
 		var textComponent = this.mirror.get(0); //document.getElementById('Editor');
@@ -139,7 +137,7 @@ $.widget( 'ui.rte', {
 			var startPos = textComponent.selectionStart;
 			var endPos = textComponent.selectionEnd;
 			console.log(startPos, endPos);
-			selectedText = textComponent.value.substring(startPos, endPos)
+			selectedText = textComponent.value.substring(startPos, endPos);
 		}
 		//alert("You selected: " + selectedText);
 	},
@@ -154,8 +152,9 @@ $.widget( 'ui.rte', {
 				break;
 			case 'createlink':
 				self.showSelection();
-				option=prompt('Write the URL here')
+				option=prompt('Write the URL here');
 				useDialog = true;
+				break;
 			default:
 				break;
 		}
@@ -164,7 +163,7 @@ $.widget( 'ui.rte', {
 			self.dirty = true; // FIXME: This doesn't work because blur is triggered before dirty is set.
 			self.mirror.trigger('blur'); // Dirty hack to trigger save. Hmm, if it only worked...
 		}catch(e){
-			console.log('Error: ' + e)
+			console.log('Error: ' + e);
 		}
 	},
 	setEnabled: function(state) {
@@ -172,21 +171,21 @@ $.widget( 'ui.rte', {
 		if(state !== undefined) {
 			this._setOption('disabled', !state);
 		}
-		return this.options['disabled'];
+		return this.options.disabled;
 	},
 	mode: function(mode) {
 		if(mode !== undefined) {
 			this._setOption('mode', mode);
 		}
-		return this.options['mode'];
+		return this.options.mode;
 	},
 	/*toggle: function() {
 		this._setOption('disabled', !this.options['disabled']);
 		return !this.options['disabled'];
 	},*/
 	toggleMode: function() {
-		this._setOption('mode', (this.options['mode'] === 'html' ? 'text' : 'html'));
-		return this.options['mode'];
+		this._setOption('mode', (this.options.mode === 'html' ? 'text' : 'html'));
+		return this.options.mode;
 	},
 	// Use the _setOption method to respond to changes to options
 	_setOption: function( key, value ) {
@@ -231,14 +230,14 @@ $.widget( 'ui.rte', {
 						this.element.trigger('change');
 						break;
 					default:
-						throw { name: 'UnknownMode', message: 'Invalid mode: ' + value }
+						throw { name: 'UnknownMode', message: 'Invalid mode: ' + value };
 						break;
 				}
 				break;
 			case 'classes':
 				if($.isArray(value)) {
 					var mirror = this.mirror;
-					$.each(this.options['classes'], function(key, value) {
+					$.each(this.options.classes, function(key, value) {
 						mirror.addClass(value);
 					});
 				} else {

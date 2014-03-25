@@ -23,7 +23,7 @@
 namespace OCA\Journal;
 
 class SearchProvider extends \OC_Search_Provider {
-	function search($query){
+	public function search($query){
 		$calendars = \OC_Calendar_Calendar::allCalendars(\OCP\USER::getUser(), true);
 		$results = array();
 
@@ -50,7 +50,7 @@ class SearchProvider extends \OC_Search_Provider {
 
 					if ($vjournal->DTSTART->getDateType() == \Sabre\VObject\Property\DateTime::DATE) {
 						$info = $l->t('Date') . ': ' . $dtStart->format('d.m.Y');
-					}else{
+					} else {
 						$info = $l->t('Date') . ': ' . $dtStart->format('d.m.y H:i');
 					}
 					$link = \OCP\Util::linkTo('journal', 'index.php') . '#' . urlencode($object['id']);
@@ -58,6 +58,7 @@ class SearchProvider extends \OC_Search_Provider {
 				}
 			}
 		}
+
 		return $results;
 	}
 }

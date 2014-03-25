@@ -23,7 +23,7 @@
 namespace OCA\Journal;
 
 /**
- * This class manages our journals
+ * This class manages our journals.
  */
 class VJournal extends \OC_Calendar_Object {
 	/**
@@ -34,12 +34,13 @@ class VJournal extends \OC_Calendar_Object {
 	 * The objects are associative arrays. You'll find the original vObject in
 	 * ['calendardata']
 	 */
-	public static function all($id){
-		$stmt = \OCP\DB::prepare( 'SELECT * FROM *PREFIX*clndr_objects WHERE calendarid = ? AND objecttype = "VJOURNAL"' );
+	public static function all($id) {
+		$stmt = \OCP\DB::prepare('SELECT * FROM *PREFIX*clndr_objects WHERE calendarid = ? AND objecttype = "VJOURNAL"');
 		$result = $stmt->execute(array($id));
 
 		$calendarobjects = array();
-		while( $row = $result->fetchRow()){
+
+		while ( $row = $result->fetchRow()) {
 			$calendarobjects[] = $row;
 		}
 
@@ -50,12 +51,16 @@ class VJournal extends \OC_Calendar_Object {
 	 * @brief Mass updates an array of entries
 	 * @param array $objects  An array of [id, journaldata].
 	 */
-	public static function updateDataByID($objects){
-		$stmt = \OCP\DB::prepare( 'UPDATE *PREFIX*clndr_objects SET calendardata = ?, lastmodified = ? WHERE id = ?' );
-		foreach($objects as $object) {
-			$vevent = \OC_Calendar_App::getVCalendar($object[0]); // Get existing event.
-			$vjournal = OC_VObject::parse($object[1]); // Get updated VJOURNAL part
-			if(!is_null($vjournal) && !is_null($vevent)){
+	public static function updateDataByID($objects) {
+		$stmt = \OCP\DB::prepare('UPDATE *PREFIX*clndr_objects SET calendardata = ?, lastmodified = ? WHERE id = ?');
+
+		foreach ($objects as $object) {
+			// Get existing event.
+			$vevent = \OC_Calendar_App::getVCalendar($object[0]);
+			// Get updated VJOURNAL part
+			$vjournal = OC_VObject::parse($object[1]);
+
+			if (!is_null($vjournal) && !is_null($vevent)) {
 				try {
 					$vjournal->setDateTime('LAST-MODIFIED', 'now', Sabre_VObject_Property_DateTime::UTC);
 					unset($vevent->VJOURNAL); // Unset old VJOURNAL element
@@ -70,6 +75,7 @@ class VJournal extends \OC_Calendar_Object {
 					\OCP\Util::writeLog('journal', __METHOD__ . ', id: ' . $object[0], OCP\Util::DEBUG);
 				}
 			}
+
 		}
 	}
 
@@ -84,15 +90,20 @@ class VJournal extends \OC_Calendar_Object {
 		if ($calendar['userid'] != OCP\User::getUser()) {
 			$sharedCalendar = OCP\Share::getItemSharedWithBySource('calendar', $id);
 			$sharedJournal = OCP\Share::getItemSharedWithBySource('journal', $id, OCP\Share::FORMAT_NONE, null, true);
-			$calendar_permissions = 0;
-			$journal_permissions = 0;
+
+			$calendarPermissions = 0;
+			$journalPermissions = 0;
+
 			if ($sharedCalendar) {
-				$calendar_permissions = $sharedCalendar['permissions'];
+				$calendarPermissions = $sharedCalendar['permissions'];
 			}
+
 			if ($sharedJournal) {
-				$journal_permissions = $sharedJournal['permissions'];
+				$journalPermissions = $sharedJournal['permissions'];
 			}
-			$permissions = max($calendar_permissions, $journal_permissions);
+
+			$permissions = max($calendarPermissions, $journalPermissions);
+
 			if (!($permissions & OCP\PERMISSION_DELETE)) {
 				throw new Exception(
 					OC_Contacts_App::$l10n->t(
@@ -100,9 +111,12 @@ class VJournal extends \OC_Calendar_Object {
 					)
 				);
 			}
+
 		}
+
 		$stmt = OCP\DB::prepare( 'DELETE FROM `*PREFIX*clndr_objects` WHERE `id` = ?' );
 		$stmt->execute(array($id));
+
 		OC_Calendar_Calendar::touchCalendar($oldobject['calendarid']);
 
 		OCP\Share::unshareAll('journal', $id);
