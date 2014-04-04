@@ -253,7 +253,7 @@ OC.Journal = {
 			OC.Journal.setEnabled(false);
 			console.log('loadEntry:', id, data.summary, data.description.format);
 			this.permissions = parseInt(data.permissions);
-			this.readonly = !(this.permissions & OC.PERMISSION_UPDATE);
+			this.readonly = !(this.permissions & OC.PERMISSION_UPDATE) || data.owner !== OC.currentUser;
 			console.log('permissions:', this.permissions);
 			console.log('readonly:', this.readonly);
 			$('#editable').prop('disabled', this.readonly)
@@ -265,7 +265,12 @@ OC.Journal = {
 			this.cid = data.calendarid;
 			this.data = data;
 			$('#entry').data('id', id);
-			$('#calendar').val(data.calendarid);
+			if (data.owner !== OC.currentUser) {
+				$('#metadata .calendar').hide();
+			} else {
+				$('#metadata .calendar').show();
+				$('#calendar').val(data.calendarid);
+			}
 			$('#summary').val(data.summary.unEscape());
 			console.log('organizer', data.organizer);
 			$('#organizer').val(data.organizer);
