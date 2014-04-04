@@ -1,6 +1,12 @@
 # Changelog
 
-### 0.4 (current master)
+### 0.4.1 (current master)
+ - Share dropdown wasn't shown correctly.
+ - Editing a shared entry moved it to a new calendar.
+   For now editing shared entries is disabled to avoid data loss, because of
+   a bug in the calendar app backend.
+
+### 0.4
  - Switching from text to html format removed all text (sorry about that...)
  - Problem adding more than one entry possibly caused by updated jquery library.
  - When switching from text to html the text is now parsed as MarkDown and vice-versa.
